@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minhas Ofertas | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    
+
     <style>
-        /* Expande e centraliza o "miolo" perfeitamente na tela */
         .page-shell {
-            max-width: 1400px !important; /* Deixou ainda mais largo */
+            max-width: 1400px !important;
             width: 95% !important;
-            margin: 0 auto !important; /* A mágica para centralizar no meio da tela */
+            margin: 0 auto !important;
         }
 
-        /* Força o card escuro a esticar e tira a barra de rolagem horizontal */
         .page-card {
             width: 100% !important;
             max-width: none !important;
@@ -25,18 +23,25 @@
             overflow-x: auto;
         }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        
-        /* Container para forçar os botões lado a lado estritamente */
-        .acoes-flex { 
-            display: flex; 
-            gap: 8px; 
-            flex-wrap: nowrap;
-            align-items: center; 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
 
-        /* Classe auxiliar para "espremer" os botões da tabela */
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .acoes-flex {
+            display: flex;
+            gap: 8px;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+
         .btn-sm {
             padding: 6px 12px !important;
             font-size: 12px !important;
@@ -49,7 +54,6 @@
 <body class="app-page">
 <main class="page-shell">
     <section class="page-card">
-        
         <header class="page-header">
             <div>
                 <p class="page-kicker">Área do Aluno</p>
@@ -79,23 +83,24 @@
                         <td th:text="${#temporals.format(inscricao.oferta.dataInicio, 'dd/MM/yyyy')}">01/03/2026</td>
                         <td th:text="${#temporals.format(inscricao.oferta.dataFim, 'dd/MM/yyyy')}">15/07/2026</td>
                         <td th:text="${inscricao.oferta.professorResponsavel.nomeCompleto}">Nome do Professor</td>
-                        
+
                         <td>
                             <strong th:text="${inscricao.status}">STATUS</strong>
                         </td>
-                        
+
                         <td>
                             <div class="acoes-flex">
                                 <a th:if="${inscricao.status.name() == 'NAO_ENVIADO'}"
-                                   th:href="@{/aluno/documentacao/nova/{id}(id=${inscricao.id})}" 
+                                   th:href="@{/aluno/documentacao/nova/{id}(id=${inscricao.id})}"
                                    class="button-link btn-sm">Enviar Documentação</a>
-                                
-                                <a href="#" class="button-link secondary btn-sm">Enviar Plano</a>
+
+                                <a th:href="@{/aluno/plano-trabalho/adicionar}"
+                                   class="button-link secondary btn-sm">Enviar Plano</a>
                                 <a href="#" class="button-link secondary btn-sm">Enviar Relatório</a>
                             </div>
                         </td>
                     </tr>
-                    
+
                     <tr th:if="${#lists.isEmpty(inscricoes)}">
                         <td colspan="7" style="text-align: center; padding: 20px;">
                             Você não está matriculado em nenhuma oferta no momento.
@@ -104,7 +109,6 @@
                 </tbody>
             </table>
         </div>
-
     </section>
 </main>
 </body>

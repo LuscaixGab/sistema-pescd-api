@@ -1,6 +1,17 @@
 package br.ufscar.dc.dsw.pescd.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -8,8 +19,11 @@ import java.util.UUID;
 public class PlanoTrabalho {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID) // estratégia mais segura
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(name = "data_criacao", nullable = false, updatable = false)
+    private LocalDateTime dataCriacao;
 
     @Column(nullable = false)
     private String codigoDisciplina;
@@ -20,24 +34,21 @@ public class PlanoTrabalho {
     @Column(nullable = false)
     private String cursoDisciplina;
 
-    // Guarda o nome ou o caminho onde o PDF foi salvo no servidor
     @Column(nullable = false)
     private String arquivoPlano;
 
-    // Parecer começa nulo, é preenchido depois
     @Column(columnDefinition = "TEXT")
     private String parecer;
 
-    @ManyToOne // vários planos -> 1 professor supervisor
-    @JoinColumn(name = "professor_supervisor_id", nullable = false) // coluna extra com id do professor
+    @ManyToOne
+    @JoinColumn(name = "professor_supervisor_id", nullable = false)
     private Usuario professorSupervisor;
 
-    @OneToOne // 1 inscrição/aluno -> 1 plano
-    @JoinColumn(name = "inscricao_id", nullable = false) // coluna extra com id da inscrição
+    @OneToOne(optional = true)
+    @JoinColumn(name = "inscricao_id", nullable = true)
     private Inscricao inscricao;
- 
-    // Parecer fica de fora do construtor principal, é inserido depois
-    public PlanoTrabalho(UUID id, String codigoDisciplina, String nomeDisciplina, String cursoDisciplina, 
+
+    public PlanoTrabalho(UUID id, String codigoDisciplina, String nomeDisciplina, String cursoDisciplina,
                          String arquivoPlano, Usuario professorSupervisor, Inscricao inscricao) {
         this.id = id;
         this.codigoDisciplina = codigoDisciplina;
@@ -48,8 +59,14 @@ public class PlanoTrabalho {
         this.inscricao = inscricao;
     }
 
-    // Construtor necessário para o Hibernate
     protected PlanoTrabalho() {
+    }
+
+    @PrePersist
+    protected void prePersist() {
+        if (dataCriacao == null) {
+            dataCriacao = LocalDateTime.now();
+        }
     }
 
     public UUID getId() {
@@ -58,6 +75,14 @@ public class PlanoTrabalho {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
     }
 
     public String getCodigoDisciplina() {
@@ -115,5 +140,4 @@ public class PlanoTrabalho {
     public void setInscricao(Inscricao inscricao) {
         this.inscricao = inscricao;
     }
-
 }
