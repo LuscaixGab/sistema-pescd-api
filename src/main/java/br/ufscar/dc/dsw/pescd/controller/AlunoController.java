@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Controller
@@ -23,17 +25,18 @@ public class AlunoController {
     }
 
     @GetMapping("/ofertas")
-    public String listarOfertas(Model model) {
-        // TODO: Remover ID fixo e integrar com o ID da sessão quando a parte de login (U.01) for concluída
-        UUID alunoId = UUID.fromString("22222222-2222-2222-2222-222222222222");
+    public String listarOfertas(Model model, Principal principal) {
         
-        // Busca o objeto Usuario com o id detectado
-        Usuario alunoLogado = usuarioRepository.findById(alunoId).orElseThrow();
+        // Contém o que foi digitado no login (pode ser "aluno" ou "aluno@pescd.local")
+        String identificador = principal.getName();
 
-        // Busca as inscrições e ligadas aquele usuário e guarda no model
+        // Busca por nome_usuario OR email usando a mesma string
+        Usuario alunoLogado = usuarioRepository.findByNomeUsuarioOrEmail(identificador, identificador)
+                .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado: " + identificador));
+
+        // Busca as inscrições ligadas àquele usuário e guarda no model
         model.addAttribute("inscricoes", inscricaoRepository.findByAluno(alunoLogado));
 
-        // Retorna o nome da página no front-end
-        return "aluno/ofertas"; 
+        return "aluno/ofertas";
     }
 }
