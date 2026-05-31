@@ -39,6 +39,7 @@
         <div class="actions" th:if="${usuario.perfil.name() == 'SECRETARIO'}">
             <a class="button-link" th:href="@{/ofertas/nova}">Criar oferta</a>
             <a class="button-link" th:href="@{/alunos/novo}">Cadastrar aluno</a>
+            <a class="button-link" th:href="@{/ofertas}">Gerenciar alunos nas ofertas</a>
         </div>
 
         <div class="actions" th:if="${usuario.perfil.name() == 'ALUNO'}">

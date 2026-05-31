@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Alunos | PESCD</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-page">
+<main class="page-shell">
+    <section class="page-card">
+        <header class="page-header">
+            <div>
+                <p class="page-kicker">Secretaria</p>
+                <h1>Adicionar Alunos à Oferta</h1>
+                <p th:text="${'Disciplina: ' + oferta.nomeOferta + ' (' + oferta.semestre + ')'}">Detalhes da Oferta</p>
+            </div>
+            <a class="button-link secondary" th:href="@{/ofertas}">Voltar para Lista</a>
+        </header>
+
+        <div th:if="${mensagemSucesso}" class="notice success" th:text="${mensagemSucesso}"></div>
+        <div th:if="${erroGeral}" class="notice error" th:text="${erroGeral}"></div>
+
+        <form class="offer-form" th:action="@{/ofertas/{id}/alunos/upload(id=${oferta.id})}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="field" style="margin-bottom: 2rem;">
+                <label for="file">Selecione o arquivo CSV dos alunos:</label>
+                <input type="file" id="file" name="file" accept=".csv" required style="padding-top: 0.7rem; background: var(--panel);">
+                <small style="color: var(--muted); margin-top: 0.5rem; display: block;">
+                    O cabeçalho do arquivo deve ser exatamente: <strong>RA, NOME_COMPLETO, EMAIL</strong>
+                </small>
+            </div>
+
+            <div class="actions">
+                <button type="submit">Fazer Upload e Inscrever Alunos</button>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

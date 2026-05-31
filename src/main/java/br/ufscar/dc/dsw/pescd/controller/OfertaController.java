@@ -5,15 +5,13 @@ import br.ufscar.dc.dsw.pescd.model.Oferta;
 import br.ufscar.dc.dsw.pescd.security.UsuarioUserDetails;
 import br.ufscar.dc.dsw.pescd.service.OfertaService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -74,4 +72,40 @@ public class OfertaController {
                     "A data de fim deve ser depois da data de início.");
         }
     }
+
+    @Autowired // Adicionei essa anotação se precisar injetar o serviço
+    private br.ufscar.dc.dsw.pescd.service.InscricaoService inscricaoService;
+
+    @Autowired
+    private br.ufscar.dc.dsw.pescd.repository.OfertaRepository ofertaRepository;
+
+    // S.02 - GET: Exibir tela de adicionar alunos
+    @GetMapping("/{id}/alunos")
+    public String exibirAdicionarAlunos(@PathVariable("id") java.util.UUID id, Model model) {
+        Oferta oferta = ofertaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Oferta inválida."));
+        model.addAttribute("oferta", oferta);
+        return "ofertas/adicionar-alunos";
+    }
+
+    // S.02 - POST: Processar o upload do CSV
+    @PostMapping("/{id}/alunos/upload")
+    public String carregarFicheiroAlunos(@PathVariable("id") java.util.UUID id,
+                                         @org.springframework.web.bind.annotation.RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+                                         RedirectAttributes redirectAttributes) {
+        if (file.isEmpty()) {
+            redirectAttributes.addFlashAttribute("erroGeral", "Por favor, selecione um arquivo CSV válido.");
+            return "redirect:/ofertas/" + id + "/alunos";
+        }
+
+        try {
+            inscricaoService.processarAlunosCsv(id, file);
+            redirectAttributes.addFlashAttribute("mensagemSucesso", "Alunos cadastrados e inscritos com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erroGeral", "Erro ao processar o arquivo: " + e.getMessage());
+        }
+
+        return "redirect:/ofertas/" + id + "/alunos";
+    }
 }
+

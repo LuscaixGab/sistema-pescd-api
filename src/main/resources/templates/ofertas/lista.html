@@ -44,8 +44,9 @@
                     <td th:text="${#temporals.format(oferta.dataFim, 'dd/MM/yyyy')}"></td>
                     <td th:text="${oferta.professorResponsavel.nomeCompleto}"></td>
                     <td th:text="${#temporals.format(oferta.dataCriacao, 'dd/MM/yyyy HH:mm')}"></td>
-                    <td><a> Editar </a></td>
-                    <td><a>Excluir </a></td>
+                    <td>
+                        <a class="button-link secondary" th:href="@{/ofertas/{id}/alunos(id=${oferta.id})}">Adicionar Alunos</a>
+                    </td>
                 </tr>
                 </tbody>
             </table>
