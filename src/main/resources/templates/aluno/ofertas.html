@@ -1,72 +1,111 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Minhas Ofertas - PESCD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Ofertas | PESCD</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     
     <style>
-        body { font-family: sans-serif; margin: 40px; background-color: #f4f4f9; }
-        h2 { color: #333; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; font-size: 14px; }
-        th { background-color: #007bff; color: white; }
-        tr:hover { background-color: #f1f1f1; }
-        .status { font-weight: bold; color: #555; }
-        .btn-acao { padding: 6px 12px; background: #28a745; color: white; text-decoration: none; border-radius: 4px; font-size: 13px; margin-right: 5px; display: inline-block; margin-bottom: 4px;}
+        /* Expande e centraliza o "miolo" perfeitamente na tela */
+        .page-shell {
+            max-width: 1400px !important; /* Deixou ainda mais largo */
+            width: 95% !important;
+            margin: 0 auto !important; /* A mágica para centralizar no meio da tela */
+        }
+
+        /* Força o card escuro a esticar e tira a barra de rolagem horizontal */
+        .page-card {
+            width: 100% !important;
+            max-width: none !important;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        
+        /* Container para forçar os botões lado a lado estritamente */
+        .acoes-flex { 
+            display: flex; 
+            gap: 8px; 
+            flex-wrap: nowrap;
+            align-items: center; 
+        }
+
+        /* Classe auxiliar para "espremer" os botões da tabela */
+        .btn-sm {
+            padding: 6px 12px !important;
+            font-size: 12px !important;
+            white-space: nowrap !important;
+            height: auto !important;
+            line-height: 1.2 !important;
+        }
     </style>
 </head>
-<body>
-
-    <h2>Minhas Matrículas</h2>
-    <p>Bem-vindo, Aluno! Abaixo estão as ofertas em que você está inscrito.</p>
-
-    <table>
+<body class="app-page">
+<main class="page-shell">
+    <section class="page-card">
         
-        <thead>
-            <tr>
-                <th>Oferta / Disciplina</th>
-                <th>Semestre</th>
-                <th>Data Início</th>
-                <th>Data Fim</th>
-                <th>Professor Responsável</th>
-                <th>Status do Estágio</th>
-                <th>Ações Disponíveis</th>
-            </tr>
-        </thead>
-        
-        <tbody>
-            
-            <tr th:each="inscricao : ${inscricoes}">
-                
-                <td th:text="${inscricao.oferta.nomeOferta}">Nome da Oferta</td>
-                <td th:text="${inscricao.oferta.semestre}">2026/1</td>
-                
-                <td th:text="${#temporals.format(inscricao.oferta.dataInicio, 'dd/MM/yyyy')}">01/03/2026</td>
-                <td th:text="${#temporals.format(inscricao.oferta.dataFim, 'dd/MM/yyyy')}">15/07/2026</td>
-                
-                <td th:text="${inscricao.oferta.professorResponsavel.nomeCompleto}">Nome do Professor</td>
-                
-                <td>
-                    <span class="status" th:text="${inscricao.status}">STATUS</span>
-                </td>
-                
-                <td>
-                    <a th:if="${inscricao.status.name() == 'NAO_ENVIADO'}"
-                       th:href="@{/aluno/documentacao/nova/{id}(id=${inscricao.id})}" 
-                       class="btn-acao" 
-                       style="background: #007bff;">Enviar Documentação</a>
+        <header class="page-header">
+            <div>
+                <p class="page-kicker">Área do Aluno</p>
+                <h1>Minhas Matrículas</h1>
+                <p>Abaixo estão as ofertas em que você está inscrito.</p>
+            </div>
+            <a class="button-link secondary" th:href="@{/painel}">Voltar ao Painel</a>
+        </header>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Oferta / Disciplina</th>
+                        <th>Semestre</th>
+                        <th>Início</th>
+                        <th>Fim</th>
+                        <th>Professor Responsável</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="inscricao : ${inscricoes}">
+                        <td th:text="${inscricao.oferta.nomeOferta}">Nome da Oferta</td>
+                        <td th:text="${inscricao.oferta.semestre}">2026/1</td>
+                        <td th:text="${#temporals.format(inscricao.oferta.dataInicio, 'dd/MM/yyyy')}">01/03/2026</td>
+                        <td th:text="${#temporals.format(inscricao.oferta.dataFim, 'dd/MM/yyyy')}">15/07/2026</td>
+                        <td th:text="${inscricao.oferta.professorResponsavel.nomeCompleto}">Nome do Professor</td>
+                        
+                        <td>
+                            <strong th:text="${inscricao.status}">STATUS</strong>
+                        </td>
+                        
+                        <td>
+                            <div class="acoes-flex">
+                                <a th:if="${inscricao.status.name() == 'NAO_ENVIADO'}"
+                                   th:href="@{/aluno/documentacao/nova/{id}(id=${inscricao.id})}" 
+                                   class="button-link btn-sm">Enviar Documentação</a>
+                                
+                                <a href="#" class="button-link secondary btn-sm">Enviar Plano</a>
+                                <a href="#" class="button-link secondary btn-sm">Enviar Relatório</a>
+                            </div>
+                        </td>
+                    </tr>
                     
-                    <a href="#" class="btn-acao">Enviar Plano</a>
-                    <a href="#" class="btn-acao">Enviar Relatório</a>
-                </td>
-            </tr>
-            
-            <tr th:if="${#lists.isEmpty(inscricoes)}">
-                <td colspan="7" style="text-align: center;">Você não está matriculado em nenhuma oferta no momento.</td>
-            </tr>
-            
-        </tbody>
-    </table>
+                    <tr th:if="${#lists.isEmpty(inscricoes)}">
+                        <td colspan="7" style="text-align: center; padding: 20px;">
+                            Você não está matriculado em nenhuma oferta no momento.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
+    </section>
+</main>
 </body>
 </html>

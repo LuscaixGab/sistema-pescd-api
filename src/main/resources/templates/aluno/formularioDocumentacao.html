@@ -1,54 +1,125 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Enviar Documentação</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Documentação | PESCD</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    
+    <style>
+        /* Centraliza o formulário e limita a largura */
+        .page-shell {
+            max-width: 700px !important;
+            width: 95% !important;
+            margin: 0 auto !important;
+        }
+
+        .page-card {
+            width: 100% !important;
+        }
+
+        /* Organiza os botões lado a lado e com a mesma altura */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            align-items: stretch;
+        }
+
+        /* Tira o estilo padrão do navegador para o botão de submit e deixa igual aos links */
+        .form-actions button[type="submit"] {
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Estilo padronizado para as mensagens de erro do Thymeleaf */
+        .field-error {
+            color: #ff4a4a;
+            font-size: 13px;
+            margin-top: 6px;
+            display: block;
+        }
+        
+        .alert-error {
+            background-color: rgba(255, 74, 74, 0.1);
+            color: #ff4a4a;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ff4a4a;
+        }
+        
+        /* Ajuste fino para o input file não ficar flutuando */
+        input[type="file"] {
+            padding: 10px 0;
+            background: transparent;
+            border: none;
+            color: #fff;
+        }
+    </style>
 </head>
-<body>
+<body class="app-page">
+<main class="page-shell">
+    <section class="page-card">
 
-    <h2>Enviar Documentação: <span th:text="${inscricao.oferta.nomeOferta}">Nome da Oferta</span></h2>
+        <header class="page-header">
+            <div>
+                <p class="page-kicker">Documentação Comprobatória</p>
+                <h1>Enviar Documentação</h1>
+                <p>Oferta: <strong th:text="${inscricao.oferta.nomeOferta}">Nome da Oferta</strong></p>
+            </div>
+        </header>
 
-    <div th:if="${erro}" style="color: red; font-weight: bold; margin-bottom: 10px;" th:text="${erro}"></div>
+        <div th:if="${erro}" class="alert-error" th:text="${erro}"></div>
 
-    <form th:action="@{/aluno/documentacao/enviar/{id}(id=${inscricao.id})}" 
-          th:object="${documentacaoDTO}" 
-          method="POST" 
-          enctype="multipart/form-data">
-        
-        <div style="margin-bottom: 10px;">
-            <label>Instituição onde ministrou a disciplina:</label><br>
-            <input type="text" th:field="*{nomeInstituicao}" required>
-            <span th:if="${#fields.hasErrors('nomeInstituicao')}" th:errors="*{nomeInstituicao}" style="color: red;"></span>
-        </div>
-        
-        <div style="margin-bottom: 10px;">
-            <label>Nome da disciplina:</label><br>
-            <input type="text" th:field="*{nomeDisciplina}" required>
-            <span th:if="${#fields.hasErrors('nomeDisciplina')}" th:errors="*{nomeDisciplina}" style="color: red;"></span>
-        </div>
-        
-        <div style="margin-bottom: 10px;">
-            <label>Curso da disciplina:</label><br>
-            <input type="text" th:field="*{cursoDisciplina}" required>
-            <span th:if="${#fields.hasErrors('cursoDisciplina')}" th:errors="*{cursoDisciplina}" style="color: red;"></span>
-        </div>
-        
-        <div style="margin-bottom: 10px;">
-            <label>Carga Horária (em horas):</label><br>
-            <input type="number" th:field="*{cargaHoraria}" min="1" required>
-            <span th:if="${#fields.hasErrors('cargaHoraria')}" th:errors="*{cargaHoraria}" style="color: red;"></span>
-        </div>
-        
-        <div style="margin-bottom: 15px;">
-            <label>Arquivo com a documentação (Apenas PDF, máx 5MB):</label><br>
-            <input type="file" name="arquivo" accept="application/pdf" required>
-            <span th:if="${#fields.hasErrors('arquivo')}" th:errors="*{arquivo}" style="color: red;"></span>
-        </div>
-        
-        <button type="submit">Enviar Documentação</button>
-        <a th:href="@{/aluno/ofertas}">Cancelar</a>
-        
-    </form>
+        <form th:action="@{/aluno/documentacao/enviar/{id}(id=${inscricao.id})}" 
+              th:object="${documentacaoDTO}" 
+              method="POST" 
+              enctype="multipart/form-data">
+            
+            <div class="form-group">
+                <label for="nomeInstituicao">Instituição onde ministrou a disciplina:</label>
+                <input type="text" id="nomeInstituicao" th:field="*{nomeInstituicao}" required placeholder="Ex: Nome da Universidade/Escola">
+                <span th:if="${#fields.hasErrors('nomeInstituicao')}" th:errors="*{nomeInstituicao}" class="field-error"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="nomeDisciplina">Nome da disciplina:</label>
+                <input type="text" id="nomeDisciplina" th:field="*{nomeDisciplina}" required placeholder="Qual foi a matéria ministrada?">
+                <span th:if="${#fields.hasErrors('nomeDisciplina')}" th:errors="*{nomeDisciplina}" class="field-error"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="cursoDisciplina">Curso da disciplina:</label>
+                <input type="text" id="cursoDisciplina" th:field="*{cursoDisciplina}" required placeholder="Ex: Engenharia de Computação">
+                <span th:if="${#fields.hasErrors('cursoDisciplina')}" th:errors="*{cursoDisciplina}" class="field-error"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="cargaHoraria">Carga Horária (em horas):</label>
+                <input type="number" id="cargaHoraria" th:field="*{cargaHoraria}" min="1" required placeholder="Ex: 60">
+                <span th:if="${#fields.hasErrors('cargaHoraria')}" th:errors="*{cargaHoraria}" class="field-error"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="arquivo">Arquivo com a documentação (Apenas PDF, máx 5MB):</label>
+                <input type="file" id="arquivo" name="arquivo" accept="application/pdf" required>
+                <span th:if="${#fields.hasErrors('arquivo')}" th:errors="*{arquivo}" class="field-error"></span>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="button-link">Enviar Documentação</button>
+                <a th:href="@{/aluno/ofertas}" class="button-link secondary" style="display: flex; align-items: center; justify-content: center;">Cancelar</a>
+            </div>
+            
+        </form>
 
+    </section>
+</main>
 </body>
 </html>
