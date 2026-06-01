@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minhas Ofertas | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
+    
     <style>
         .page-shell {
-            max-width: 1400px !important;
+            max-width: 1400px !important; 
             width: 95% !important;
-            margin: 0 auto !important;
+            margin: 0 auto !important; 
         }
 
         .page-card {
@@ -23,23 +23,14 @@
             overflow-x: auto;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .acoes-flex {
-            display: flex;
-            gap: 8px;
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        
+        .acoes-flex { 
+            display: flex; 
+            gap: 8px; 
             flex-wrap: nowrap;
-            align-items: center;
+            align-items: center; 
         }
 
         .btn-sm {
@@ -49,11 +40,18 @@
             height: auto !important;
             line-height: 1.2 !important;
         }
+
+        /* Classe para travar o botão visualmente e impedir o clique */
+        .disabled-btn {
+            pointer-events: none; /* Impede o clique */
+            cursor: default;
+        }
     </style>
 </head>
 <body class="app-page">
 <main class="page-shell">
     <section class="page-card">
+        
         <header class="page-header">
             <div>
                 <p class="page-kicker">Área do Aluno</p>
@@ -83,24 +81,38 @@
                         <td th:text="${#temporals.format(inscricao.oferta.dataInicio, 'dd/MM/yyyy')}">01/03/2026</td>
                         <td th:text="${#temporals.format(inscricao.oferta.dataFim, 'dd/MM/yyyy')}">15/07/2026</td>
                         <td th:text="${inscricao.oferta.professorResponsavel.nomeCompleto}">Nome do Professor</td>
-
+                        
                         <td>
                             <strong th:text="${inscricao.status}">STATUS</strong>
                         </td>
-
+                        
                         <td>
                             <div class="acoes-flex">
+                                
                                 <a th:if="${inscricao.status.name() == 'NAO_ENVIADO'}"
-                                   th:href="@{/aluno/documentacao/nova/{id}(id=${inscricao.id})}"
+                                   th:href="@{/aluno/documentacao/nova/{id}(id=${inscricao.id})}" 
                                    class="button-link btn-sm">Enviar Documentação</a>
+                                <a th:unless="${inscricao.status.name() == 'NAO_ENVIADO'}"
+                                   class="button-link secondary btn-sm disabled-btn">Enviar Documentação</a>
 
-                                <a th:href="@{/aluno/plano-trabalho/adicionar}"
-                                   class="button-link secondary btn-sm">Enviar Plano</a>
-                                <a href="#" class="button-link secondary btn-sm">Enviar Relatório</a>
+
+                                <a th:if="${inscricao.status.name() == 'NAO_ENVIADO'}"
+                                   th:href="@{/aluno/plano-trabalho/adicionar}" 
+                                   class="button-link btn-sm">Enviar Plano</a>
+                                <a th:unless="${inscricao.status.name() == 'NAO_ENVIADO'}"
+                                   class="button-link secondary btn-sm disabled-btn">Enviar Plano</a>
+
+
+                                <a th:if="${inscricao.status.name() == 'PLANO_APROVADO'}"
+                                   th:href="@{/aluno/relatorio/novo/{id}(id=${inscricao.id})}" 
+                                   class="button-link btn-sm">Enviar Relatório</a>
+                                <a th:unless="${inscricao.status.name() == 'PLANO_APROVADO'}"
+                                   class="button-link secondary btn-sm disabled-btn">Enviar Relatório</a>
+                                   
                             </div>
                         </td>
                     </tr>
-
+                    
                     <tr th:if="${#lists.isEmpty(inscricoes)}">
                         <td colspan="7" style="text-align: center; padding: 20px;">
                             Você não está matriculado em nenhuma oferta no momento.
@@ -109,6 +121,7 @@
                 </tbody>
             </table>
         </div>
+
     </section>
 </main>
 </body>
