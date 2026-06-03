@@ -15,7 +15,10 @@
                 <h1>Ofertas cadastradas</h1>
                 <p>Gerencie as ofertas iniciadas pelo secretário.</p>
             </div>
-            <a class="button-link" th:href="@{/ofertas/nova}">Nova oferta</a>
+            <div>
+                <a class="button-link" th:href="@{/ofertas/nova}">Nova oferta</a>
+                <a class="button-link" th:href="@{../painel}">Voltar</a>
+            </div>
         </header>
 
         <div th:if="${mensagemSucesso}" class="notice success" th:text="${mensagemSucesso}"></div>
