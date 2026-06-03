@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentações Pendentes | PESCD</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-sm {
+            padding: 6px 12px !important;
+            font-size: 12px !important;
+            white-space: nowrap !important;
+            height: auto !important;
+            line-height: 1.2 !important;
+        }
+    </style>
+</head>
+<body class="app-page">
+<main class="page-shell">
+    <section class="page-card">
+        <header class="page-header">
+            <div>
+                <p class="page-kicker">Professor Responsável</p>
+                <h1>Documentações Pendentes</h1>
+                <p>Alunos com status de documentação enviada.</p>
+            </div>
+            <a class="button-link secondary" th:href="@{/professor/atuacao}">Trocar papel</a>
+        </header>
+
+        <div class="notice success" th:if="${sucesso}" th:text="${sucesso}"></div>
+        <div class="notice error" th:if="${erro}" th:text="${erro}"></div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Oferta</th>
+                    <th>Disciplina</th>
+                    <th>Status atual</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="documentacao : ${documentacoes}">
+                    <td th:text="${documentacao.inscricao.aluno.nomeCompleto}">Nome do Aluno</td>
+                    <td th:text="${documentacao.inscricao.oferta.nomeOferta}">Oferta</td>
+                    <td th:text="${documentacao.nomeDisciplina}">Disciplina</td>
+                    <td>
+                        <strong th:text="${documentacao.inscricao.status}">DOCUMENTACAO_ENVIADA</strong>
+                    </td>
+                    <td>
+                        <a class="button-link btn-sm"
+                           th:href="@{/professor-responsavel/documentacoes/{id}/analisar(id=${documentacao.inscricao.id})}">
+                            Analisar Documentação
+                        </a>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(documentacoes)}">
+                    <td colspan="5" style="text-align: center; padding: 20px;">
+                        Não há documentações pendentes para análise.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

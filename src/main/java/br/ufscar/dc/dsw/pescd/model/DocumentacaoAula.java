@@ -1,6 +1,8 @@
 package br.ufscar.dc.dsw.pescd.model;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -35,6 +37,9 @@ public class DocumentacaoAula {
 
     @Column(length = 1)
     private String nota; // Pode ser A, B, C, D ou E
+
+    @Column(name = "data_analise")
+    private LocalDateTime dataAnalise;
 
     @OneToOne // 1 documentação -> 1 inscrição
     @JoinColumn(name = "inscricao_id", nullable = false) // coluna extra com id da inscrição
@@ -136,5 +141,12 @@ public class DocumentacaoAula {
         this.inscricao = inscricao;
     }
 
-    
+    public LocalDateTime getDataAnalise() {
+        return dataAnalise;
+    }
+
+    public void setDataAnalise(LocalDateTime dataAnalise) {
+        this.dataAnalise = dataAnalise;
+    }
+
 }
