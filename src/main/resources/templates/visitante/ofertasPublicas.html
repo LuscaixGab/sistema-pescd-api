@@ -48,6 +48,7 @@
                         <th>Início</th>
                         <th>Fim</th>
                         <th>Professor Responsável</th>
+                        <th>Alunos Matriculados</th> </tr>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,6 +58,7 @@
                         <td th:text="${#temporals.format(oferta.dataInicio, 'dd/MM/yyyy')}">01/03/2026</td>
                         <td th:text="${#temporals.format(oferta.dataFim, 'dd/MM/yyyy')}">15/07/2026</td>
                         <td th:text="${oferta.professorResponsavel.nomeCompleto}">Nome do Professor</td>
+                        <td th:text="${contagemAlunos.get(oferta.id)}">0</td>
                     </tr>
                     
                     <tr th:if="${#lists.isEmpty(ofertas)}">

@@ -12,4 +12,6 @@ public interface OfertaRepository extends JpaRepository<Oferta, UUID> {
     // Já tem CRUD completo por padrão
 
     List<Oferta> findAllByOrderByDataCriacaoDesc();
+
+    List<Oferta> findAllByOrderBySemestreDesc();
 }

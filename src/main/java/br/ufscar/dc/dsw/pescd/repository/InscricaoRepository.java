@@ -3,6 +3,7 @@ package br.ufscar.dc.dsw.pescd.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import br.ufscar.dc.dsw.pescd.model.Inscricao;
+import br.ufscar.dc.dsw.pescd.model.Oferta;
 import br.ufscar.dc.dsw.pescd.model.StatusInscricao;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface InscricaoRepository extends JpaRepository<Inscricao, UUID> {
     List<Inscricao> findByAluno(Usuario aluno);
 
     List<Inscricao> findByOfertaProfessorResponsavelAndStatus(Usuario professor, StatusInscricao status);
+
+    long countByOferta(Oferta oferta);
 }

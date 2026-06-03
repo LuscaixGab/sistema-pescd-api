@@ -6,7 +6,6 @@ import br.ufscar.dc.dsw.pescd.model.Inscricao;
 import br.ufscar.dc.dsw.pescd.model.StatusInscricao; // Confirme se o nome do seu Enum é esse
 import br.ufscar.dc.dsw.pescd.repository.DocumentacaoAulaRepository;
 import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

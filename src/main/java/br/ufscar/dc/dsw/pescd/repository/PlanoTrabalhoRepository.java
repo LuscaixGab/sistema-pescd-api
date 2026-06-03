@@ -1,7 +1,6 @@
 package br.ufscar.dc.dsw.pescd.repository;
 
 import br.ufscar.dc.dsw.pescd.model.Inscricao;
-import br.ufscar.dc.dsw.pescd.model.Oferta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import br.ufscar.dc.dsw.pescd.model.PlanoTrabalho;
