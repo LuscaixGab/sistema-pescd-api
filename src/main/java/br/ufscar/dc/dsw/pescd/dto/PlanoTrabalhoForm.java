@@ -23,6 +23,7 @@ public class PlanoTrabalhoForm {
     @NotNull(message = "O professor supervisor é obrigatório.")
     private UUID professorSupervisorId;
 
+    @NotNull(message = "A inscrição é obrigatória.")
     private UUID inscricaoId;
 
     public String getCodigoDisciplina() {

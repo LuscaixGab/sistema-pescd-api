@@ -97,8 +97,8 @@
 
 
                                 <a th:if="${inscricao.status.name() == 'NAO_ENVIADO'}"
-                                   th:href="@{/aluno/plano-trabalho/adicionar}" 
-                                   class="button-link btn-sm">Enviar Plano</a>
+                                    th:href="@{/aluno/plano-trabalho/adicionar/{id}(id=${inscricao.id})}" 
+                                    class="button-link btn-sm">Enviar Plano</a>
                                 <a th:unless="${inscricao.status.name() == 'NAO_ENVIADO'}"
                                    class="button-link secondary btn-sm disabled-btn">Enviar Plano</a>
 

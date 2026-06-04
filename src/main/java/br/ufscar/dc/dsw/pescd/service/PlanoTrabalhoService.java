@@ -1,9 +1,12 @@
 package br.ufscar.dc.dsw.pescd.service;
 
 import br.ufscar.dc.dsw.pescd.dto.PlanoTrabalhoForm;
+import br.ufscar.dc.dsw.pescd.model.Inscricao;
 import br.ufscar.dc.dsw.pescd.model.Perfil;
 import br.ufscar.dc.dsw.pescd.model.PlanoTrabalho;
+import br.ufscar.dc.dsw.pescd.model.StatusInscricao;
 import br.ufscar.dc.dsw.pescd.model.Usuario;
+import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
 import br.ufscar.dc.dsw.pescd.repository.PlanoTrabalhoRepository;
 import br.ufscar.dc.dsw.pescd.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
@@ -25,11 +28,14 @@ public class PlanoTrabalhoService {
 
     private final PlanoTrabalhoRepository planoTrabalhoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final InscricaoRepository inscricaoRepository;
 
     public PlanoTrabalhoService(PlanoTrabalhoRepository planoTrabalhoRepository,
-                                UsuarioRepository usuarioRepository) {
+                                UsuarioRepository usuarioRepository,
+                                InscricaoRepository inscricaoRepository) {
         this.planoTrabalhoRepository = planoTrabalhoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.inscricaoRepository = inscricaoRepository;
     }
 
     @Transactional(readOnly = true)
@@ -50,20 +56,41 @@ public class PlanoTrabalhoService {
     }
 
     @Transactional
-    public PlanoTrabalho criarPlanoTrabalho(PlanoTrabalhoForm planoTrabalhoForm) {
+    public PlanoTrabalho criarPlanoTrabalho(PlanoTrabalhoForm planoTrabalhoForm, Usuario alunoLogado) {
+        if (planoTrabalhoForm.getInscricaoId() == null) {
+            throw new IllegalArgumentException("A inscrição do plano é obrigatória.");
+        }
+
+        Inscricao inscricao = inscricaoRepository.findById(planoTrabalhoForm.getInscricaoId())
+                .orElseThrow(() -> new IllegalArgumentException("Inscrição não encontrada."));
+
+        if (!inscricao.getAluno().getId().equals(alunoLogado.getId())) {
+            throw new IllegalArgumentException("Você não pode enviar plano para esta inscrição.");
+        }
+
+        if (inscricao.getStatus() != StatusInscricao.NAO_ENVIADO) {
+            throw new IllegalArgumentException("Esta inscrição não está apta para envio de plano.");
+        }
+
         Usuario professorSupervisor = buscarProfessor(planoTrabalhoForm.getProfessorSupervisorId());
         String arquivoPlanoSalvo = salvarArquivoPlano(planoTrabalhoForm.getArquivoPlano());
 
-        PlanoTrabalho planoTrabalho = new PlanoTrabalho(
-                null,
-                planoTrabalhoForm.getCodigoDisciplina().trim(),
-                planoTrabalhoForm.getNomeDisciplina().trim(),
-                planoTrabalhoForm.getCursoDisciplina().trim(),
-                arquivoPlanoSalvo,
-                professorSupervisor,
-                null);
+        PlanoTrabalho planoTrabalho = planoTrabalhoRepository.findByInscricao(inscricao)
+                .orElseGet(() -> new PlanoTrabalho(null, "", "", "", "", null, inscricao));
 
-        return planoTrabalhoRepository.save(planoTrabalho);
+        planoTrabalho.setCodigoDisciplina(planoTrabalhoForm.getCodigoDisciplina().trim());
+        planoTrabalho.setNomeDisciplina(planoTrabalhoForm.getNomeDisciplina().trim());
+        planoTrabalho.setCursoDisciplina(planoTrabalhoForm.getCursoDisciplina().trim());
+        planoTrabalho.setArquivoPlano(arquivoPlanoSalvo);
+        planoTrabalho.setProfessorSupervisor(professorSupervisor);
+        planoTrabalho.setInscricao(inscricao);
+
+        PlanoTrabalho planoSalvo = planoTrabalhoRepository.save(planoTrabalho);
+
+        inscricao.setStatus(StatusInscricao.PLANO_ENVIADO);
+        inscricaoRepository.save(inscricao);
+
+        return planoSalvo;
     }
 
     private String salvarArquivoPlano(MultipartFile arquivoPlano) {

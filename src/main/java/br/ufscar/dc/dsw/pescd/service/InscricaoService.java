@@ -54,7 +54,7 @@ public class InscricaoService {
 
                 if (linha.trim().isEmpty()) continue;
 
-                String[] dados = linha.split(",;");
+                String[] dados = linha.split(",");
                 if (dados.length < 3) continue;
 
                 String ra = dados[0].trim();

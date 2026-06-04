@@ -26,6 +26,13 @@
               method="post"
               enctype="multipart/form-data">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <input type="hidden" th:field="*{inscricaoId}">
+
+            <div class="notice" th:if="${inscricao != null}" style="margin-top: 0;">
+                Enviando plano para a matrícula da oferta
+                <strong th:text="${inscricao.oferta.nomeOferta}">Nome da Oferta</strong>
+                do semestre <strong th:text="${inscricao.oferta.semestre}">2026/1</strong>.
+            </div>
 
             <div class="field-grid">
                 <div class="field">
@@ -64,9 +71,7 @@
                 <small th:if="${#fields.hasErrors('arquivoPlano')}" th:errors="*{arquivoPlano}" class="field-error"></small>
             </div>
 
-            <div class="notice" style="margin-top: 0;">
-                A vinculação com inscrições será integrada depois. Por enquanto, o envio já registra os dados e o arquivo.
-            </div>
+            <small th:if="${#fields.hasErrors('inscricaoId')}" th:errors="*{inscricaoId}" class="field-error"></small>
 
             <div class="actions">
                 <button type="submit">Enviar plano</button>
