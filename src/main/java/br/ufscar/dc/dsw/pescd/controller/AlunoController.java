@@ -2,6 +2,7 @@ package br.ufscar.dc.dsw.pescd.controller;
 
 import br.ufscar.dc.dsw.pescd.model.Usuario;
 import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
+import br.ufscar.dc.dsw.pescd.repository.OfertaRepository;
 import br.ufscar.dc.dsw.pescd.repository.UsuarioRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,12 +11,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import br.ufscar.dc.dsw.pescd.model.Inscricao;
+import br.ufscar.dc.dsw.pescd.model.Oferta;
 import br.ufscar.dc.dsw.pescd.model.Perfil;
+import br.ufscar.dc.dsw.pescd.model.StatusInscricao;
 import br.ufscar.dc.dsw.pescd.dto.AlunoCadastroDTO;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.validation.BindingResult;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import jakarta.validation.Valid;
+import br.ufscar.dc.dsw.pescd.model.StatusInscricao;
 
 import java.security.Principal;
 import java.util.NoSuchElementException;
@@ -28,11 +33,16 @@ public class AlunoController {
     private final InscricaoRepository inscricaoRepository;
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OfertaRepository ofertaRepository;
 
-    public AlunoController(InscricaoRepository inscricaoRepository, UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
-        this.inscricaoRepository = inscricaoRepository;
+    public AlunoController(UsuarioRepository usuarioRepository, 
+                           PasswordEncoder passwordEncoder,
+                           OfertaRepository ofertaRepository,
+                           InscricaoRepository inscricaoRepository) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.ofertaRepository = ofertaRepository;
+        this.inscricaoRepository = inscricaoRepository;
     }
 
     @GetMapping("/ofertas")
@@ -92,7 +102,19 @@ public class AlunoController {
 
         usuarioRepository.save(novoAluno);
 
+        // 2. Faz a Matrícula se o ID da oferta existir
         if (ofertaId != null) {
+            
+            // Acha a oferta pelo ID
+            Oferta oferta = ofertaRepository.findById(ofertaId)
+                    .orElseThrow(() -> new IllegalArgumentException("Oferta não encontrada."));
+
+            // Cria a inscrição amarrando o aluno novo na oferta direto pelo construtor
+            Inscricao novaInscricao = new Inscricao(null, novoAluno, oferta, StatusInscricao.NAO_ENVIADO);
+
+            // Salva no banco de dados!
+            inscricaoRepository.save(novaInscricao);
+
             return "redirect:/ofertas/" + ofertaId + "/alunos"; 
         }
 
