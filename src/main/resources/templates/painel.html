@@ -38,7 +38,11 @@
             Você está autenticado como professor e pode realizar as seguintes ações.
         </div>
 
-        <div class="notice" th:if="${usuario.perfil.name() != 'SECRETARIO' and usuario.perfil.name() != 'ALUNO' and usuario.perfil.name() != 'PROFESSOR'}">
+        <div class="notice success" th:if="${usuario.perfil.name() == 'ADMINISTRADOR'}">
+            Você está autenticado como administrador e pode gerenciar o cadastro de usuários.
+        </div>
+
+        <div class="notice" th:if="${usuario.perfil.name() != 'SECRETARIO' and usuario.perfil.name() != 'ALUNO' and usuario.perfil.name() != 'PROFESSOR' and usuario.perfil.name() != 'ADMINISTRADOR'}">
             Seu perfil está autenticado. As funcionalidades específicas desse perfil virão nas próximas histórias.
         </div>
 
@@ -54,6 +58,10 @@
 
         <div class="actions" th:if="${usuario.perfil.name() == 'PROFESSOR'}">
             <a class="button-link" th:href="@{/professor/atuacao}">Escolher papel</a>
+        </div>
+
+        <div class="actions" th:if="${usuario.perfil.name() == 'ADMINISTRADOR'}">
+            <a class="button-link" th:href="@{/administrador/usuarios}">Gerenciar usuários</a>
         </div>
     </section>
 </main>

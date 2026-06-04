@@ -20,4 +20,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
     Optional<Usuario> findByNomeUsuarioOrEmail(String nomeUsuario, String email);
 
     List<Usuario> findAllByPerfil(Perfil perfil);
+
+    long countByPerfil(Perfil perfil);
 }
