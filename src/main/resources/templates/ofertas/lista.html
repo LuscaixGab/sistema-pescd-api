@@ -50,6 +50,13 @@
                     <td>
                         <a class="button-link secondary" th:href="@{/ofertas/{id}/alunos(id=${oferta.id})}">Adicionar Alunos</a>
                     </td>
+                    <td th:text="${#temporals.format(oferta.dataCriacao, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <a class="button-link secondary" style="padding: 6px 12px; font-size: 12px;" th:href="@{/ofertas/{id}/alunos(id=${oferta.id})}">Adicionar Alunos</a>
+                            <a class="button-link" style="padding: 6px 12px; font-size: 12px; background: linear-gradient(135deg, #10b981, #059669); color: white;" th:href="@{/ofertas/{id}/acompanhamento(id=${oferta.id})}">Acompanhar</a>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>

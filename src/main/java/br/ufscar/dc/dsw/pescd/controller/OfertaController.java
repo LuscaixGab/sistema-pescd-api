@@ -180,5 +180,33 @@ public class OfertaController {
 
         return "redirect:/ofertas/" + id + "/alunos";
     }
+
+    // S.03 - GET: Acompanhar o andamento da oferta
+    @GetMapping("/{id}/acompanhamento")
+    public String exibirAcompanhamentoOferta(@PathVariable("id") UUID id, Model model) {
+        Oferta oferta = ofertaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Oferta inválida."));
+
+        // Busca todas as matrículas dessa oferta
+        List<Inscricao> inscricoes = inscricaoRepository.findByOferta(oferta);
+
+        // Calcula métricas simples para a visualização do secretário
+        long totalAlunos = inscricoes.size();
+        long concluidos = inscricoes.stream()
+                .filter(i -> i.getStatus() == StatusInscricao.CONCLUIDO || i.getStatus() == StatusInscricao.CONCLUIDO_PELO_RESPONSAVEL)
+                .count();
+        long pendentesIniciais = inscricoes.stream()
+                .filter(i -> i.getStatus() == StatusInscricao.NAO_ENVIADO)
+                .count();
+
+        model.addAttribute("oferta", oferta);
+        model.addAttribute("inscricoes", inscricoes);
+        model.addAttribute("totalAlunos", totalAlunos);
+        model.addAttribute("concluidos", concluidos);
+        model.addAttribute("emAndamento", totalAlunos - concluidos - pendentesIniciais);
+        model.addAttribute("pendentesIniciais", pendentesIniciais);
+
+        return "ofertas/acompanhamento";
+    }
 }
 
