@@ -61,8 +61,8 @@ public class InscricaoService {
                 String nomeCompleto = dados[1].trim();
                 String email = dados[2].trim();
 
-                // Verifica se o aluno já existe pelo e-mail
-                Usuario aluno = usuarioRepository.findByEmail(email).orElse(null);
+                // FIX RN-3: Verifica se o aluno já existe usando o método do Repository que busca por RA ou E-mail
+                Usuario aluno = usuarioRepository.findByNomeUsuarioOrEmail(ra, email).orElse(null);
 
                 if (aluno == null) {
                     // Cadastra novo aluno usando e-mail como nome de usuário e RA como senha
@@ -75,9 +75,16 @@ public class InscricaoService {
                     aluno = usuarioRepository.save(aluno);
                 }
 
-                // Cria a inscrição com o status inicial
-                Inscricao inscricao = new Inscricao(null, aluno, oferta, StatusInscricao.NAO_ENVIADO);
-                inscricaoRepository.save(inscricao);
+                // Verifica se este aluno já está matriculado nessa oferta específica
+                final UUID alunoId = aluno.getId();
+                boolean jaInscrito = inscricaoRepository.findByOferta(oferta).stream()
+                        .anyMatch(inscricao -> inscricao.getAluno().getId().equals(alunoId));
+
+                if (!jaInscrito) {
+                    // Cria a inscrição apenas se não existir
+                    Inscricao inscricao = new Inscricao(null, aluno, oferta, StatusInscricao.NAO_ENVIADO);
+                    inscricaoRepository.save(inscricao);
+                }
             }
         }
     }

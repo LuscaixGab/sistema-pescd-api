@@ -238,8 +238,22 @@ public class OfertaController {
     public String carregarFicheiroAlunos(@PathVariable("id") java.util.UUID id,
                                          @org.springframework.web.bind.annotation.RequestParam("file") org.springframework.web.multipart.MultipartFile file,
                                          RedirectAttributes redirectAttributes) {
+
         if (file.isEmpty()) {
-            redirectAttributes.addFlashAttribute("erroGeral", "Por favor, selecione um arquivo CSV válido.");
+            redirectAttributes.addFlashAttribute("erroGeral", "Por favor, selecione um arquivo válido.");
+            return "redirect:/ofertas/" + id + "/alunos";
+        }
+
+        // FIX RN-1: Validar se é realmente um CSV
+        String filename = file.getOriginalFilename();
+        if (filename == null || !filename.toLowerCase().endsWith(".csv")) {
+            redirectAttributes.addFlashAttribute("erroGeral", "O arquivo deve ser obrigatoriamente do tipo .csv.");
+            return "redirect:/ofertas/" + id + "/alunos";
+        }
+
+        // FIX RN-2: Validar o limite de 5MB (5 * 1024 * 1024 bytes)
+        if (file.getSize() > 5242880) {
+            redirectAttributes.addFlashAttribute("erroGeral", "O arquivo não pode ultrapassar o limite de 5MB.");
             return "redirect:/ofertas/" + id + "/alunos";
         }
 
