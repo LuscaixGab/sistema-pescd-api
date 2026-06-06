@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encerrar Oferta | PESCD</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-page">
+<main class="page-shell">
+    <section class="page-card">
+        <header class="page-header">
+            <div>
+                <p class="page-kicker">Encerramento de Oferta</p>
+                <h1 th:text="${oferta.nomeOferta}">Oferta</h1>
+                <p>Revise os resultados antes de enviar a oferta para encerramento pela secretaria.</p>
+            </div>
+            <a class="button-link secondary" th:href="@{/professor-responsavel/ofertas}">Cancelar</a>
+        </header>
+
+        <div class="warning-box">
+            Ao confirmar, a oferta mudará para <strong>Aguardando encerramento do secretário</strong> e não ficará mais disponível para encerramento pelo professor responsável.
+        </div>
+
+        <h2 class="section-title">Dados da Oferta</h2>
+        <div class="readonly-grid">
+            <div class="readonly-field">
+                <span>Semestre</span>
+                <strong th:text="${oferta.semestre}">2026/1</strong>
+            </div>
+            <div class="readonly-field">
+                <span>Professor responsável</span>
+                <strong th:text="${oferta.professorResponsavel.nomeCompleto}">Professor</strong>
+            </div>
+            <div class="readonly-field">
+                <span>Data de início</span>
+                <strong th:text="${#temporals.format(oferta.dataInicio, 'dd/MM/yyyy')}">01/01/2026</strong>
+            </div>
+            <div class="readonly-field">
+                <span>Data de fim</span>
+                <strong th:text="${#temporals.format(oferta.dataFim, 'dd/MM/yyyy')}">30/06/2026</strong>
+            </div>
+            <div class="readonly-field">
+                <span>Status atual</span>
+                <strong th:text="${oferta.statusOferta}">EM_ANDAMENTO</strong>
+            </div>
+            <div class="readonly-field">
+                <span>Mudança de status</span>
+                <strong>
+                    <span th:text="${oferta.statusOferta}">EM_ANDAMENTO</span>
+                    &rarr;
+                    <span>AGUARDANDO_ENCERRAMENTO_SECRETARIO</span>
+                </strong>
+            </div>
+        </div>
+
+        <h2 class="section-title">Estatísticas</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span>Média de frequência</span>
+                <strong th:text="${#numbers.formatDecimal(mediaFrequencia, 1, 1) + '%'}">0,0%</strong>
+            </div>
+            <div class="stat-card">
+                <span>Créditos por estágio</span>
+                <strong th:text="${quantidadeEstagio}">0</strong>
+            </div>
+            <div class="stat-card">
+                <span>Créditos por documentação</span>
+                <strong th:text="${quantidadeDocumentacao}">0</strong>
+            </div>
+            <div class="stat-card">
+                <span>Total de alunos</span>
+                <strong th:text="${#lists.size(resumoAlunos)}">0</strong>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card" th:each="notaEntry : ${quantidadeNotas}">
+                <span th:text="${'Nota ' + notaEntry.key}">Nota A</span>
+                <strong th:text="${notaEntry.value}">0</strong>
+            </div>
+        </div>
+
+        <h2 class="section-title">Alunos</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Tipo de crédito</th>
+                    <th>Frequência</th>
+                    <th>Nota</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="resumo : ${resumoAlunos}">
+                    <td th:text="${resumo.nomeAluno}">Aluno</td>
+                    <td th:text="${resumo.tipoCredito}">Estágio</td>
+                    <td th:text="${resumo.frequencia != null ? resumo.frequencia + '%' : 'Não informada'}">100%</td>
+                    <td th:text="${resumo.nota ?: 'Não informada'}">A</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(resumoAlunos)}">
+                    <td colspan="4" class="table-empty-cell">
+                        Não há alunos para exibir.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-title">Lições Aprendidas</h2>
+        <form th:action="@{/professor-responsavel/ofertas/{id}/encerrar(id=${oferta.id})}"
+              th:object="${encerramentoResponsavelForm}"
+              method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="form-group">
+                <label for="licoesAprendidas">Descrição de lições aprendidas na oferta *</label>
+                <textarea id="licoesAprendidas" th:field="*{licoesAprendidas}" rows="6"></textarea>
+                <small th:if="${#fields.hasErrors('licoesAprendidas')}"
+                       th:errors="*{licoesAprendidas}"
+                       class="field-error"></small>
+            </div>
+
+            <div class="form-actions">
+                <button class="button-link" type="submit">Encerrar Oferta</button>
+                <a class="button-link secondary" th:href="@{/professor-responsavel/ofertas}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

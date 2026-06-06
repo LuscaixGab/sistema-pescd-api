@@ -17,4 +17,6 @@ public interface OfertaRepository extends JpaRepository<Oferta, UUID> {
     List<Oferta> findAllByOrderByDataCriacaoDesc();
 
     List<Oferta> findAllByOrderBySemestreDesc();
+
+    List<Oferta> findByProfessorResponsavelOrderByDataCriacaoDesc(Usuario professorResponsavel);
 }

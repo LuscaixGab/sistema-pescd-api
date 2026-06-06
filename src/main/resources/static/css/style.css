@@ -291,6 +291,13 @@ body::after {
     box-shadow: none;
 }
 
+.button-link.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none;
+}
+
 .button-link:hover,
 .actions button:hover {
     transform: translateY(-1px);
@@ -428,4 +435,120 @@ body::after {
     .button-link {
         width: 100%;
     }
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.25rem;
+}
+
+.table-container th,
+.table-container td {
+    padding: 0.75rem 0.95rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    vertical-align: middle;
+}
+
+.table-empty-cell {
+    text-align: center;
+    padding: 1.25rem !important;
+    color: var(--muted);
+}
+
+.btn-sm {
+    padding: 0.4rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+    height: auto !important;
+    line-height: 1.2 !important;
+}
+
+.status-pill {
+    display: inline-block;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.hint {
+    display: block;
+    opacity: 0.72;
+    font-size: 0.75rem;
+    margin-top: 0.4rem;
+}
+
+.readonly-grid,
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1rem;
+    margin: 1.4rem 0;
+}
+
+.readonly-field,
+.stat-card {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.5rem;
+    padding: 0.9rem;
+}
+
+.readonly-field span,
+.stat-card span {
+    display: block;
+    opacity: 0.72;
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+}
+
+.readonly-field strong,
+.stat-card strong {
+    display: block;
+    overflow-wrap: anywhere;
+    font-size: 1.1rem;
+}
+
+.section-title {
+    margin-top: 1.75rem;
+    margin-bottom: 0.65rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1.15rem;
+}
+
+.warning-box {
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    background: rgba(251, 191, 36, 0.08);
+    border-radius: 0.65rem;
+    padding: 0.9rem;
+    margin-top: 1.15rem;
+}
+
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border-radius: 0.9rem;
+    border: 1px solid var(--field-border);
+    background: var(--field-bg);
+    color: var(--text);
+    outline: none;
+    font: inherit;
+}
+
+.form-group textarea {
+    min-height: 8rem;
+    resize: vertical;
 }

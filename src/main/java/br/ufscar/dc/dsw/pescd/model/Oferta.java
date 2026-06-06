@@ -1,14 +1,6 @@
 package br.ufscar.dc.dsw.pescd.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,12 +33,22 @@ public class Oferta {
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusOferta statusOferta = StatusOferta.EM_ANDAMENTO;
+
+    @Column(columnDefinition = "TEXT")
+    private String licoesAprendidas;
+
+    @Column(name = "data_encerramento_responsavel")
+    private LocalDateTime dataEncerramentoResponsavel;
+
     @ManyToOne
     @JoinColumn(name = "usuario_criador_id", nullable = false, updatable = false)
     private Usuario usuarioCriador;
 
     @Column(name = "data_encerramento")
-    private java.time.LocalDateTime dataEncerramento;
+    private LocalDateTime dataEncerramento;
 
     @ManyToOne
     @JoinColumn(name = "usuario_encerramento_id")
@@ -69,6 +71,9 @@ public class Oferta {
     protected void prePersist() {
         if (dataCriacao == null) {
             dataCriacao = LocalDateTime.now();
+        }
+        if (statusOferta == null) {
+            statusOferta = StatusOferta.EM_ANDAMENTO;
         }
     }
 
@@ -136,11 +141,11 @@ public class Oferta {
         this.usuarioCriador = usuarioCriador;
     }
 
-    public java.time.LocalDateTime getDataEncerramento() {
+    public LocalDateTime getDataEncerramento() {
         return dataEncerramento;
     }
 
-    public void setDataEncerramento(java.time.LocalDateTime dataEncerramento) {
+    public void setDataEncerramento(LocalDateTime dataEncerramento) {
         this.dataEncerramento = dataEncerramento;
     }
 
@@ -150,5 +155,29 @@ public class Oferta {
 
     public void setUsuarioEncerramento(Usuario usuarioEncerramento) {
         this.usuarioEncerramento = usuarioEncerramento;
+    }
+
+    public StatusOferta getStatusOferta() {
+        return statusOferta;
+    }
+
+    public void setStatusOferta(StatusOferta statusOferta) {
+        this.statusOferta = statusOferta;
+    }
+
+    public String getLicoesAprendidas() {
+        return licoesAprendidas;
+    }
+
+    public void setLicoesAprendidas(String licoesAprendidas) {
+        this.licoesAprendidas = licoesAprendidas;
+    }
+
+    public LocalDateTime getDataEncerramentoResponsavel() {
+        return dataEncerramentoResponsavel;
+    }
+
+    public void setDataEncerramentoResponsavel(LocalDateTime dataEncerramentoResponsavel) {
+        this.dataEncerramentoResponsavel = dataEncerramentoResponsavel;
     }
 }
