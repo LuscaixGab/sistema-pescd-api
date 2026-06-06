@@ -99,12 +99,12 @@ public class DatabaseSeeder implements CommandLineRunner {
                 // Inscrições em Embarcados
                 inscricaoRepository.save(new Inscricao(null, alunoBase, embarcados, StatusInscricao.NAO_ENVIADO));
 
-                // Inscrições em Controle 1 (O aluno base tem o plano aprovado, Ana e Carlos só estão matriculados)
-                Inscricao inscricaoControle = new Inscricao(null, alunoBase, controle, StatusInscricao.PLANO_APROVADO);
+                // Inscrições em Controle 1 (Forçando o status final do professor para testar a S.04)
+                Inscricao inscricaoControle = new Inscricao(null, alunoBase, controle, StatusInscricao.CONCLUIDO_PELO_RESPONSAVEL);
                 inscricaoRepository.save(inscricaoControle);
-                
-                inscricaoRepository.save(new Inscricao(null, ana, controle, StatusInscricao.NAO_ENVIADO));
-                inscricaoRepository.save(new Inscricao(null, carlos, controle, StatusInscricao.NAO_ENVIADO));
+
+                inscricaoRepository.save(new Inscricao(null, ana, controle, StatusInscricao.CONCLUIDO_PELO_RESPONSAVEL));
+                inscricaoRepository.save(new Inscricao(null, carlos, controle, StatusInscricao.CONCLUIDO_PELO_RESPONSAVEL));
                 
                 // Salva o Plano de Trabalho mockado para o aluno base
                 PlanoTrabalho planoControle = new PlanoTrabalho(
