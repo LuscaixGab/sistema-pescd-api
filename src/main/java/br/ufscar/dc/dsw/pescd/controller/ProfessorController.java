@@ -31,13 +31,16 @@ public class ProfessorController {
     private final InscricaoRepository inscricaoRepository;
     private final UsuarioRepository usuarioRepository;
     private final RelatorioFinalRepository relatorioFinalRepository;
+    private final br.ufscar.dc.dsw.pescd.service.LogStatusService logStatusService;
 
     public ProfessorController(InscricaoRepository inscricaoRepository, 
                             UsuarioRepository usuarioRepository,
-                            RelatorioFinalRepository relatorioFinalRepository) {
+                            RelatorioFinalRepository relatorioFinalRepository,
+                               br.ufscar.dc.dsw.pescd.service.LogStatusService logStatusService) {
         this.inscricaoRepository = inscricaoRepository;
         this.usuarioRepository = usuarioRepository;
         this.relatorioFinalRepository = relatorioFinalRepository;
+        this.logStatusService = logStatusService;
     }
 
     // Seleção de papel (professor supervisor ou professor responsável)
@@ -91,6 +94,8 @@ public class ProfessorController {
         }
         
         inscricaoRepository.save(inscricao);
+        
+        logStatusService.registrarLog(inscricao, inscricao.getStatus(), usuarioLogado.getUsuario());
 
         // Volta para a lista de relatórios pendentes com sucesso
         return "redirect:/professor/relatorios/pendentes?sucesso";

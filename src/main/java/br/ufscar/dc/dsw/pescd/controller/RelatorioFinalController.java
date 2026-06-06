@@ -29,13 +29,16 @@ public class RelatorioFinalController {
     private final InscricaoRepository inscricaoRepository;
     private final PlanoTrabalhoRepository planoTrabalhoRepository;
     private final RelatorioFinalRepository relatorioFinalRepository;
+    private final br.ufscar.dc.dsw.pescd.service.LogStatusService logStatusService;
 
     public RelatorioFinalController(InscricaoRepository inscricaoRepository, 
                                     PlanoTrabalhoRepository planoTrabalhoRepository, 
-                                    RelatorioFinalRepository relatorioFinalRepository) {
+                                    RelatorioFinalRepository relatorioFinalRepository,
+                                    br.ufscar.dc.dsw.pescd.service.LogStatusService logStatusService) {
         this.inscricaoRepository = inscricaoRepository;
         this.planoTrabalhoRepository = planoTrabalhoRepository;
         this.relatorioFinalRepository = relatorioFinalRepository;
+        this.logStatusService = logStatusService;
     }
 
     @GetMapping("/novo/{id}")
@@ -114,6 +117,8 @@ public class RelatorioFinalController {
             // RN-4: Atualização do Status da Inscrição após envio com sucesso
             inscricao.setStatus(StatusInscricao.RELATORIO_ENVIADO);
             inscricaoRepository.save(inscricao);
+
+            logStatusService.registrarLog(inscricao, StatusInscricao.RELATORIO_ENVIADO, inscricao.getAluno());
 
         } catch (IOException e) {
             e.printStackTrace(); // Isso vai imprimir o erro real no seu terminal para ajudar se falhar de novo

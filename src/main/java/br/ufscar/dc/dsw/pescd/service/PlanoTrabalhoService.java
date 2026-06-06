@@ -29,13 +29,16 @@ public class PlanoTrabalhoService {
     private final PlanoTrabalhoRepository planoTrabalhoRepository;
     private final UsuarioRepository usuarioRepository;
     private final InscricaoRepository inscricaoRepository;
+    private final LogStatusService logStatusService;
 
     public PlanoTrabalhoService(PlanoTrabalhoRepository planoTrabalhoRepository,
                                 UsuarioRepository usuarioRepository,
-                                InscricaoRepository inscricaoRepository) {
+                                InscricaoRepository inscricaoRepository,
+                                LogStatusService logStatusService) {
         this.planoTrabalhoRepository = planoTrabalhoRepository;
         this.usuarioRepository = usuarioRepository;
         this.inscricaoRepository = inscricaoRepository;
+        this.logStatusService = logStatusService;
     }
 
     @Transactional(readOnly = true)
@@ -89,6 +92,9 @@ public class PlanoTrabalhoService {
 
         inscricao.setStatus(StatusInscricao.PLANO_ENVIADO);
         inscricaoRepository.save(inscricao);
+
+        // Dispara o log registrando que o próprio aluno foi o responsável pela mudança
+        logStatusService.registrarLog(inscricao, StatusInscricao.PLANO_ENVIADO, alunoLogado);
 
         return planoSalvo;
     }
@@ -161,5 +167,6 @@ public class PlanoTrabalhoService {
         }
 
         inscricaoRepository.save(inscricao);
+        logStatusService.registrarLog(inscricao, inscricao.getStatus(), professor);
     }
 }

@@ -36,7 +36,8 @@
                     <th>Início</th>
                     <th>Fim</th>
                     <th>Professor</th>
-                    <th>Criada em</th>
+                    <th>Status</th> <th>Criada em</th>
+                    <th>Ações</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -46,10 +47,16 @@
                     <td th:text="${#temporals.format(oferta.dataInicio, 'dd/MM/yyyy')}"></td>
                     <td th:text="${#temporals.format(oferta.dataFim, 'dd/MM/yyyy')}"></td>
                     <td th:text="${oferta.professorResponsavel.nomeCompleto}"></td>
-                    <td th:text="${#temporals.format(oferta.dataCriacao, 'dd/MM/yyyy HH:mm')}"></td>
+
                     <td>
-                        <a class="button-link secondary" th:href="@{/ofertas/{id}/alunos(id=${oferta.id})}">Adicionar Alunos</a>
+        <span th:text="${statusOfertas.get(oferta.id)}"
+              th:style="${statusOfertas.get(oferta.id) == 'Em andamento' ? 'color: #38bdf8; font-weight: bold;' :
+                         statusOfertas.get(oferta.id) == 'Em atraso' ? 'color: #ef4444; font-weight: bold;' :
+                         statusOfertas.get(oferta.id) == 'Concluída' ? 'color: #34d399; font-weight: bold;' :
+                         'color: #fbbf24; font-weight: bold;'}">
+        </span>
                     </td>
+
                     <td th:text="${#temporals.format(oferta.dataCriacao, 'dd/MM/yyyy HH:mm')}"></td>
                     <td>
                         <div style="display: flex; gap: 8px;">

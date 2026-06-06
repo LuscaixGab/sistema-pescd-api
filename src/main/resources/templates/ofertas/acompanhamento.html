@@ -58,6 +58,7 @@
                     <th>Nome do Aluno</th>
                     <th>E-mail</th>
                     <th>Status Atual no PESCD</th>
+                    <th>Ações</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -68,9 +69,15 @@
                             <span th:class="${'status-badge status-' + inscricao.status.name()}"
                                   th:text="${inscricao.status.name()}">STATUS</span>
                     </td>
+                    <td>
+                        <a class="button-link btn-sm secondary"
+                           th:href="@{/ofertas/{ofertaId}/alunos/{inscricaoId}/detalhes(ofertaId=${oferta.id}, inscricaoId=${inscricao.id})}">
+                            Ver Detalhes
+                        </a>
+                    </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(inscricoes)}">
-                    <td colspan="3" style="text-align: center; padding: 20px;">Nenhum aluno matriculado nesta oferta ainda.</td>
+                    <td colspan="4" style="text-align: center; padding: 20px;">Nenhum aluno matriculado nesta oferta ainda.</td>
                 </tr>
                 </tbody>
             </table>

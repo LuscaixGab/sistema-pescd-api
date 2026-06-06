@@ -20,10 +20,12 @@ public class DocumentacaoAulaService {
 
     private final DocumentacaoAulaRepository docRepository;
     private final InscricaoRepository inscricaoRepository;
+    private final LogStatusService logStatusService;
 
-    public DocumentacaoAulaService(DocumentacaoAulaRepository docRepository, InscricaoRepository inscricaoRepository) {
+    public DocumentacaoAulaService(DocumentacaoAulaRepository docRepository, InscricaoRepository inscricaoRepository, LogStatusService logStatusService) {
         this.docRepository = docRepository;
         this.inscricaoRepository = inscricaoRepository;
+        this.logStatusService = logStatusService;
     }
 
     // Diretório onde documentos ficarão salvos
@@ -67,5 +69,6 @@ public class DocumentacaoAulaService {
         // Mudar o status do aluno na oferta
         inscricao.setStatus(StatusInscricao.DOCUMENTACAO_ENVIADA); 
         inscricaoRepository.save(inscricao);
+        logStatusService.registrarLog(inscricao, StatusInscricao.DOCUMENTACAO_ENVIADA, inscricao.getAluno());
     }
 }

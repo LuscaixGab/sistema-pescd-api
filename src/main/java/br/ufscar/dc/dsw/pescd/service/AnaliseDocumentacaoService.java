@@ -19,11 +19,14 @@ public class AnaliseDocumentacaoService {
 
     private final DocumentacaoAulaRepository documentacaoAulaRepository;
     private final InscricaoRepository inscricaoRepository;
+    private final LogStatusService logStatusService;
 
     public AnaliseDocumentacaoService(DocumentacaoAulaRepository documentacaoAulaRepository,
-                                      InscricaoRepository inscricaoRepository) {
+                                      InscricaoRepository inscricaoRepository,
+                                      LogStatusService logStatusService) {
         this.documentacaoAulaRepository = documentacaoAulaRepository;
         this.inscricaoRepository = inscricaoRepository;
+        this.logStatusService = logStatusService;
     }
 
     @Transactional(readOnly = true)
@@ -57,6 +60,9 @@ public class AnaliseDocumentacaoService {
 
         inscricao.setStatus(StatusInscricao.CONCLUIDO_PELO_RESPONSAVEL);
         inscricaoRepository.save(inscricao);
+
+        // Dispara o log registrando o professor responsável
+        logStatusService.registrarLog(inscricao, StatusInscricao.CONCLUIDO_PELO_RESPONSAVEL, professorResponsavel);
     }
 
     private void validarProfessorResponsavel(DocumentacaoAula documentacao, Usuario professorResponsavel) {

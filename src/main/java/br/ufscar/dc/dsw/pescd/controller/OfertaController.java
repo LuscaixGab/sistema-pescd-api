@@ -21,6 +21,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 import br.ufscar.dc.dsw.pescd.repository.UsuarioRepository;
 import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
@@ -42,8 +45,70 @@ public class OfertaController {
 
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("ofertas", ofertaService.listarOfertas());
+        // 1. Busca todas as ofertas
+        List<Oferta> ofertas = ofertaService.listarOfertas();
+
+        // 2. Cria o mapa para guardar o status de cada oferta
+        Map<UUID, String> statusOfertas = new HashMap<>();
+
+        // 3. Calcula o status dinamicamente cruzando as datas e as inscrições
+        for (Oferta oferta : ofertas) {
+            List<Inscricao> inscricoes = inscricaoRepository.findByOferta(oferta);
+            statusOfertas.put(oferta.getId(), calcularStatus(oferta, inscricoes));
+        }
+
+        // 4. Envia tanto a lista de ofertas quanto o mapa de status para o Thymeleaf
+        model.addAttribute("ofertas", ofertas);
+        model.addAttribute("statusOfertas", statusOfertas);
+
         return "ofertas/lista";
+    }
+
+    private String calcularStatus(Oferta oferta, List<Inscricao> inscricoes) {
+        LocalDate hoje = LocalDate.now();
+
+        // 1. Caso a oferta ainda não tenha chegado à data de início
+        if (hoje.isBefore(oferta.getDataInicio())) {
+            return "Aguardando início";
+        }
+
+        // 2. Se a data atual estiver dentro do intervalo planejado da oferta
+        if ((hoje.isAfter(oferta.getDataInicio()) || hoje.isEqual(oferta.getDataInicio())) &&
+                (hoje.isBefore(oferta.getDataFim()) || hoje.isEqual(oferta.getDataFim()))) {
+            return "Em andamento";
+        }
+
+        // 3. Se o prazo final (dataFim) já expirou, o status depende do progresso dos alunos:
+        if (inscricoes.isEmpty()) {
+            return "Concluída";
+        }
+
+        boolean todosConcluidos = true;
+        boolean temAtrasoGrave = false;
+
+        for (Inscricao inscricao : inscricoes) {
+            StatusInscricao status = inscricao.getStatus();
+
+            if (status != StatusInscricao.CONCLUIDO && status != StatusInscricao.CONCLUIDO_PELO_RESPONSAVEL) {
+                todosConcluidos = false;
+
+                if (status == StatusInscricao.NAO_ENVIADO ||
+                        status == StatusInscricao.PLANO_ENVIADO ||
+                        status == StatusInscricao.PLANO_REPROVADO) {
+                    temAtrasoGrave = true;
+                }
+            }
+        }
+
+        if (todosConcluidos) {
+            return "Concluída";
+        }
+
+        if (temAtrasoGrave) {
+            return "Em atraso";
+        }
+
+        return "Aguardando encerramento...";
     }
 
     @GetMapping("/nova")
@@ -88,11 +153,18 @@ public class OfertaController {
         }
     }
 
-    @Autowired // Adicionei essa anotação se precisar injetar o serviço
+    @Autowired // Adicionei essa anotação se precisar injetar
     private br.ufscar.dc.dsw.pescd.service.InscricaoService inscricaoService;
-
     @Autowired
     private br.ufscar.dc.dsw.pescd.repository.OfertaRepository ofertaRepository;
+    @Autowired
+    private br.ufscar.dc.dsw.pescd.repository.PlanoTrabalhoRepository planoTrabalhoRepository;
+    @Autowired
+    private br.ufscar.dc.dsw.pescd.repository.DocumentacaoAulaRepository documentacaoAulaRepository;
+    @Autowired
+    private br.ufscar.dc.dsw.pescd.repository.RelatorioFinalRepository relatorioFinalRepository;
+    @Autowired
+    private br.ufscar.dc.dsw.pescd.repository.LogStatusInscricaoRepository logStatusInscricaoRepository;
 
     // Exibir tela de adicionar alunos
     @GetMapping("/{id}/alunos")
@@ -207,6 +279,30 @@ public class OfertaController {
         model.addAttribute("pendentesIniciais", pendentesIniciais);
 
         return "ofertas/acompanhamento";
+    }
+
+    // S.03 - GET: Detalhes do Aluno
+    @GetMapping("/{ofertaId}/alunos/{inscricaoId}/detalhes")
+    public String verDetalhesAluno(@PathVariable UUID ofertaId, @PathVariable UUID inscricaoId, Model model) {
+        Inscricao inscricao = inscricaoRepository.findById(inscricaoId)
+                .orElseThrow(() -> new IllegalArgumentException("Inscrição não encontrada."));
+
+        // Busca todos os documentos que o aluno possa ter enviado
+        br.ufscar.dc.dsw.pescd.model.PlanoTrabalho plano = planoTrabalhoRepository.findByInscricao(inscricao).orElse(null);
+        br.ufscar.dc.dsw.pescd.model.DocumentacaoAula documentacao = documentacaoAulaRepository.findByInscricaoId(inscricaoId).orElse(null);
+        br.ufscar.dc.dsw.pescd.model.RelatorioFinal relatorio = relatorioFinalRepository.findByInscricao(inscricao).orElse(null);
+
+        // Busca o histórico de logs
+        List<br.ufscar.dc.dsw.pescd.model.LogStatusInscricao> logs = logStatusInscricaoRepository.findByInscricaoOrderByDataMudancaDesc(inscricao);
+
+        model.addAttribute("oferta", inscricao.getOferta());
+        model.addAttribute("inscricao", inscricao);
+        model.addAttribute("plano", plano);
+        model.addAttribute("documentacao", documentacao);
+        model.addAttribute("relatorio", relatorio);
+        model.addAttribute("logs", logs);
+
+        return "ofertas/aluno-detalhes";
     }
 }
 
