@@ -2,6 +2,7 @@ package br.ufscar.dc.dsw.pescd.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,6 +31,12 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/login", "/ofertas-publicas", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/administrador", "/administrador/**").hasRole("ADMINISTRADOR")
+
+                        // PR.04: Libera as rotas de acompanhamento para ambos (Secretário e Professor)
+                        .requestMatchers(HttpMethod.GET, "/ofertas").hasAnyRole("SECRETARIO", "PROFESSOR")
+                        .requestMatchers(HttpMethod.GET, "/ofertas/*/acompanhamento").hasAnyRole("SECRETARIO", "PROFESSOR")
+                        .requestMatchers(HttpMethod.GET, "/ofertas/*/alunos/*/detalhes").hasAnyRole("SECRETARIO", "PROFESSOR")
+
                         .requestMatchers("/ofertas/**").hasRole("SECRETARIO")
                         .anyRequest().authenticated())
                 .formLogin(form -> form

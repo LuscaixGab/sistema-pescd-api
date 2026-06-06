@@ -29,7 +29,6 @@ import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
 
 @Controller
 @RequestMapping("/ofertas")
-@PreAuthorize("hasRole('SECRETARIO')")
 public class OfertaController {
 
     private final OfertaService ofertaService;
@@ -43,22 +42,29 @@ public class OfertaController {
     }
 
     @GetMapping
-    public String listar(Model model) {
-        // 1. Busca todas as ofertas
-        List<Oferta> ofertas = ofertaService.listarOfertas();
+    public String listar(@AuthenticationPrincipal UsuarioUserDetails usuarioLogado, Model model) {
+        Usuario usuario = usuarioLogado.getUsuario();
+        List<Oferta> ofertas;
 
-        // 2. Cria o mapa para guardar o status de cada oferta
+        // PR.04:
+        // Se for professor, busca só as dele. Se for secretário/admin, busca todas.
+        if (usuario.getPerfil() == Perfil.PROFESSOR) {
+            ofertas = ofertaRepository.findByProfessorResponsavel(usuario);
+        } else {
+            ofertas = ofertaRepository.findAll();
+        }
+
         Map<UUID, String> statusOfertas = new HashMap<>();
 
-        // 3. Calcula o status dinamicamente cruzando as datas e as inscrições
         for (Oferta oferta : ofertas) {
             List<Inscricao> inscricoes = inscricaoRepository.findByOferta(oferta);
             statusOfertas.put(oferta.getId(), calcularStatus(oferta, inscricoes));
         }
 
-        // 4. Envia tanto a lista de ofertas quanto o mapa de status para o Thymeleaf
         model.addAttribute("ofertas", ofertas);
         model.addAttribute("statusOfertas", statusOfertas);
+        // Passa o perfil para o html saber o que esconder/mostrar
+        model.addAttribute("perfilUsuario", usuario.getPerfil().name());
 
         return "ofertas/lista";
     }

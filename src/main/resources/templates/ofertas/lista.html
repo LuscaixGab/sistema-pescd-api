@@ -16,7 +16,7 @@
                 <p>Gerencie as ofertas iniciadas pelo secretário.</p>
             </div>
             <div>
-                <a class="button-link" th:href="@{/ofertas/nova}">Nova oferta</a>
+                <a th:if="${perfilUsuario == 'SECRETARIO'}" class="button-link" th:href="@{/ofertas/nova}">Nova oferta</a>
                 <a class="button-link" th:href="@{../painel}">Voltar</a>
             </div>
         </header>
@@ -64,10 +64,11 @@
                     <td th:text="${#temporals.format(oferta.dataCriacao, 'dd/MM/yyyy HH:mm')}"></td>
                     <td>
                         <div style="display: flex; gap: 8px; align-items: center;">
-                            <a class="button-link secondary" style="padding: 6px 12px; font-size: 12px;" th:href="@{/ofertas/{id}/alunos(id=${oferta.id})}">Adicionar Alunos</a>
+                            <a th:if="${perfilUsuario == 'SECRETARIO'}" class="button-link secondary" style="padding: 6px 12px; font-size: 12px;" th:href="@{/ofertas/{id}/alunos(id=${oferta.id})}">Adicionar Alunos</a>
+
                             <a class="button-link" style="padding: 6px 12px; font-size: 12px; background: linear-gradient(135deg, #10b981, #059669); color: white;" th:href="@{/ofertas/{id}/acompanhamento(id=${oferta.id})}">Acompanhar</a>
 
-                            <a th:if="${statusOfertas.get(oferta.id) == 'Aguardando encerramento do secretário'}"
+                            <a th:if="${perfilUsuario == 'SECRETARIO' and statusOfertas.get(oferta.id) == 'Aguardando encerramento do secretário'}"
                                class="button-link"
                                style="padding: 6px 12px; font-size: 12px; background: linear-gradient(135deg, #ef4444, #b91c1c); color: white;"
                                th:href="@{/ofertas/{id}/encerrar(id=${oferta.id})}">
