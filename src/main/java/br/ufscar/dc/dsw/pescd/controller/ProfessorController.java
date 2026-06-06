@@ -85,9 +85,9 @@ public class ProfessorController {
         
         // Define o novo status baseado no botão que o professor clicou (Aprovar ou Reprovar)
         if ("aprovar".equals(acao)) {
-            inscricao.setStatus(StatusInscricao.RELATORIO_APROVADO); // Ou ESTAGIO_FINALIZADO, ajuste conforme seu Enum
+            inscricao.setStatus(StatusInscricao.RELATORIO_APROVADO_PELO_SUPERVISOR);
         } else if ("reprovar".equals(acao)) {
-            inscricao.setStatus(StatusInscricao.RELATORIO_REPROVADO); // Ajuste conforme seu Enum
+            inscricao.setStatus(StatusInscricao.RELATORIO_REPROVADO);
         }
         
         inscricaoRepository.save(inscricao);
