@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ofertas do Responsável | PESCD</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-page">
+<main class="page-shell">
+    <section class="page-card">
+        <header class="page-header">
+            <div>
+                <p class="page-kicker">Professor Responsável</p>
+                <h1>Encerramento de Ofertas</h1>
+                <p>Ofertas sob sua responsabilidade. O encerramento só será aceito quando todos os alunos estiverem concluídos pelo responsável.</p>
+            </div>
+            <a class="button-link secondary" th:href="@{/professor/atuacao}">Trocar papel</a>
+        </header>
+
+        <div class="notice success" th:if="${sucesso}" th:text="${sucesso}"></div>
+        <div class="notice error" th:if="${erro}" th:text="${erro}"></div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>Oferta</th>
+                    <th>Semestre</th>
+                    <th>Período</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ofertaResumo : ${ofertasResumo}">
+                    <td>
+                        <strong th:text="${ofertaResumo.oferta.nomeOferta}">Oferta</strong>
+                        <span class="hint" th:text="${'Responsável: ' + ofertaResumo.oferta.professorResponsavel.nomeCompleto}">Responsável</span>
+                    </td>
+                    <td th:text="${ofertaResumo.oferta.semestre}">2026/1</td>
+                    <td>
+                        <span th:text="${#temporals.format(ofertaResumo.oferta.dataInicio, 'dd/MM/yyyy')}">01/01/2026</span>
+                        <span> a </span>
+                        <span th:text="${#temporals.format(ofertaResumo.oferta.dataFim, 'dd/MM/yyyy')}">30/06/2026</span>
+                    </td>
+                    <td>
+                        <span class="status-pill" th:text="${ofertaResumo.oferta.statusOferta}">EM_ANDAMENTO</span>
+                    </td>
+                    <td>
+                        <a class="button-link btn-sm"
+                           th:if="${ofertaResumo.podeEncerrar}"
+                           th:href="@{/professor-responsavel/ofertas/{id}/encerrar(id=${ofertaResumo.oferta.id})}">
+                            Encerrar Oferta
+                        </a>
+                        <span class="button-link secondary btn-sm disabled" th:if="${!ofertaResumo.podeEncerrar}">
+                            Encerrar Oferta
+                        </span>
+                        <span class="hint" th:if="${!ofertaResumo.podeEncerrar}" th:text="${ofertaResumo.motivoBloqueio}">
+                            Ainda há pendências.
+                        </span>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(ofertasResumo)}">
+                    <td colspan="5" class="table-empty-cell">
+                        Não há ofertas cadastradas sob sua responsabilidade.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>
