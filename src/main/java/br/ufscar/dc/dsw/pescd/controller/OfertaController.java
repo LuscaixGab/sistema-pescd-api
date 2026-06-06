@@ -29,7 +29,6 @@ import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
 
 @Controller
 @RequestMapping("/ofertas")
-@PreAuthorize("hasRole('SECRETARIO')")
 public class OfertaController {
 
     private final OfertaService ofertaService;
