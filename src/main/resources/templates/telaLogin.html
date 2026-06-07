@@ -43,21 +43,9 @@
                         required>
             </div>
 
-            <div class="login-actions">
-                <label class="remember-me">
-                    <input type="checkbox" name="manterConectado">
-                    <span th:text="#{login.remember}">Manter conectado</span>
-                </label>
-                <a href="#" th:text="#{login.forgot}">Esqueci minha senha</a>
-            </div>
-
             <button type="submit" th:text="#{login.submit}">Entrar</button>
         </form>
 
-        <p class="login-footer">
-            <span th:text="#{login.noAccess}">Ainda não tem acesso?</span>
-            <a href="#" th:text="#{login.requestAccess}">Solicite cadastro</a>
-        </p>
         <p class="login-footer">
             <span th:text="#{login.visitorPrefix}">Acessar como</span>
             <a th:href="@{/ofertas-publicas}" th:text="#{login.visitor}">Visitante</a>
