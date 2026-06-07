@@ -70,8 +70,7 @@
                         <th>Início</th>
                         <th>Fim</th>
                         <th>Professor Responsável</th>
-                        <th>Status</th>
-                        <th>Ações</th>
+                        <th>Status da Oferta</th> <th>Meu Status</th>     <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,30 +82,35 @@
                         <td th:text="${inscricao.oferta.professorResponsavel.nomeCompleto}">Nome do Professor</td>
                         
                         <td>
+                            <span th:text="${inscricao.oferta.statusOferta.name()}" 
+                                  th:style="${inscricao.oferta.statusOferta.name() == 'EM_ANDAMENTO' ? 'color: #2ecc71;' : 'color: var(--muted);'}">
+                                EM_ANDAMENTO
+                            </span>
+                        </td>
+                        
+                        <td>
                             <strong th:text="${inscricao.status}">STATUS</strong>
                         </td>
                         
                         <td>
                             <div class="acoes-flex">
                                 
-                                <a th:if="${inscricao.status.name() == 'NAO_ENVIADO'}"
+                                <a th:if="${inscricao.status.name() == 'NAO_ENVIADO' and inscricao.oferta.statusOferta.name() == 'EM_ANDAMENTO'}"
                                    th:href="@{/aluno/documentacao/nova/{id}(id=${inscricao.id})}" 
                                    class="button-link btn-sm">Enviar Documentação</a>
-                                <a th:unless="${inscricao.status.name() == 'NAO_ENVIADO'}"
+                                <a th:unless="${inscricao.status.name() == 'NAO_ENVIADO' and inscricao.oferta.statusOferta.name() == 'EM_ANDAMENTO'}"
                                    class="button-link secondary btn-sm disabled-btn">Enviar Documentação</a>
 
-
-                                <a th:if="${inscricao.status.name() == 'NAO_ENVIADO'}"
+                                <a th:if="${inscricao.status.name() == 'NAO_ENVIADO' and inscricao.oferta.statusOferta.name() == 'EM_ANDAMENTO'}"
                                     th:href="@{/aluno/plano-trabalho/adicionar/{id}(id=${inscricao.id})}" 
                                     class="button-link btn-sm">Enviar Plano</a>
-                                <a th:unless="${inscricao.status.name() == 'NAO_ENVIADO'}"
+                                <a th:unless="${inscricao.status.name() == 'NAO_ENVIADO' and inscricao.oferta.statusOferta.name() == 'EM_ANDAMENTO'}"
                                    class="button-link secondary btn-sm disabled-btn">Enviar Plano</a>
 
-
-                                <a th:if="${inscricao.status.name() == 'PLANO_APROVADO'}"
+                                <a th:if="${inscricao.status.name() == 'PLANO_APROVADO' and inscricao.oferta.statusOferta.name() == 'EM_ANDAMENTO'}"
                                    th:href="@{/aluno/relatorio/novo/{id}(id=${inscricao.id})}" 
                                    class="button-link btn-sm">Enviar Relatório</a>
-                                <a th:unless="${inscricao.status.name() == 'PLANO_APROVADO'}"
+                                <a th:unless="${inscricao.status.name() == 'PLANO_APROVADO' and inscricao.oferta.statusOferta.name() == 'EM_ANDAMENTO'}"
                                    class="button-link secondary btn-sm disabled-btn">Enviar Relatório</a>
                                    
                             </div>
@@ -114,7 +118,7 @@
                     </tr>
                     
                     <tr th:if="${#lists.isEmpty(inscricoes)}">
-                        <td colspan="7" style="text-align: center; padding: 20px;">
+                        <td colspan="8" style="text-align: center; padding: 20px;">
                             Você não está matriculado em nenhuma oferta no momento.
                         </td>
                     </tr>
