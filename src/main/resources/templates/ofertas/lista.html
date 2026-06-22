@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ofertas | PESCD</title>
+    <title th:text="#{offers.title}">Ofertas | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
         <header class="page-header">
             <div>
-                <p class="page-kicker">Workflow</p>
-                <h1>Ofertas cadastradas</h1>
-                <p>Gerencie as ofertas iniciadas pelo secretário.</p>
+                <p class="page-kicker" th:text="#{offers.workflow}">Workflow</p>
+                <h1 th:text="#{offers.heading}">Ofertas cadastradas</h1>
+                <p th:text="#{offers.subtitle}">Gerencie as ofertas iniciadas pelo secretário.</p>
             </div>
             <div>
-                <a th:if="${perfilUsuario == 'SECRETARIO'}" class="button-link" th:href="@{/ofertas/nova}">Nova oferta</a>
-                <a class="button-link" th:href="@{../painel}">Voltar</a>
+                <a th:if="${perfilUsuario == 'SECRETARIO'}" class="button-link" th:href="@{/ofertas/nova}" th:text="#{offers.new}">Nova oferta</a>
+                <a th:if="${perfilUsuario == 'PROFESSOR'}" class="button-link secondary" th:href="@{/professor-responsavel/painel}" th:text="#{common.back.dashboard}">Voltar ao painel</a>
+                <a th:if="${perfilUsuario != 'PROFESSOR'}" class="button-link secondary" th:href="@{/painel}" th:text="#{common.back.dashboard}">Voltar ao painel</a>
             </div>
         </header>
 
@@ -27,21 +29,21 @@
         <div th:if="${param.erro}" class="notice error" th:text="${param.erro}"></div>
 
         <div class="table-wrap" th:if="${#lists.isEmpty(ofertas)}">
-            <p class="empty-state">Nenhuma oferta cadastrada ainda.</p>
+            <p class="empty-state" th:text="#{offers.empty}">Nenhuma oferta cadastrada ainda.</p>
         </div>
 
         <div class="table-wrap" th:if="${!#lists.isEmpty(ofertas)}">
             <table class="data-table">
                 <thead>
                 <tr>
-                    <th>Nome</th>
-                    <th>Semestre</th>
-                    <th>Início</th>
-                    <th>Fim</th>
-                    <th>Professor</th>
-                    <th>Status</th>
-                    <th>Criada em</th>
-                    <th>Ações</th>
+                    <th th:text="#{common.name}">Nome</th>
+                    <th th:text="#{common.semester}">Semestre</th>
+                    <th th:text="#{common.start}">Início</th>
+                    <th th:text="#{common.end}">Fim</th>
+                    <th th:text="#{common.professor}">Professor</th>
+                    <th th:text="#{common.status}">Status</th>
+                    <th th:text="#{common.createdAt}">Criada em</th>
+                    <th th:text="#{common.actions}">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -64,14 +66,14 @@
                     <td th:text="${#temporals.format(oferta.dataCriacao, 'dd/MM/yyyy HH:mm')}"></td>
                     <td>
                         <div style="display: flex; gap: 8px; align-items: center;">
-                            <a th:if="${perfilUsuario == 'SECRETARIO'}" class="button-link secondary" style="padding: 6px 12px; font-size: 12px;" th:href="@{/ofertas/{id}/alunos(id=${oferta.id})}">Adicionar Alunos</a>
+                            <a th:if="${perfilUsuario == 'SECRETARIO'}" class="button-link secondary" style="padding: 6px 12px; font-size: 12px;" th:href="@{/ofertas/{id}/alunos(id=${oferta.id})}" th:text="#{offers.addStudents}">Adicionar Alunos</a>
 
-                            <a class="button-link" style="padding: 6px 12px; font-size: 12px; background: linear-gradient(135deg, #10b981, #059669); color: white;" th:href="@{/ofertas/{id}/acompanhamento(id=${oferta.id})}">Acompanhar</a>
+                            <a class="button-link" style="padding: 6px 12px; font-size: 12px; background: linear-gradient(135deg, #10b981, #059669); color: white;" th:href="@{/ofertas/{id}/acompanhamento(id=${oferta.id})}" th:text="#{offers.follow}">Acompanhar</a>
 
                             <a th:if="${perfilUsuario == 'SECRETARIO' and statusOfertas.get(oferta.id) == 'Aguardando encerramento do secretário'}"
                                class="button-link"
                                style="padding: 6px 12px; font-size: 12px; background: linear-gradient(135deg, #ef4444, #b91c1c); color: white;"
-                               th:href="@{/ofertas/{id}/encerrar(id=${oferta.id})}">
+                               th:href="@{/ofertas/{id}/encerrar(id=${oferta.id})}" th:text="#{offers.close.action}">
                                 Encerrar
                             </a>
                         </div>

@@ -3,16 +3,16 @@ package br.ufscar.dc.dsw.pescd.dto;
 import jakarta.validation.constraints.*;
 
 public class AnaliseRelatorioResponsavelForm {
-    @NotBlank(message = "O parecer é obrigatório.")
+    @NotBlank(message = "{validation.opinion.required}")
     private String parecer;
 
-    @NotNull(message = "O indicador de frequência é obrigatório.")
-    @Min(value = 0, message = "O indicador de frequência deve ser no mínimo 0%.")
-    @Max(value = 100, message = "O indicador de frequência deve ser no máximo 100%.")
+    @NotNull(message = "{validation.frequencyIndicator.required}")
+    @Min(value = 0, message = "{validation.frequencyIndicator.min}")
+    @Max(value = 100, message = "{validation.frequencyIndicator.max}")
     private Integer indicadorFrequencia;
 
-    @NotBlank(message = "A nota é obrigatória.")
-    @Pattern(regexp = "[ABCDE]", message = "A nota deve ser A, B, C, D ou E.")
+    @NotBlank(message = "{validation.grade.required}")
+    @Pattern(regexp = "[ABCDE]", message = "{validation.grade.pattern}")
     private String nota;
 
     public String getParecer() {

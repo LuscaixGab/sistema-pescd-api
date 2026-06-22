@@ -12,18 +12,18 @@ public class OfertaForm {
 
     private String nomeOferta;
 
-    @NotBlank(message = "O semestre é obrigatório.")
+    @NotBlank(message = "{validation.semester.required}")
     private String semestre;
 
-    @NotNull(message = "A data de início é obrigatória.")
+    @NotNull(message = "{validation.startDate.required}")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dataInicio;
 
-    @NotNull(message = "A data de fim é obrigatória.")
+    @NotNull(message = "{validation.endDate.required}")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dataFim;
 
-    @NotNull(message = "O professor responsável é obrigatório.")
+    @NotNull(message = "{validation.responsibleProfessor.required}")
     private UUID professorResponsavelId;
 
     public String getNomeOferta() {

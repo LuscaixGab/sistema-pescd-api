@@ -1,5 +1,6 @@
 package br.ufscar.dc.dsw.pescd.controller;
 
+import br.ufscar.dc.dsw.pescd.config.MessageHelper;
 import br.ufscar.dc.dsw.pescd.dto.EncerramentoResponsavelForm;
 import br.ufscar.dc.dsw.pescd.dto.ResumoAlunoEncerramentoOferta;
 import br.ufscar.dc.dsw.pescd.model.Oferta;
@@ -24,9 +25,12 @@ import java.util.UUID;
 public class ProfessorResponsavelOfertaController {
 
     private final EncerramentoResponsavelService encerramentoResponsavelService;
+    private final MessageHelper messages;
 
-    public ProfessorResponsavelOfertaController(EncerramentoResponsavelService encerramentoResponsavelService) {
+    public ProfessorResponsavelOfertaController(EncerramentoResponsavelService encerramentoResponsavelService,
+                                                MessageHelper messages) {
         this.encerramentoResponsavelService = encerramentoResponsavelService;
+        this.messages = messages;
     }
 
 
@@ -77,7 +81,7 @@ public class ProfessorResponsavelOfertaController {
 
         encerramentoResponsavelService.encerrarOferta(ofertaId, encerramentoResponsavelForm, usuarioLogado.getUsuario());
 
-        redirectAttributes.addFlashAttribute("sucesso", "Oferta finalizada com sucesso.");
+        redirectAttributes.addFlashAttribute("sucesso", messages.get("msg.offer.finalized"));
         return "redirect:/professor-responsavel/ofertas";
 
     }

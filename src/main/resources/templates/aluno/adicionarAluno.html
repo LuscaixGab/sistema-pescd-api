@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Novo Aluno | PESCD</title>
+    <title th:text="#{student.new.title}">Cadastrar Novo Aluno | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
         <header class="page-header">
             <div>
-                <p class="page-kicker">Secretaria</p>
-                <h1>Cadastrar Novo Aluno</h1>
-                <p>Adicionar aluno manualmente ao sistema</p>
+                <p class="page-kicker" th:text="#{secretary.kicker}">Secretaria</p>
+                <h1 th:text="#{student.new.heading}">Cadastrar Novo Aluno</h1>
+                <p th:text="#{student.new.subtitle}">Adicionar aluno manualmente ao sistema</p>
             </div>
             
-            <a th:if="${ofertaId != null}" th:href="@{/ofertas/{id}/alunos(id=${ofertaId})}" class="button-link secondary">Voltar para a Oferta</a>
-            <a th:if="${ofertaId == null}" th:href="@{/painel}" class="button-link secondary">Voltar para o Painel</a>
+            <a th:if="${ofertaId != null}" th:href="@{/ofertas/{id}/alunos(id=${ofertaId})}" class="button-link secondary" th:text="#{student.new.backOffer}">Voltar para a Oferta</a>
+            <a th:if="${ofertaId == null}" th:href="@{/painel}" class="button-link secondary" th:text="#{student.new.backPanel}">Voltar para o Painel</a>
         </header>
 
         <div th:if="${erro}" class="notice error" th:text="${erro}"></div>
@@ -27,31 +28,31 @@
             <input type="hidden" name="ofertaId" th:value="${ofertaId}" />
             
             <div class="field" style="margin-bottom: 1.5rem;">
-                <label for="nomeCompleto">Nome Completo *</label>
+                <label for="nomeCompleto" th:text="#{student.new.fullName}">Nome Completo *</label>
                 <input type="text" id="nomeCompleto" th:field="*{nomeCompleto}" style="background: var(--panel);">
                 <div th:if="${#fields.hasErrors('nomeCompleto')}" th:errors="*{nomeCompleto}" style="color: #ff6b6b; font-size: 0.9em; margin-top: 0.5rem;"></div>
             </div>
 
             <div class="field" style="margin-bottom: 1.5rem;">
-                <label for="email">E-mail *</label>
+                <label for="email" th:text="#{admin.form.email}">E-mail *</label>
                 <input type="email" id="email" th:field="*{email}" style="background: var(--panel);">
                 <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: #ff6b6b; font-size: 0.9em; margin-top: 0.5rem;"></div>
             </div>
 
             <div class="field" style="margin-bottom: 1.5rem;">
-                <label for="nomeUsuario">Nome de Usuário *</label>
+                <label for="nomeUsuario" th:text="#{student.new.username}">Nome de Usuário *</label>
                 <input type="text" id="nomeUsuario" th:field="*{nomeUsuario}" style="background: var(--panel);">
                 <div th:if="${#fields.hasErrors('nomeUsuario')}" th:errors="*{nomeUsuario}" style="color: #ff6b6b; font-size: 0.9em; margin-top: 0.5rem;"></div>
             </div>
 
             <div class="field" style="margin-bottom: 2rem;">
-                <label for="senha">Senha Provisória *</label>
+                <label for="senha" th:text="#{student.new.tempPassword}">Senha Provisória *</label>
                 <input type="password" id="senha" th:field="*{senha}" style="background: var(--panel);">
                 <div th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}" style="color: #ff6b6b; font-size: 0.9em; margin-top: 0.5rem;"></div>
             </div>
 
             <div class="actions">
-                <button type="submit">Cadastrar Aluno</button>
+                <button type="submit" th:text="#{student.new.submit}">Cadastrar Aluno</button>
             </div>
         </form>
     </section>

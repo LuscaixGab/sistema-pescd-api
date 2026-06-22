@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Alunos | PESCD</title>
+    <title th:text="#{offers.students.title}">Gerenciar Alunos | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
         <header class="page-header">
             <div>
-                <p class="page-kicker">Secretaria</p>
-                <h1>Gerenciar Alunos da Oferta</h1>
+                <p class="page-kicker" th:text="#{secretary.kicker}">Secretaria</p>
+                <h1 th:text="#{offers.students.heading}">Gerenciar Alunos da Oferta</h1>
                 <p th:text="${'Disciplina: ' + oferta.nomeOferta + ' (' + oferta.semestre + ')'}">Detalhes da Oferta</p>
             </div>
-            <a class="button-link secondary" th:href="@{/ofertas}">Voltar para Lista</a>
+            <a class="button-link secondary" th:href="@{/ofertas}" th:text="#{offers.students.back}">Voltar para Lista</a>
         </header>
 
         <div th:if="${mensagemSucesso}" class="notice success" th:text="${mensagemSucesso}"></div>
@@ -24,36 +25,36 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 1rem;">
 
             <div>
-                <h2 style="font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Importar ou Cadastrar</h2>
+                <h2 style="font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;" th:text="#{offers.students.import}">Importar ou Cadastrar</h2>
                 
                 <form class="offer-form" th:action="@{/ofertas/{id}/alunos/upload(id=${oferta.id})}" method="post" enctype="multipart/form-data">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
                     <div class="field" style="margin-bottom: 1rem;">
-                        <label for="file">1. Importar arquivo CSV:</label>
+                        <label for="file" th:text="#{offers.students.csv}">1. Importar arquivo CSV (máx 5MB):</label>
                         <input type="file" id="file" name="file" accept=".csv" required style="padding-top: 0.7rem; background: var(--panel);">
                         <small style="color: var(--muted); margin-top: 0.5rem; display: block;">
-                            O cabeçalho deve ser exatamente: <strong>RA, NOME_COMPLETO, EMAIL</strong>
+                            O cabeçalho deve ser exatamente: <strong th:text="#{offers.students.csvFormat}">RA, NOME_COMPLETO, EMAIL</strong>
                         </small>
                     </div>
 
                     <div class="actions">
-                        <button type="submit" style="width: 100%;">Fazer Upload do CSV</button>
+                        <button type="submit" style="width: 100%;" th:text="#{offers.students.upload}">Fazer Upload do CSV</button>
                     </div>
                 </form>
                 
                 <div style="margin-top: 2.5rem; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 1.5rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9em;">2. Cadastro Manual:</label>
-                    <p style="color: var(--muted); font-size: 0.85em; margin-bottom: 1rem;">Use esta opção caso o aluno ainda não possua uma conta registrada no sistema.</p>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9em;" th:text="#{offers.students.manual}">2. Cadastro Manual:</label>
+                    <p style="color: var(--muted); font-size: 0.85em; margin-bottom: 1rem;" th:text="#{offers.students.manualHelp}">Use esta opção caso o aluno ainda não possua uma conta registrada no sistema.</p>
                     
-                    <a th:href="@{/aluno/novo(ofertaId=${oferta.id})}" class="button-link secondary" style="display: block; text-align: center; width: 100%; box-sizing: border-box;">
+                    <a th:href="@{/aluno/novo(ofertaId=${oferta.id})}" class="button-link secondary" style="display: block; text-align: center; width: 100%; box-sizing: border-box;" th:text="#{offers.students.registerManual}">
                         + Cadastrar Novo Aluno Manualmente
                     </a>
                 </div>
             </div>
 
             <div style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 3rem;">
-                <h2 style="font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Lista Geral de Alunos</h2>
+                <h2 style="font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;" th:text="#{offers.students.generalList}">Lista Geral de Alunos</h2>
                 
                 <form th:action="@{/ofertas/{id}/alunos/sincronizar(id=${oferta.id})}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -73,14 +74,14 @@
                             </label>
                         </div>
                         
-                        <div th:if="${#lists.isEmpty(todosAlunos)}" style="color: var(--muted); text-align: center; padding: 2rem 0;">
+                        <div th:if="${#lists.isEmpty(todosAlunos)}" style="color: var(--muted); text-align: center; padding: 2rem 0;" th:text="#{offers.students.empty}">
                             Nenhum aluno cadastrado no sistema.
                         </div>
 
                     </div>
 
                     <div class="actions">
-                        <button type="submit" style="width: 100%;">Salvar Matrículas da Lista</button>
+                        <button type="submit" style="width: 100%;" th:text="#{offers.students.save}">Salvar Matrículas da Lista</button>
                     </div>
                 </form>
             </div>

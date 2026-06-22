@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enviar Documentação | PESCD</title>
+    <title th:text="#{student.documentation.title}">Enviar Documentação | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     
     <style>
@@ -64,14 +64,15 @@
     </style>
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
 
         <header class="page-header">
             <div>
-                <p class="page-kicker">Documentação Comprobatória</p>
-                <h1>Enviar Documentação</h1>
-                <p>Oferta: <strong th:text="${inscricao.oferta.nomeOferta}">Nome da Oferta</strong></p>
+                <p class="page-kicker" th:text="#{student.documentation.kicker}">Documentação Comprobatória</p>
+                <h1 th:text="#{student.sendDocumentation}">Enviar Documentação</h1>
+                <p><span th:text="#{student.documentation.offer}">Oferta:</span> <strong th:text="${inscricao.oferta.nomeOferta}">Nome da Oferta</strong></p>
             </div>
         </header>
 
@@ -83,38 +84,38 @@
               enctype="multipart/form-data">
             
             <div class="form-group">
-                <label for="nomeInstituicao">Instituição onde ministrou a disciplina:</label>
-                <input type="text" id="nomeInstituicao" th:field="*{nomeInstituicao}" required placeholder="Ex: Nome da Universidade/Escola">
+                <label for="nomeInstituicao" th:text="#{student.documentation.institution}">Instituição onde ministrou a disciplina:</label>
+                <input type="text" id="nomeInstituicao" th:field="*{nomeInstituicao}" required placeholder="Ex: Nome da Universidade/Escola" th:placeholder="#{student.documentation.institution.placeholder}">
                 <span th:if="${#fields.hasErrors('nomeInstituicao')}" th:errors="*{nomeInstituicao}" class="field-error"></span>
             </div>
             
             <div class="form-group">
-                <label for="nomeDisciplina">Nome da disciplina:</label>
-                <input type="text" id="nomeDisciplina" th:field="*{nomeDisciplina}" required placeholder="Qual foi a matéria ministrada?">
+                <label for="nomeDisciplina" th:text="#{student.documentation.discipline}">Nome da disciplina:</label>
+                <input type="text" id="nomeDisciplina" th:field="*{nomeDisciplina}" required placeholder="Qual foi a matéria ministrada?" th:placeholder="#{student.documentation.discipline.placeholder}">
                 <span th:if="${#fields.hasErrors('nomeDisciplina')}" th:errors="*{nomeDisciplina}" class="field-error"></span>
             </div>
             
             <div class="form-group">
-                <label for="cursoDisciplina">Curso da disciplina:</label>
-                <input type="text" id="cursoDisciplina" th:field="*{cursoDisciplina}" required placeholder="Ex: Engenharia de Computação">
+                <label for="cursoDisciplina" th:text="#{student.documentation.course}">Curso da disciplina:</label>
+                <input type="text" id="cursoDisciplina" th:field="*{cursoDisciplina}" required placeholder="Ex: Engenharia de Computação" th:placeholder="#{student.documentation.course.placeholder}">
                 <span th:if="${#fields.hasErrors('cursoDisciplina')}" th:errors="*{cursoDisciplina}" class="field-error"></span>
             </div>
             
             <div class="form-group">
-                <label for="cargaHoraria">Carga Horária (em horas):</label>
+                <label for="cargaHoraria" th:text="#{student.documentation.hours}">Carga Horária (em horas):</label>
                 <input type="number" id="cargaHoraria" th:field="*{cargaHoraria}" min="1" required placeholder="Ex: 60">
                 <span th:if="${#fields.hasErrors('cargaHoraria')}" th:errors="*{cargaHoraria}" class="field-error"></span>
             </div>
             
             <div class="form-group">
-                <label for="arquivo">Arquivo com a documentação (Apenas PDF, máx 5MB):</label>
+                <label for="arquivo" th:text="#{student.documentation.file}">Arquivo com a documentação (Apenas PDF, máx 5MB):</label>
                 <input type="file" id="arquivo" name="arquivo" accept="application/pdf" required>
                 <span th:if="${#fields.hasErrors('arquivo')}" th:errors="*{arquivo}" class="field-error"></span>
             </div>
             
             <div class="form-actions">
-                <button type="submit" class="button-link">Enviar Documentação</button>
-                <a th:href="@{/aluno/ofertas}" class="button-link secondary" style="display: flex; align-items: center; justify-content: center;">Cancelar</a>
+                <button type="submit" class="button-link" th:text="#{student.sendDocumentation}">Enviar Documentação</button>
+                <a th:href="@{/aluno/ofertas}" class="button-link secondary" style="display: flex; align-items: center; justify-content: center;" th:text="#{common.cancel}">Cancelar</a>
             </div>
             
         </form>

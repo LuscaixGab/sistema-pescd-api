@@ -1,11 +1,14 @@
 package br.ufscar.dc.dsw.pescd.controller;
 
+import br.ufscar.dc.dsw.pescd.config.MessageHelper;
 import br.ufscar.dc.dsw.pescd.dto.AnaliseRelatorioResponsavelForm;
 import br.ufscar.dc.dsw.pescd.model.RelatorioFinal;
 import br.ufscar.dc.dsw.pescd.model.Usuario;
 import br.ufscar.dc.dsw.pescd.security.UsuarioUserDetails;
 import br.ufscar.dc.dsw.pescd.service.AnaliseRelatorioResponsavelService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -27,10 +30,15 @@ import java.util.UUID;
 @RequestMapping("/professor-responsavel/relatorios")
 @PreAuthorize("hasRole('PROFESSOR')")
 public class ProfessorResponsavelRelatorioController {
-    private final AnaliseRelatorioResponsavelService analiseRelatorioResponsavelService;
+    private static final Logger logger = LoggerFactory.getLogger(ProfessorResponsavelRelatorioController.class);
 
-    public ProfessorResponsavelRelatorioController(AnaliseRelatorioResponsavelService analiseRelatorioResponsavelService) {
+    private final AnaliseRelatorioResponsavelService analiseRelatorioResponsavelService;
+    private final MessageHelper messages;
+
+    public ProfessorResponsavelRelatorioController(AnaliseRelatorioResponsavelService analiseRelatorioResponsavelService,
+                                                   MessageHelper messages) {
         this.analiseRelatorioResponsavelService = analiseRelatorioResponsavelService;
+        this.messages = messages;
     }
 
     @GetMapping
@@ -87,7 +95,7 @@ public class ProfessorResponsavelRelatorioController {
                 analiseRelatorioResponsavelForm,
                 usuarioLogado.getUsuario());
 
-        redirectAttributes.addFlashAttribute("sucesso", "Relatório final analisado com sucesso.");
+        redirectAttributes.addFlashAttribute("sucesso", messages.get("msg.report.analyzed"));
         return "redirect:/professor-responsavel/relatorios";
     }
 
@@ -115,6 +123,7 @@ public class ProfessorResponsavelRelatorioController {
                             "inline; filename=\"" + resource.getFilename() + "\"")
                     .body(resource);
         } catch (Exception exception) {
+            logger.error("Erro ao baixar relatorio da inscricao {}", inscricaoId, exception);
             return ResponseEntity.internalServerError().build();
         }
     }

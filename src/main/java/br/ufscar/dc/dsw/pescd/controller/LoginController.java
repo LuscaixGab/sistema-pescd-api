@@ -1,5 +1,6 @@
 package br.ufscar.dc.dsw.pescd.controller;
 
+import br.ufscar.dc.dsw.pescd.config.MessageHelper;
 import br.ufscar.dc.dsw.pescd.security.UsuarioUserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @Controller
 public class LoginController {
+
+    private final MessageHelper messages;
+
+    public LoginController(MessageHelper messages) {
+        this.messages = messages;
+    }
 
     @GetMapping("/")
     public String redirecionarRaiz() {
@@ -27,11 +34,11 @@ public class LoginController {
         }
 
         if (erro != null) {
-            model.addAttribute("mensagemErro", "Usuário ou senha inválidos.");
+            model.addAttribute("mensagemErro", messages.get("login.invalid"));
         }
 
         if (logout != null) {
-            model.addAttribute("mensagemLogout", "Você saiu do sistema.");
+            model.addAttribute("mensagemLogout", messages.get("login.logout"));
         }
 
         return "telaLogin";

@@ -1,5 +1,6 @@
 package br.ufscar.dc.dsw.pescd.controller;
 
+import br.ufscar.dc.dsw.pescd.config.MessageHelper;
 import br.ufscar.dc.dsw.pescd.dto.PlanoTrabalhoForm;
 import br.ufscar.dc.dsw.pescd.model.Inscricao;
 import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
@@ -27,17 +28,20 @@ public class PlanoTrabalhoController {
 
     private final PlanoTrabalhoService planoTrabalhoService;
     private final InscricaoRepository inscricaoRepository;
+    private final MessageHelper messages;
 
     public PlanoTrabalhoController(PlanoTrabalhoService planoTrabalhoService,
-                                   InscricaoRepository inscricaoRepository) {
+                                   InscricaoRepository inscricaoRepository,
+                                   MessageHelper messages) {
         this.planoTrabalhoService = planoTrabalhoService;
         this.inscricaoRepository = inscricaoRepository;
+        this.messages = messages;
     }
 
     @GetMapping("/adicionar")
     public String redirecionarSemInscricao(RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("erroGeral",
-                "Selecione uma matrícula para enviar o plano.");
+                messages.get("msg.plan.missingEnrollment"));
         return "redirect:/aluno/ofertas";
     }
 
@@ -71,7 +75,7 @@ public class PlanoTrabalhoController {
                                          RedirectAttributes redirectAttributes) {
         if (planoTrabalhoForm.getArquivoPlano() == null || planoTrabalhoForm.getArquivoPlano().isEmpty()) {
             bindingResult.rejectValue("arquivoPlano", "arquivoPlano.vazio",
-                    "Selecione um arquivo PDF do plano.");
+                    messages.get("validation.planFile.required"));
         }
 
         if (bindingResult.hasErrors()) {
@@ -86,7 +90,7 @@ public class PlanoTrabalhoController {
         try {
             planoTrabalhoService.criarPlanoTrabalho(planoTrabalhoForm, usuarioLogado.getUsuario());
             redirectAttributes.addFlashAttribute("mensagemSucesso",
-                    "Plano de trabalho enviado com sucesso.");
+                    messages.get("msg.plan.sent"));
             return "redirect:/painel";
         } catch (IllegalArgumentException | IllegalStateException exception) {
             model.addAttribute("erroGeral", exception.getMessage());

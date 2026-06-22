@@ -1,5 +1,6 @@
 package br.ufscar.dc.dsw.pescd.controller;
 
+import br.ufscar.dc.dsw.pescd.config.MessageHelper;
 import br.ufscar.dc.dsw.pescd.dto.RelatorioFinalDTO;
 import br.ufscar.dc.dsw.pescd.model.Inscricao;
 import br.ufscar.dc.dsw.pescd.model.PlanoTrabalho;
@@ -8,7 +9,10 @@ import br.ufscar.dc.dsw.pescd.model.StatusInscricao;
 import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
 import br.ufscar.dc.dsw.pescd.repository.PlanoTrabalhoRepository;
 import br.ufscar.dc.dsw.pescd.repository.RelatorioFinalRepository;
+import br.ufscar.dc.dsw.pescd.util.UploadUtils;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,19 +30,24 @@ import java.nio.file.StandardCopyOption;
 @RequestMapping("/aluno/relatorio")
 public class RelatorioFinalController {
 
+    private static final Logger logger = LoggerFactory.getLogger(RelatorioFinalController.class);
+
     private final InscricaoRepository inscricaoRepository;
     private final PlanoTrabalhoRepository planoTrabalhoRepository;
     private final RelatorioFinalRepository relatorioFinalRepository;
     private final br.ufscar.dc.dsw.pescd.service.LogStatusService logStatusService;
+    private final MessageHelper messages;
 
     public RelatorioFinalController(InscricaoRepository inscricaoRepository, 
                                     PlanoTrabalhoRepository planoTrabalhoRepository, 
                                     RelatorioFinalRepository relatorioFinalRepository,
-                                    br.ufscar.dc.dsw.pescd.service.LogStatusService logStatusService) {
+                                    br.ufscar.dc.dsw.pescd.service.LogStatusService logStatusService,
+                                    MessageHelper messages) {
         this.inscricaoRepository = inscricaoRepository;
         this.planoTrabalhoRepository = planoTrabalhoRepository;
         this.relatorioFinalRepository = relatorioFinalRepository;
         this.logStatusService = logStatusService;
+        this.messages = messages;
     }
 
     @GetMapping("/novo/{id}")
@@ -77,16 +86,10 @@ public class RelatorioFinalController {
 
         MultipartFile arquivo = dto.getArquivo();
 
-        // Validação de PDF
-        if (arquivo.isEmpty() || arquivo.getContentType() == null || !arquivo.getContentType().equals("application/pdf")) {
-            model.addAttribute("erro", "O arquivo deve ser um PDF válido.");
-            return recarregarTelaRelatorioComErro(inscricao, model, dto);
-        }
-
-        // Validação de tamanho (Máx 5MB)
-        long tamanhoMaximo = 5 * 1024 * 1024;
-        if (arquivo.getSize() > tamanhoMaximo) {
-            model.addAttribute("erro", "O arquivo excede o limite de 5MB.");
+        try {
+            UploadUtils.validarPdfObrigatorio(arquivo, "o relatório");
+        } catch (IllegalArgumentException e) {
+            result.rejectValue("arquivo", "arquivo.invalido", e.getMessage());
             return recarregarTelaRelatorioComErro(inscricao, model, dto);
         }
 
@@ -121,8 +124,8 @@ public class RelatorioFinalController {
             logStatusService.registrarLog(inscricao, StatusInscricao.RELATORIO_ENVIADO, inscricao.getAluno());
 
         } catch (IOException e) {
-            e.printStackTrace(); // Isso vai imprimir o erro real no seu terminal para ajudar se falhar de novo
-            model.addAttribute("erro", "Erro ao processar o upload do arquivo. Tente novamente.");
+            logger.error("Erro ao processar upload do relatorio da inscricao {}", id, e);
+            model.addAttribute("erro", messages.get("msg.report.upload"));
             return recarregarTelaRelatorioComErro(inscricao, model, dto);
         }
 

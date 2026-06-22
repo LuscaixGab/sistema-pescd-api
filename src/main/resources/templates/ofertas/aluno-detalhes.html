@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Detalhes do Aluno | PESCD</title>
+    <title th:text="#{offers.studentDetails.title}">Detalhes do Aluno | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         .page-shell { max-width: 1000px !important; width: 95% !important; margin: 0 auto !important; }
@@ -16,53 +16,54 @@
     </style>
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
         <header class="page-header">
             <div>
                 <p class="page-kicker" th:text="${oferta.nomeOferta + ' (' + oferta.semestre + ')'}">Oferta</p>
-                <h1>Detalhes e Histórico do Aluno</h1>
+                <h1 th:text="#{offers.studentDetails.heading}">Detalhes e Histórico do Aluno</h1>
             </div>
-            <a class="button-link secondary" th:href="@{/ofertas/{id}/acompanhamento(id=${oferta.id})}">Voltar</a>
+            <a class="button-link secondary" th:href="@{/ofertas/{id}/acompanhamento(id=${oferta.id})}" th:text="#{common.back}">Voltar</a>
         </header>
 
         <div class="info-grid">
             <div class="info-box">
-                <h3>Dados do Aluno</h3>
-                <p><strong>Nome:</strong> <span th:text="${inscricao.aluno.nomeCompleto}"></span></p>
-                <p><strong>RA:</strong> <span th:text="${inscricao.aluno.nomeUsuario}"></span></p>
-                <p><strong>E-mail:</strong> <span th:text="${inscricao.aluno.email}"></span></p>
-                <p><strong>Status Atual:</strong> <strong th:text="${inscricao.status.name()}" style="color: #38bdf8;"></strong></p>
+                <h3 th:text="#{offers.studentDetails.data}">Dados do Aluno</h3>
+                <p><strong th:text="#{common.nameLabel}">Nome:</strong> <span th:text="${inscricao.aluno.nomeCompleto}"></span></p>
+                <p><strong th:text="#{offers.studentDetails.ra}">RA:</strong> <span th:text="${inscricao.aluno.nomeUsuario}"></span></p>
+                <p><strong th:text="#{common.emailLabel}">E-mail:</strong> <span th:text="${inscricao.aluno.email}"></span></p>
+                <p><strong th:text="#{common.currentStatusLabel}">Status Atual:</strong> <strong th:text="${inscricao.status.name()}" style="color: #38bdf8;"></strong></p>
             </div>
 
             <div class="info-box">
-                <h3>Resumo de Entregas</h3>
+                <h3 th:text="#{offers.studentDetails.deliveries}">Resumo de Entregas</h3>
                 <p>
-                    <strong>Plano de Trabalho:</strong>
-                    <span th:if="${plano == null}" style="color: var(--muted);">Não enviado</span>
-                    <span th:if="${plano != null}" style="color: #34d399;">Enviado</span>
+                    <strong th:text="#{offers.studentDetails.plan}">Plano de Trabalho:</strong>
+                    <span th:if="${plano == null}" style="color: var(--muted);" th:text="#{common.notSent}">Não enviado</span>
+                    <span th:if="${plano != null}" style="color: #34d399;" th:text="#{common.sent}">Enviado</span>
                 </p>
                 <p>
-                    <strong>Documentação da Aula:</strong>
-                    <span th:if="${documentacao == null}" style="color: var(--muted);">Não enviada</span>
-                    <span th:if="${documentacao != null}" style="color: #34d399;">Enviada</span>
+                    <strong th:text="#{offers.studentDetails.documentation}">Documentação da Aula:</strong>
+                    <span th:if="${documentacao == null}" style="color: var(--muted);" th:text="#{common.notSent}">Não enviada</span>
+                    <span th:if="${documentacao != null}" style="color: #34d399;" th:text="#{common.sent}">Enviada</span>
                 </p>
                 <p>
-                    <strong>Relatório Final:</strong>
-                    <span th:if="${relatorio == null}" style="color: var(--muted);">Não enviado</span>
-                    <span th:if="${relatorio != null}" style="color: #34d399;">Enviado</span>
+                    <strong th:text="#{offers.studentDetails.report}">Relatório Final:</strong>
+                    <span th:if="${relatorio == null}" style="color: var(--muted);" th:text="#{common.notSent}">Não enviado</span>
+                    <span th:if="${relatorio != null}" style="color: #34d399;" th:text="#{common.sent}">Enviado</span>
                 </p>
             </div>
         </div>
 
-        <h3>Histórico de Status (Logs)</h3>
+        <h3 th:text="#{offers.studentDetails.logs}">Histórico de Status (Logs)</h3>
         <div class="table-container">
             <table>
                 <thead>
                 <tr>
-                    <th>Data / Hora</th>
-                    <th>Novo Status</th>
-                    <th>Usuário Responsável</th>
+                    <th th:text="#{offers.studentDetails.dateTime}">Data / Hora</th>
+                    <th th:text="#{offers.studentDetails.newStatus}">Novo Status</th>
+                    <th th:text="#{offers.studentDetails.responsibleUser}">Usuário Responsável</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -72,7 +73,7 @@
                     <td th:text="${log.usuarioResponsavel != null ? log.usuarioResponsavel.nomeCompleto : 'Sistema'}">Usuário</td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(logs)}">
-                    <td colspan="3" style="text-align: center; color: var(--muted);">Nenhum log de alteração registrado ainda.</td>
+                    <td colspan="3" style="text-align: center; color: var(--muted);" th:text="#{offers.studentDetails.noLogs}">Nenhum log de alteração registrado ainda.</td>
                 </tr>
                 </tbody>
             </table>

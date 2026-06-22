@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ofertas do Responsável | PESCD</title>
+    <title th:text="#{responsible.offers.title}">Ofertas do Responsável | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
         <header class="page-header">
             <div>
-                <p class="page-kicker">Professor Responsável</p>
-                <h1>Encerramento de Ofertas</h1>
-                <p>Ofertas sob sua responsabilidade. O encerramento só será aceito quando todos os alunos estiverem concluídos pelo responsável.</p>
+                <p class="page-kicker" th:text="#{professor.responsible}">Professor Responsável</p>
+                <h1 th:text="#{responsible.offers.heading}">Encerramento de Ofertas</h1>
+                <p th:text="#{responsible.offers.subtitle}">Ofertas sob sua responsabilidade. O encerramento só será aceito quando todos os alunos estiverem concluídos pelo responsável.</p>
             </div>
-            <a class="button-link secondary" th:href="@{/professor/atuacao}">Trocar papel</a>
+            <a class="button-link secondary" th:href="@{/professor-responsavel/painel}" th:text="#{common.back.dashboard}">Voltar ao painel</a>
         </header>
 
         <div class="notice success" th:if="${sucesso}" th:text="${sucesso}"></div>
@@ -25,23 +26,26 @@
             <table>
                 <thead>
                 <tr>
-                    <th>Oferta</th>
-                    <th>Semestre</th>
-                    <th>Período</th>
-                    <th>Status</th>
-                    <th>Ações</th>
+                    <th th:text="#{common.offer}">Oferta</th>
+                    <th th:text="#{common.semester}">Semestre</th>
+                    <th th:text="#{common.period}">Período</th>
+                    <th th:text="#{common.status}">Status</th>
+                    <th th:text="#{common.actions}">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="ofertaResumo : ${ofertasResumo}">
                     <td>
                         <strong th:text="${ofertaResumo.oferta.nomeOferta}">Oferta</strong>
-                        <span class="hint" th:text="${'Responsável: ' + ofertaResumo.oferta.professorResponsavel.nomeCompleto}">Responsável</span>
+                        <span class="hint"
+                              th:text="#{responsible.offers.owner} + ' ' + ${ofertaResumo.oferta.professorResponsavel.nomeCompleto}">
+                            Responsável
+                        </span>
                     </td>
                     <td th:text="${ofertaResumo.oferta.semestre}">2026/1</td>
                     <td>
                         <span th:text="${#temporals.format(ofertaResumo.oferta.dataInicio, 'dd/MM/yyyy')}">01/01/2026</span>
-                        <span> a </span>
+                        <span th:text="#{common.toSeparator}"> a </span>
                         <span th:text="${#temporals.format(ofertaResumo.oferta.dataFim, 'dd/MM/yyyy')}">30/06/2026</span>
                     </td>
                     <td>
@@ -50,10 +54,10 @@
                     <td>
                         <a class="button-link btn-sm"
                            th:if="${ofertaResumo.podeEncerrar}"
-                           th:href="@{/professor-responsavel/ofertas/{id}/encerrar(id=${ofertaResumo.oferta.id})}">
+                           th:href="@{/professor-responsavel/ofertas/{id}/encerrar(id=${ofertaResumo.oferta.id})}" th:text="#{responsible.offers.close}">
                             Encerrar Oferta
                         </a>
-                        <span class="button-link secondary btn-sm disabled" th:if="${!ofertaResumo.podeEncerrar}">
+                        <span class="button-link secondary btn-sm disabled" th:if="${!ofertaResumo.podeEncerrar}" th:text="#{responsible.offers.close}">
                             Encerrar Oferta
                         </span>
                         <span class="hint" th:if="${!ofertaResumo.podeEncerrar}" th:text="${ofertaResumo.motivoBloqueio}">
@@ -63,7 +67,7 @@
                 </tr>
 
                 <tr th:if="${#lists.isEmpty(ofertasResumo)}">
-                    <td colspan="5" class="table-empty-cell">
+                    <td colspan="5" class="table-empty-cell" th:text="#{responsible.offers.empty}">
                         Não há ofertas cadastradas sob sua responsabilidade.
                     </td>
                 </tr>

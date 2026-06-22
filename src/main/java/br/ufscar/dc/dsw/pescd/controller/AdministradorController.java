@@ -1,5 +1,6 @@
 package br.ufscar.dc.dsw.pescd.controller;
 
+import br.ufscar.dc.dsw.pescd.config.MessageHelper;
 import br.ufscar.dc.dsw.pescd.dto.AdministradorDTO;
 import br.ufscar.dc.dsw.pescd.model.Usuario;
 import br.ufscar.dc.dsw.pescd.security.UsuarioUserDetails;
@@ -25,9 +26,11 @@ import java.util.UUID;
 public class AdministradorController {
 
     private final AdministradorService administradorService;
+    private final MessageHelper messages;
 
-    public AdministradorController(AdministradorService administradorService) {
+    public AdministradorController(AdministradorService administradorService, MessageHelper messages) {
         this.administradorService = administradorService;
+        this.messages = messages;
     }
 
     @GetMapping
@@ -44,7 +47,9 @@ public class AdministradorController {
 
     @GetMapping("/usuarios/novo")
     public String exibirFormularioNovo(Model model) {
-        prepararFormulario(model, new AdministradorDTO(), "/administrador/usuarios", "Cadastrar usuario", "Salvar usuario");
+        prepararFormulario(model, new AdministradorDTO(), "/administrador/usuarios",
+                messages.get("admin.form.createTitle"),
+                messages.get("admin.form.createButton"));
         return "administrador/usuario-formulario";
     }
 
@@ -54,22 +59,26 @@ public class AdministradorController {
                                Model model,
                                RedirectAttributes redirectAttributes) {
         if (administradorDTO.getSenha() == null || administradorDTO.getSenha().isBlank()) {
-            bindingResult.rejectValue("senha", "senha.vazia", "A senha e obrigatoria.");
+            bindingResult.rejectValue("senha", "validation.password.required");
         }
 
         if (bindingResult.hasErrors()) {
-            prepararFormulario(model, administradorDTO, "/administrador/usuarios", "Cadastrar usuario", "Salvar usuario");
+            prepararFormulario(model, administradorDTO, "/administrador/usuarios",
+                    messages.get("admin.form.createTitle"),
+                    messages.get("admin.form.createButton"));
             return "administrador/usuario-formulario";
         }
 
         try {
             Usuario usuario = administradorService.criarUsuario(administradorDTO);
             redirectAttributes.addFlashAttribute("mensagemSucesso",
-                    "Usuario \"" + usuario.getNomeCompleto() + "\" cadastrado com sucesso.");
+                    messages.get("msg.user.created", usuario.getNomeCompleto()));
             return "redirect:/administrador/usuarios";
         } catch (IllegalArgumentException exception) {
             model.addAttribute("erroGeral", exception.getMessage());
-            prepararFormulario(model, administradorDTO, "/administrador/usuarios", "Cadastrar usuario", "Salvar usuario");
+            prepararFormulario(model, administradorDTO, "/administrador/usuarios",
+                    messages.get("admin.form.createTitle"),
+                    messages.get("admin.form.createButton"));
             return "administrador/usuario-formulario";
         }
     }
@@ -79,8 +88,8 @@ public class AdministradorController {
         try {
             prepararFormulario(model, administradorService.carregarFormulario(id),
                     "/administrador/usuarios/" + id + "/editar",
-                    "Editar usuario",
-                    "Atualizar usuario");
+                    messages.get("admin.form.editTitle"),
+                    messages.get("admin.form.updateButton"));
             return "administrador/usuario-formulario";
         } catch (IllegalArgumentException exception) {
             redirectAttributes.addFlashAttribute("erroGeral", exception.getMessage());
@@ -96,19 +105,21 @@ public class AdministradorController {
                                    RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             prepararFormulario(model, administradorDTO, "/administrador/usuarios/" + id + "/editar",
-                    "Editar usuario", "Atualizar usuario");
+                    messages.get("admin.form.editTitle"),
+                    messages.get("admin.form.updateButton"));
             return "administrador/usuario-formulario";
         }
 
         try {
             Usuario usuario = administradorService.atualizarUsuario(id, administradorDTO);
             redirectAttributes.addFlashAttribute("mensagemSucesso",
-                    "Usuario \"" + usuario.getNomeCompleto() + "\" atualizado com sucesso.");
+                    messages.get("msg.user.updated", usuario.getNomeCompleto()));
             return "redirect:/administrador/usuarios";
         } catch (IllegalArgumentException exception) {
             model.addAttribute("erroGeral", exception.getMessage());
             prepararFormulario(model, administradorDTO, "/administrador/usuarios/" + id + "/editar",
-                    "Editar usuario", "Atualizar usuario");
+                    messages.get("admin.form.editTitle"),
+                    messages.get("admin.form.updateButton"));
             return "administrador/usuario-formulario";
         }
     }
@@ -119,7 +130,7 @@ public class AdministradorController {
                                  RedirectAttributes redirectAttributes) {
         try {
             administradorService.excluirUsuario(id, usuarioLogado.getUsuario().getId());
-            redirectAttributes.addFlashAttribute("mensagemSucesso", "Usuario excluido com sucesso.");
+            redirectAttributes.addFlashAttribute("mensagemSucesso", messages.get("msg.user.deleted"));
         } catch (IllegalArgumentException exception) {
             redirectAttributes.addFlashAttribute("erroGeral", exception.getMessage());
         }

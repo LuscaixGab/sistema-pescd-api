@@ -1,5 +1,6 @@
 package br.ufscar.dc.dsw.pescd.controller;
 
+import br.ufscar.dc.dsw.pescd.config.MessageHelper;
 import br.ufscar.dc.dsw.pescd.dto.AnaliseDocumentacaoForm;
 import br.ufscar.dc.dsw.pescd.model.DocumentacaoAula;
 import br.ufscar.dc.dsw.pescd.model.Usuario;
@@ -26,9 +27,12 @@ import java.util.UUID;
 public class ProfessorResponsavelDocumentacaoController {
 
     private final AnaliseDocumentacaoService analiseDocumentacaoService;
+    private final MessageHelper messages;
 
-    public ProfessorResponsavelDocumentacaoController(AnaliseDocumentacaoService analiseDocumentacaoService) {
+    public ProfessorResponsavelDocumentacaoController(AnaliseDocumentacaoService analiseDocumentacaoService,
+                                                      MessageHelper messages) {
         this.analiseDocumentacaoService = analiseDocumentacaoService;
+        this.messages = messages;
     }
 
     @GetMapping
@@ -84,7 +88,7 @@ public class ProfessorResponsavelDocumentacaoController {
                 analiseDocumentacaoForm,
                 usuarioLogado.getUsuario());
 
-        redirectAttributes.addFlashAttribute("sucesso", "Documentação analisada com sucesso.");
+        redirectAttributes.addFlashAttribute("sucesso", messages.get("msg.docs.analyzed"));
         return "redirect:/professor-responsavel/documentacoes";
     }
 }

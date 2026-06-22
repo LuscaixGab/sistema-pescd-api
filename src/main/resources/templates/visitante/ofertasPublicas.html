@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ofertas do Programa | PESCD</title>
+    <title th:text="#{visitor.title}">Ofertas do Programa | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     
     <style>
@@ -28,14 +28,15 @@
     </style>
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
         
         <header class="page-header">
             <div>
-                <p class="page-kicker">Bem-vindo Visitante!</p>
-                <h1>Ofertas de Disciplinas</h1>
-                <p>Confira abaixo as disciplinas ofertadas atualmente pelo programa.</p>
+                <p class="page-kicker" th:text="#{visitor.welcome}">Bem-vindo Visitante!</p>
+                <h1 th:text="#{visitor.heading}">Ofertas de Disciplinas</h1>
+                <p th:text="#{visitor.subtitle}">Confira abaixo as disciplinas ofertadas atualmente pelo programa.</p>
             </div>
         </header>
 
@@ -43,12 +44,12 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Oferta / Disciplina</th>
-                        <th>Semestre</th>
-                        <th>Início</th>
-                        <th>Fim</th>
-                        <th>Professor Responsável</th>
-                        <th>Alunos Matriculados</th> </tr>
+                        <th th:text="#{common.offerDiscipline}">Oferta / Disciplina</th>
+                        <th th:text="#{common.semester}">Semestre</th>
+                        <th th:text="#{common.start}">Início</th>
+                        <th th:text="#{common.end}">Fim</th>
+                        <th th:text="#{professor.responsible}">Professor Responsável</th>
+                        <th th:text="#{visitor.enrolledStudents}">Alunos Matriculados</th> </tr>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,7 +63,7 @@
                     </tr>
                     
                     <tr th:if="${#lists.isEmpty(ofertas)}">
-                        <td colspan="5" style="text-align: center; padding: 20px;">
+                        <td colspan="5" style="text-align: center; padding: 20px;" th:text="#{visitor.empty}">
                             Nenhuma oferta disponível no momento.
                         </td>
                     </tr>
@@ -72,7 +73,7 @@
         
         <div>
             <p></p>
-            <a class="button-link secondary" th:href="@{/login}">Fazer Login</a>
+            <a class="button-link secondary" th:href="@{/login}" th:text="#{common.login}">Fazer Login</a>
         </div>
 
     </section>

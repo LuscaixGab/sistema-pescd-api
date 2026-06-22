@@ -1,5 +1,6 @@
 package br.ufscar.dc.dsw.pescd.controller;
 
+import br.ufscar.dc.dsw.pescd.config.MessageHelper;
 import br.ufscar.dc.dsw.pescd.model.Usuario;
 import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
 import br.ufscar.dc.dsw.pescd.repository.OfertaRepository;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.validation.BindingResult;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import jakarta.validation.Valid;
-import br.ufscar.dc.dsw.pescd.model.StatusInscricao;
 
 import java.security.Principal;
 import java.util.NoSuchElementException;
@@ -34,15 +34,18 @@ public class AlunoController {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final OfertaRepository ofertaRepository;
+    private final MessageHelper messages;
 
     public AlunoController(UsuarioRepository usuarioRepository, 
                            PasswordEncoder passwordEncoder,
                            OfertaRepository ofertaRepository,
-                           InscricaoRepository inscricaoRepository) {
+                           InscricaoRepository inscricaoRepository,
+                           MessageHelper messages) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.ofertaRepository = ofertaRepository;
         this.inscricaoRepository = inscricaoRepository;
+        this.messages = messages;
     }
 
     @GetMapping("/ofertas")
@@ -88,7 +91,7 @@ public class AlunoController {
 
         if (usuarioRepository.findByEmail(alunoDTO.getEmail()).isPresent() || 
             usuarioRepository.findByNomeUsuario(alunoDTO.getNomeUsuario()).isPresent()) {
-            model.addAttribute("erro", "Já existe um usuário cadastrado com este E-mail ou RA.");
+            model.addAttribute("erro", messages.get("msg.student.duplicate"));
             model.addAttribute("ofertaId", ofertaId);
             return "aluno/adicionarAluno";
         }

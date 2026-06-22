@@ -9,6 +9,7 @@ import br.ufscar.dc.dsw.pescd.model.Usuario;
 import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
 import br.ufscar.dc.dsw.pescd.repository.PlanoTrabalhoRepository;
 import br.ufscar.dc.dsw.pescd.repository.UsuarioRepository;
+import br.ufscar.dc.dsw.pescd.util.UploadUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -100,9 +101,7 @@ public class PlanoTrabalhoService {
     }
 
     private String salvarArquivoPlano(MultipartFile arquivoPlano) {
-        if (arquivoPlano == null || arquivoPlano.isEmpty()) {
-            throw new IllegalArgumentException("O arquivo do plano é obrigatório.");
-        }
+        UploadUtils.validarPdfObrigatorio(arquivoPlano, "o plano");
 
         String nomeOriginal = StringUtils.cleanPath(arquivoPlano.getOriginalFilename() == null
                 ? ""

@@ -10,19 +10,19 @@ import java.util.UUID;
 public class AdministradorDTO {
     private UUID id;
 
-    @NotBlank(message = "O nome completo e obrigatorio.")
+    @NotBlank(message = "{validation.fullName.required}")
     private String nomeCompleto;
 
-    @NotBlank(message = "O e-mail e obrigatorio.")
-    @Email(message = "Informe um e-mail valido.")
+    @NotBlank(message = "{validation.email.required}")
+    @Email(message = "{validation.email.valid}")
     private String email;
 
-    @NotBlank(message = "O nome de usuario e obrigatorio.")
+    @NotBlank(message = "{validation.username.required}")
     private String nomeUsuario;
 
     private String senha;
 
-    @NotNull(message = "O perfil e obrigatorio.")
+    @NotNull(message = "{validation.profile.required}")
     private Perfil perfil;
 
     public UUID getId() {

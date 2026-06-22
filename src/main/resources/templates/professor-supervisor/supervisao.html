@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{professor.supervisor.panel.title}">Acompanhamento de Supervisão | PESCD</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
+<main class="page-shell">
+    <section class="page-card">
+        <header class="page-header">
+            <div>
+                <p class="page-kicker" th:text="#{professor.supervisor}">Professor Supervisor</p>
+                <h1 th:text="#{professor.supervisor.panel.heading}">Acompanhamento de Supervisão</h1>
+                <p th:text="#{professor.supervisor.panel.subtitle}">Visão geral dos alunos sob sua supervisão. Quando houver pendência, use a ação indicada para avaliar o plano ou o relatório.</p>
+            </div>
+            <a class="button-link secondary" th:href="@{/professor/atuacao}" th:text="#{common.role.change}">Trocar papel</a>
+        </header>
+
+        <div th:if="${sucesso}" class="notice success" th:text="${sucesso}"></div>
+        <div th:if="${param.sucesso}" class="notice success" th:text="#{professor.supervisor.success}">Avaliação registrada com sucesso.</div>
+        <div th:if="${erro}" class="notice error" th:text="${erro}"></div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th th:text="#{common.offer}">Oferta</th>
+                    <th th:text="#{common.semester}">Semestre</th>
+                    <th th:text="#{common.student}">Aluno</th>
+                    <th th:text="#{field.discipline}">Disciplina</th>
+                    <th th:text="#{common.status}">Status</th>
+                    <th th:text="#{professor.supervisor.pendingAction}">Ação pendente</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="aluno : ${alunos}">
+                    <td th:text="${aluno.nomeOferta}">Oferta</td>
+                    <td th:text="${aluno.semestre}">2026/1</td>
+                    <td th:text="${aluno.nomeAluno}">Aluno</td>
+                    <td th:text="${aluno.nomeDisciplina}">Disciplina</td>
+                    <td>
+                        <span class="status-pill" th:text="${aluno.status}">STATUS</span>
+                    </td>
+                    <td>
+                        <a class="button-link btn-sm"
+                           th:if="${aluno.podeAvaliarPlano}"
+                           th:href="@{/professor/planos/{id}/avaliar(id=${aluno.planoId})}" th:text="#{professor.supervisor.evaluatePlan}">
+                            Avaliar plano
+                        </a>
+
+                        <a class="button-link btn-sm"
+                           th:if="${aluno.podeAvaliarRelatorio}"
+                           th:href="@{/professor/relatorios/avaliar/{id}(id=${aluno.inscricaoId})}" th:text="#{professor.supervisor.evaluateReport}">
+                            Avaliar relatório
+                        </a>
+
+                        <span class="hint"
+                              th:if="${!aluno.podeAvaliarPlano and !aluno.podeAvaliarRelatorio}" th:text="#{professor.supervisor.noPending}">
+                            Sem pendência de avaliação
+                        </span>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(alunos)}">
+                    <td colspan="6" class="table-empty-cell" th:text="#{professor.supervisor.empty}">
+                        Nenhum aluno está sob sua supervisão no momento.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

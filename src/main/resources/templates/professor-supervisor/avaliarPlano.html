@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Avaliar Plano | PESCD</title>
+    <title th:text="#{professor.plan.evaluate.title}">Avaliar Plano | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         .page-shell { max-width: 800px !important; width: 95% !important; margin: 0 auto !important; }
@@ -16,24 +16,25 @@
     </style>
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
         <header class="page-header">
             <div>
-                <p class="page-kicker">Professor Supervisor</p>
-                <h1>Avaliação de Plano de Trabalho</h1>
+                <p class="page-kicker" th:text="#{professor.supervisor}">Professor Supervisor</p>
+                <h1 th:text="#{professor.plan.evaluate.heading}">Avaliação de Plano de Trabalho</h1>
             </div>
-            <a class="button-link secondary" th:href="@{/professor/planos/pendentes}">Voltar</a>
+            <a class="button-link secondary" th:href="@{/professor/supervisao}" th:text="#{common.back}">Voltar para supervisão</a>
         </header>
 
         <div class="info-box">
-            <p><strong>Aluno:</strong> <span th:text="${plano.inscricao.aluno.nomeCompleto}">Nome</span></p>
-            <p><strong>Código da Disciplina:</strong> <span th:text="${plano.codigoDisciplina}">Código</span></p>
-            <p><strong>Nome da Disciplina:</strong> <span th:text="${plano.nomeDisciplina}">Nome</span></p>
-            <p><strong>Curso:</strong> <span th:text="${plano.cursoDisciplina}">Curso</span></p>
+            <p><strong th:text="#{common.student}">Aluno:</strong> <span th:text="${plano.inscricao.aluno.nomeCompleto}">Nome</span></p>
+            <p><strong th:text="#{field.disciplineCode}">Código da Disciplina:</strong> <span th:text="${plano.codigoDisciplina}">Código</span></p>
+            <p><strong th:text="#{field.disciplineName}">Nome da Disciplina:</strong> <span th:text="${plano.nomeDisciplina}">Nome</span></p>
+            <p><strong th:text="#{common.course}">Curso:</strong> <span th:text="${plano.cursoDisciplina}">Curso</span></p>
 
             <p style="margin-top: 15px;">
-                <a th:href="@{/professor/planos/download/{id}(id=${plano.id})}" class="button-link btn-sm" target="_blank">Baixar Plano (PDF)</a>
+                <a th:href="@{/professor/planos/download/{id}(id=${plano.id})}" class="button-link btn-sm" target="_blank" th:text="#{professor.plan.download}">Baixar Plano (PDF)</a>
             </p>
         </div>
 
@@ -41,13 +42,13 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
             <div class="form-group">
-                <label for="parecer"><strong>Parecer (Comentário Obrigatório):</strong></label>
-                <textarea id="parecer" name="parecer" placeholder="Deixe suas considerações ou justificativa para aprovação/reprovação..." required></textarea>
+                <label for="parecer"><strong th:text="#{professor.plan.opinion}">Parecer (Comentário Obrigatório):</strong></label>
+                <textarea id="parecer" name="parecer" placeholder="Deixe suas considerações ou justificativa para aprovação/reprovação..." th:placeholder="#{professor.plan.opinion.placeholder}" required></textarea>
             </div>
 
             <div class="action-buttons">
-                <button type="submit" name="acao" value="aprovar" class="button-link btn-success">Aprovar Plano</button>
-                <button type="submit" name="acao" value="reprovar" class="button-link btn-danger">Reprovar Plano</button>
+                <button type="submit" name="acao" value="aprovar" class="button-link btn-success" th:text="#{professor.plan.approve}">Aprovar Plano</button>
+                <button type="submit" name="acao" value="reprovar" class="button-link btn-danger" th:text="#{professor.plan.reject}">Reprovar Plano</button>
             </div>
         </form>
     </section>

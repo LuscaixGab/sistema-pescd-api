@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{error.page.title}">Erro | PESCD</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
+<main class="page-shell">
+    <section class="page-card error-card" aria-labelledby="error-title">
+        <header class="page-header">
+            <div>
+                <p class="page-kicker" th:text="#{error.kicker}">Algo deu errado</p>
+                <h1 id="error-title" th:text="${titulo}">Erro inesperado</h1>
+                <p th:text="${mensagem}">Não foi possível concluir a operação.</p>
+            </div>
+            <span class="status-pill error-status" th:text="${status}">500</span>
+        </header>
+
+        <div class="notice error">
+            <strong th:text="#{error.support.title}">O que fazer agora?</strong>
+            <p th:text="#{error.support.message}">Tente novamente. Se o problema persistir, entre em contato com o suporte.</p>
+        </div>
+
+        <div class="readonly-grid" th:if="${path != null}">
+            <div class="readonly-field">
+                <span th:text="#{error.path}">Caminho</span>
+                <strong th:text="${path}">/caminho</strong>
+            </div>
+        </div>
+
+        <div class="actions error-actions">
+            <a class="button-link" th:href="@{/painel}" th:text="#{common.back.dashboard}">Voltar ao painel</a>
+            <a class="button-link secondary" th:href="@{/login}" th:text="#{common.login}">Fazer login</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>

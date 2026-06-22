@@ -7,12 +7,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class RelatorioFinalDTO {
 
-    @NotNull(message = "A frequência é obrigatória.")
-    @Min(value = 0, message = "A frequência mínima é 0%.")
-    @Max(value = 100, message = "A frequência máxima é 100%.")
+    @NotNull(message = "{validation.frequency.required}")
+    @Min(value = 0, message = "{validation.frequency.min}")
+    @Max(value = 100, message = "{validation.frequency.max}")
     private Integer frequenciaAluno;
 
-    @NotNull(message = "O arquivo do relatório é obrigatório.")
+    @NotNull(message = "{validation.reportFile.required}")
     private MultipartFile arquivo;
 
     // Getters e Setters

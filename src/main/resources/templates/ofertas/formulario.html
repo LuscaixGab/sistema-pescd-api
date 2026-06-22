@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova oferta | PESCD</title>
+    <title th:text="#{offers.form.title}">Nova oferta | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
         <header class="page-header">
             <div>
-                <p class="page-kicker">Secretaria</p>
-                <h1>Criar oferta</h1>
-                <p>Preencha os dados para iniciar o workflow do semestre.</p>
+                <p class="page-kicker" th:text="#{secretary.kicker}">Secretaria</p>
+                <h1 th:text="#{panel.createOffer}">Criar oferta</h1>
+                <p th:text="#{offers.form.subtitle}">Preencha os dados para iniciar o workflow do semestre.</p>
             </div>
-            <a class="button-link secondary" th:href="@{/ofertas}">Voltar</a>
+            <a class="button-link secondary" th:href="@{/ofertas}" th:text="#{common.back}">Voltar</a>
         </header>
 
         <div th:if="${erroGeral}" class="notice error" th:text="${erroGeral}"></div>
@@ -24,35 +25,35 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
             <div class="field">
-                <label for="nomeOferta">Nome da oferta</label>
+                <label for="nomeOferta" th:text="#{offers.form.name}">Nome da oferta</label>
                 <input id="nomeOferta" type="text" th:field="*{nomeOferta}" placeholder="Opcional, será gerado se vazio">
                 <small th:if="${#fields.hasErrors('nomeOferta')}" th:errors="*{nomeOferta}" class="field-error"></small>
             </div>
 
             <div class="field">
-                <label for="semestre">Semestre *</label>
+                <label for="semestre" th:text="#{offers.form.semester}">Semestre *</label>
                 <input id="semestre" type="text" th:field="*{semestre}" placeholder="Ex.: 2026-1">
                 <small th:if="${#fields.hasErrors('semestre')}" th:errors="*{semestre}" class="field-error"></small>
             </div>
 
             <div class="field-grid">
                 <div class="field">
-                    <label for="dataInicio">Data de início *</label>
+                    <label for="dataInicio" th:text="#{offers.form.start}">Data de início *</label>
                     <input id="dataInicio" type="date" th:field="*{dataInicio}">
                     <small th:if="${#fields.hasErrors('dataInicio')}" th:errors="*{dataInicio}" class="field-error"></small>
                 </div>
 
                 <div class="field">
-                    <label for="dataFim">Data de fim *</label>
+                    <label for="dataFim" th:text="#{offers.form.end}">Data de fim *</label>
                     <input id="dataFim" type="date" th:field="*{dataFim}">
                     <small th:if="${#fields.hasErrors('dataFim')}" th:errors="*{dataFim}" class="field-error"></small>
                 </div>
             </div>
 
             <div class="field">
-                <label for="professorResponsavelId">Professor responsável *</label>
+                <label for="professorResponsavelId" th:text="#{offers.form.responsible}">Professor responsável *</label>
                 <select id="professorResponsavelId" th:field="*{professorResponsavelId}">
-                    <option value="">Selecione um professor</option>
+                    <option value="" th:text="#{common.selectProfessor}">Selecione um professor</option>
                     <option th:each="professor : ${professores}"
                             th:value="${professor.id}"
                             th:text="${professor.nomeCompleto + ' (' + professor.nomeUsuario + ')'}"></option>
@@ -61,7 +62,7 @@
             </div>
 
             <div class="actions">
-                <button type="submit">Criar oferta</button>
+                <button type="submit" th:text="#{panel.createOffer}">Criar oferta</button>
             </div>
         </form>
     </section>

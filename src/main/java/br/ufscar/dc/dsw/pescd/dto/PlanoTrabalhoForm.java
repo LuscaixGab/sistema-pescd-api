@@ -8,22 +8,22 @@ import java.util.UUID;
 
 public class PlanoTrabalhoForm {
 
-    @NotBlank(message = "O código da disciplina é obrigatório.")
+    @NotBlank(message = "{validation.disciplineCode.required}")
     private String codigoDisciplina;
 
-    @NotBlank(message = "O nome da disciplina é obrigatório.")
+    @NotBlank(message = "{validation.disciplineName.required}")
     private String nomeDisciplina;
 
-    @NotBlank(message = "O curso da disciplina é obrigatório.")
+    @NotBlank(message = "{validation.disciplineCourse.required}")
     private String cursoDisciplina;
 
-    @NotNull(message = "O arquivo do plano é obrigatório.")
+    @NotNull(message = "{validation.planFile.required}")
     private MultipartFile arquivoPlano;
 
-    @NotNull(message = "O professor supervisor é obrigatório.")
+    @NotNull(message = "{validation.supervisor.required}")
     private UUID professorSupervisorId;
 
-    @NotNull(message = "A inscrição é obrigatória.")
+    @NotNull(message = "{validation.enrollment.required}")
     private UUID inscricaoId;
 
     public String getCodigoDisciplina() {

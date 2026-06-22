@@ -6,6 +6,7 @@ import br.ufscar.dc.dsw.pescd.model.Inscricao;
 import br.ufscar.dc.dsw.pescd.model.StatusInscricao; // Confirme se o nome do seu Enum é esse
 import br.ufscar.dc.dsw.pescd.repository.DocumentacaoAulaRepository;
 import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
+import br.ufscar.dc.dsw.pescd.util.UploadUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,13 +35,7 @@ public class DocumentacaoAulaService {
     public void processarEnvio(DocumentacaoAulaDTO dto, Inscricao inscricao) throws IOException {
         MultipartFile arquivo = dto.getArquivo();
 
-        // Validação do Arquivo
-        if (arquivo.getSize() > 5 * 1024 * 1024) { // 5MB em bytes
-            throw new IllegalArgumentException("O arquivo deve ter no máximo 5MB.");
-        }
-        if (!"application/pdf".equals(arquivo.getContentType())) {
-            throw new IllegalArgumentException("O arquivo deve ser obrigatoriamente um PDF.");
-        }
+        UploadUtils.validarPdfObrigatorio(arquivo, "a documentação");
 
         // Salvar o arquivo fisicamente na pasta
         Path caminhoPasta = Paths.get(UPLOAD_DIR);

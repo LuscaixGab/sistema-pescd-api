@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios Pendentes | PESCD</title>
+    <title th:text="#{responsible.reports.title}">Relatórios Pendentes | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         .table-container {
@@ -33,15 +33,16 @@
     </style>
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
         <header class="page-header">
             <div>
-                <p class="page-kicker">Professor Responsável</p>
-                <h1>Relatórios Pendentes</h1>
-                <p>Alunos com relatório aprovado pelo supervisor e aguardando aprovação final.</p>
+                <p class="page-kicker" th:text="#{professor.responsible}">Professor Responsável</p>
+                <h1 th:text="#{responsible.reports.heading}">Relatórios Pendentes</h1>
+                <p th:text="#{responsible.reports.subtitle}">Alunos com relatório aprovado pelo supervisor e aguardando aprovação final.</p>
             </div>
-            <a class="button-link secondary" th:href="@{/professor/atuacao}">Trocar papel</a>
+            <a class="button-link secondary" th:href="@{/professor-responsavel/painel}" th:text="#{common.back.dashboard}">Voltar ao painel</a>
         </header>
 
         <div class="notice success" th:if="${sucesso}" th:text="${sucesso}"></div>
@@ -51,11 +52,11 @@
             <table>
                 <thead>
                 <tr>
-                    <th>Aluno</th>
-                    <th>Oferta</th>
-                    <th>Semestre</th>
-                    <th>Status atual</th>
-                    <th>Ações</th>
+                    <th th:text="#{common.student}">Aluno</th>
+                    <th th:text="#{common.offer}">Oferta</th>
+                    <th th:text="#{common.semester}">Semestre</th>
+                    <th th:text="#{common.currentStatus}">Status atual</th>
+                    <th th:text="#{common.actions}">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -66,14 +67,14 @@
                     <td th:text="${relatorio.inscricao.status}">RELATORIO_APROVADO_PELO_SUPERVISOR</td>
                     <td>
                         <a class="button-link btn-sm"
-                           th:href="@{/professor-responsavel/relatorios/{id}/analisar(id=${relatorio.inscricao.id})}">
+                           th:href="@{/professor-responsavel/relatorios/{id}/analisar(id=${relatorio.inscricao.id})}" th:text="#{professor.report.approve}">
                             Aprovar Relatório
                         </a>
                     </td>
                 </tr>
 
                 <tr th:if="${#lists.isEmpty(relatorios)}">
-                    <td colspan="5" style="text-align: center; padding: 20px;">
+                    <td colspan="5" style="text-align: center; padding: 20px;" th:text="#{responsible.reports.empty}">
                         Não há relatórios pendentes para aprovação final.
                     </td>
                 </tr>

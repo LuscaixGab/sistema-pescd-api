@@ -1,25 +1,26 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuários | PESCD</title>
+    <title th:text="#{admin.users.title}">Usuários | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
         <header class="page-header">
             <div>
-                <p class="page-kicker">Administrador</p>
-                <h1>Gerenciamento de usuários</h1>
-                <p>Cadastre, edite e remova usuários do sistema conforme o perfil de acesso.</p>
+                <p class="page-kicker" th:text="#{admin.kicker}">Administrador</p>
+                <h1 th:text="#{admin.users.heading}">Gerenciamento de usuários</h1>
+                <p th:text="#{admin.users.subtitle}">Cadastre, edite e remova usuários do sistema conforme o perfil de acesso.</p>
             </div>
             <div class="actions" style="gap: 0.5rem;">
-                <a class="button-link" th:href="@{/administrador/usuarios/novo}">Novo usuário</a>
+                <a class="button-link" th:href="@{/administrador/usuarios/novo}" th:text="#{admin.users.new}">Novo usuário</a>
                 <form th:action="@{/logout}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                    <button class="button-link secondary" type="submit">Sair</button>
+                    <button class="button-link secondary" type="submit" th:text="#{common.logout}">Sair</button>
                 </form>
             </div>
         </header>
@@ -28,18 +29,18 @@
         <div th:if="${erroGeral}" class="notice error" th:text="${erroGeral}"></div>
 
         <div class="table-wrap" th:if="${#lists.isEmpty(usuarios)}">
-            <p class="empty-state">Nenhum usuário cadastrado ainda.</p>
+            <p class="empty-state" th:text="#{admin.users.empty}">Nenhum usuário cadastrado ainda.</p>
         </div>
 
         <div class="table-wrap" th:if="${!#lists.isEmpty(usuarios)}">
             <table>
                 <thead>
                 <tr>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Usuário</th>
-                    <th>Perfil</th>
-                    <th>Ações</th>
+                    <th th:text="#{common.name}">Nome</th>
+                    <th th:text="#{common.email}">Email</th>
+                    <th th:text="#{common.user}">Usuário</th>
+                    <th th:text="#{common.profile}">Perfil</th>
+                    <th th:text="#{common.actions}">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -50,12 +51,12 @@
                     <td th:text="${usuario.perfil}">PERFIL</td>
                     <td>
                         <div class="actions" style="justify-content: flex-start; gap: 0.5rem;">
-                            <a class="button-link secondary btn-sm" th:href="@{/administrador/usuarios/{id}/editar(id=${usuario.id})}">Editar</a>
+                            <a class="button-link secondary btn-sm" th:href="@{/administrador/usuarios/{id}/editar(id=${usuario.id})}" th:text="#{common.edit}">Editar</a>
                             <form th:if="${usuario.id != usuarioLogadoId}" th:action="@{/administrador/usuarios/{id}/excluir(id=${usuario.id})}" method="post" style="display: inline;">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                <button type="submit" class="button-link btn-sm" style="border: none;" onclick="return confirm('Excluir este usuário?');">Excluir</button>
+                                <button type="submit" class="button-link btn-sm" style="border: none;" onclick="return confirm('Excluir este usuário?');" th:text="#{common.delete}">Excluir</button>
                             </form>
-                            <span th:if="${usuario.id == usuarioLogadoId}" class="button-link secondary btn-sm" style="pointer-events: none; opacity: 0.6;">Você</span>
+                            <span th:if="${usuario.id == usuarioLogadoId}" class="button-link secondary btn-sm" style="pointer-events: none; opacity: 0.6;" th:text="#{admin.users.you}">Você</span>
                         </div>
                     </td>
                 </tr>

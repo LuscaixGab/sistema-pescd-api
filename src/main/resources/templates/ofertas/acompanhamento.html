@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Acompanhamento da Oferta | PESCD</title>
+    <title th:text="#{offers.follow.title}">Acompanhamento da Oferta | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         .page-shell { max-width: 1200px !important; width: 95% !important; margin: 0 auto !important; }
@@ -20,45 +20,47 @@
     </style>
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
         <header class="page-header">
             <div>
-                <p class="page-kicker">Painel de Acompanhamento</p>
+                <p class="page-kicker" th:text="#{offers.follow.heading}">Painel de Acompanhamento</p>
                 <h1 th:text="${oferta.nomeOferta}">Nome da Disciplina</h1>
-                <p th:text="${'Semestre: ' + oferta.semestre + ' | Prof. Responsável: ' + oferta.professorResponsavel.nomeCompleto}"></p>
+                <p th:text="#{offers.follow.summary(${oferta.semestre}, ${oferta.professorResponsavel.nomeCompleto})}"></p>
             </div>
-            <a class="button-link secondary" th:href="@{/ofertas}">Voltar para Lista</a>
+            <a th:if="${perfilUsuario == 'PROFESSOR'}" class="button-link secondary" th:href="@{/professor-responsavel/painel}" th:text="#{common.back.dashboard}">Voltar ao painel</a>
+            <a th:if="${perfilUsuario != 'PROFESSOR'}" class="button-link secondary" th:href="@{/ofertas}" th:text="#{offers.students.back}">Voltar para lista</a>
         </header>
 
         <div class="dashboard-grid">
             <div class="stat-card">
-                <div class="stat-label">Total de Alunos</div>
+                <div class="stat-label" th:text="#{offers.follow.total}">Total de Alunos</div>
                 <div class="stat-number" th:text="${totalAlunos}">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Ainda não enviaram nada</div>
+                <div class="stat-label" th:text="#{offers.follow.noneSent}">Ainda não enviaram nada</div>
                 <div class="stat-number" style="color: #f87171;" th:text="${pendentesIniciais}">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Em andamento</div>
+                <div class="stat-label" th:text="#{offers.follow.inProgress}">Em andamento</div>
                 <div class="stat-number" style="color: #fbbf24;" th:text="${emAndamento}">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Concluídos</div>
+                <div class="stat-label" th:text="#{offers.follow.completed}">Concluídos</div>
                 <div class="stat-number" style="color: #34d399;" th:text="${concluidos}">0</div>
             </div>
         </div>
 
-        <h3>Relatório de Alunos</h3>
+        <h3 th:text="#{offers.follow.report}">Relatório de Alunos</h3>
         <div class="table-container">
             <table>
                 <thead>
                 <tr>
-                    <th>Nome do Aluno</th>
-                    <th>E-mail</th>
-                    <th>Status Atual no PESCD</th>
-                    <th>Ações</th>
+                    <th th:text="#{common.student}">Nome do Aluno</th>
+                    <th th:text="#{common.email}">E-mail</th>
+                    <th th:text="#{offers.follow.status}">Status Atual no PESCD</th>
+                    <th th:text="#{common.actions}">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -71,13 +73,13 @@
                     </td>
                     <td>
                         <a class="button-link btn-sm secondary"
-                           th:href="@{/ofertas/{ofertaId}/alunos/{inscricaoId}/detalhes(ofertaId=${oferta.id}, inscricaoId=${inscricao.id})}">
+                           th:href="@{/ofertas/{ofertaId}/alunos/{inscricaoId}/detalhes(ofertaId=${oferta.id}, inscricaoId=${inscricao.id})}" th:text="#{offers.details.view}">
                             Ver Detalhes
                         </a>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(inscricoes)}">
-                    <td colspan="4" style="text-align: center; padding: 20px;">Nenhum aluno matriculado nesta oferta ainda.</td>
+                    <td colspan="4" style="text-align: center; padding: 20px;" th:text="#{offers.follow.empty}">Nenhum aluno matriculado nesta oferta ainda.</td>
                 </tr>
                 </tbody>
             </table>

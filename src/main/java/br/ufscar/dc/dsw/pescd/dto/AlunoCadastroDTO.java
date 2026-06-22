@@ -6,18 +6,18 @@ import jakarta.validation.constraints.Size;
 
 public class AlunoCadastroDTO {
 
-    @NotBlank(message = "O nome completo é obrigatório.")
+    @NotBlank(message = "{validation.fullName.required}")
     private String nomeCompleto;
 
-    @NotBlank(message = "O e-mail é obrigatório.")
-    @Email(message = "Digite um e-mail válido.")
+    @NotBlank(message = "{validation.email.required}")
+    @Email(message = "{validation.email.valid}")
     private String email;
 
-    @NotBlank(message = "O nome de usuário (RA) é obrigatório.")
+    @NotBlank(message = "{validation.usernameRa.required}")
     private String nomeUsuario;
 
-    @NotBlank(message = "A senha é obrigatória.")
-    @Size(min = 6, message = "A senha deve ter pelo menos 6 caracteres.")
+    @NotBlank(message = "{validation.password.required}")
+    @Size(min = 6, message = "{validation.password.size}")
     private String senha;
 
     // Construtor vazio padrão do Spring

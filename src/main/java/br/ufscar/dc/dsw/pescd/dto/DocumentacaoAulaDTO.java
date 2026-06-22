@@ -7,20 +7,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class DocumentacaoAulaDTO {
 
-    @NotBlank(message = "A instituição é obrigatória")
+    @NotBlank(message = "{validation.institution.required}")
     private String nomeInstituicao;
 
-    @NotBlank(message = "A disciplina é obrigatória")
+    @NotBlank(message = "{validation.discipline.required}")
     private String nomeDisciplina;
 
-    @NotBlank(message = "O curso é obrigatório")
+    @NotBlank(message = "{validation.course.required}")
     private String cursoDisciplina;
 
-    @NotNull(message = "A carga horária é obrigatória")
-    @Positive(message = "A carga horária deve ser maior que zero")
+    @NotNull(message = "{validation.workload.required}")
+    @Positive(message = "{validation.workload.positive}")
     private Integer cargaHoraria;
 
-    @NotNull(message = "O arquivo da documentação é obrigatório")
+    @NotNull(message = "{validation.documentationFile.required}")
     private MultipartFile arquivo;
 
     public String getNomeInstituicao() {

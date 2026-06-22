@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.toLanguageTag()}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enviar Relatório Final | PESCD</title>
+    <title th:text="#{student.report.title}">Enviar Relatório Final | PESCD</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     
     <style>
@@ -87,31 +87,32 @@
     </style>
 </head>
 <body class="app-page">
+<div th:replace="~{fragments/language-selector :: languageSelector}"></div>
 <main class="page-shell">
     <section class="page-card">
 
         <header class="page-header">
             <div>
-                <p class="page-kicker">Etapa Final do Estágio</p>
-                <h1>Enviar Relatório</h1>
-                <p>Oferta: <strong th:text="${inscricao.oferta.nomeOferta}">Nome da Oferta</strong></p>
+                <p class="page-kicker" th:text="#{student.report.kicker}">Etapa Final do Estágio</p>
+                <h1 th:text="#{student.report.heading}">Enviar Relatório</h1>
+                <p><span th:text="#{student.documentation.offer}">Oferta:</span> <strong th:text="${inscricao.oferta.nomeOferta}">Nome da Oferta</strong></p>
             </div>
         </header>
 
         <div th:if="${erro}" class="alert-error" th:text="${erro}"></div>
 
         <div class="info-box" th:if="${plano != null}">
-            <h3>Resumo do Plano de Trabalho Aprovado</h3>
-            <p><strong>Disciplina:</strong> <span th:text="${plano.nomeDisciplina}"></span> (Cód: <span th:text="${plano.codigoDisciplina}"></span>)</p>
-            <p><strong>Curso:</strong> <span th:text="${plano.cursoDisciplina}"></span></p>
-            <p><strong>Professor Supervisor:</strong> <span th:text="${plano.professorSupervisor.nomeCompleto}"></span></p>
-            <p><strong>Status da Inscrição:</strong> <span th:text="${inscricao.status}"></span></p>
+            <h3 th:text="#{student.report.summary}">Resumo do Plano de Trabalho Aprovado</h3>
+            <p><strong th:text="#{student.report.discipline}">Disciplina:</strong> <span th:text="${plano.nomeDisciplina}"></span> (Cód: <span th:text="${plano.codigoDisciplina}"></span>)</p>
+            <p><strong th:text="#{common.course}">Curso:</strong> <span th:text="${plano.cursoDisciplina}"></span></p>
+            <p><strong th:text="#{student.report.supervisor}">Professor Supervisor:</strong> <span th:text="${plano.professorSupervisor.nomeCompleto}"></span></p>
+            <p><strong th:text="#{student.report.registrationStatus}">Status da Inscrição:</strong> <span th:text="${inscricao.status}"></span></p>
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;">
-            <p><strong>Parecer do Supervisor:</strong> <br> <i th:text="${plano.parecer}"></i></p>
+            <p><strong th:text="#{student.report.supervisorOpinion}">Parecer do Supervisor:</strong> <br> <i th:text="${plano.parecer}"></i></p>
         </div>
 
         <div class="info-box" th:if="${plano == null}">
-            <p style="color: #ff4a4a;">Aviso: Os detalhes do plano de trabalho não foram encontrados.</p>
+            <p style="color: #ff4a4a;" th:text="#{student.report.noPlan}">Aviso: Os detalhes do plano de trabalho não foram encontrados.</p>
         </div>
 
         <form th:action="@{/aluno/relatorio/enviar/{id}(id=${inscricao.id})}" 
@@ -120,20 +121,20 @@
               enctype="multipart/form-data">
             
             <div class="form-group">
-                <label for="frequenciaAluno">Indicador de Frequência (%):</label>
+                <label for="frequenciaAluno" th:text="#{student.report.frequency}">Indicador de Frequência (%):</label>
                 <input type="number" id="frequenciaAluno" th:field="*{frequenciaAluno}" min="0" max="100" required placeholder="Ex: 85">
                 <span th:if="${#fields.hasErrors('frequenciaAluno')}" th:errors="*{frequenciaAluno}" class="field-error"></span>
             </div>
             
             <div class="form-group">
-                <label for="arquivo">Arquivo com o Relatório Final (Apenas PDF, máx 5MB):</label>
+                <label for="arquivo" th:text="#{student.report.file}">Arquivo com o Relatório Final (Apenas PDF, máx 5MB):</label>
                 <input type="file" id="arquivo" name="arquivo" accept="application/pdf" required>
                 <span th:if="${#fields.hasErrors('arquivo')}" th:errors="*{arquivo}" class="field-error"></span>
             </div>
             
             <div class="form-actions">
-                <button type="submit" class="button-link">Enviar Relatório Final</button>
-                <a th:href="@{/aluno/ofertas}" class="button-link secondary" style="display: flex; align-items: center; justify-content: center;">Cancelar</a>
+                <button type="submit" class="button-link" th:text="#{student.report.submit}">Enviar Relatório Final</button>
+                <a th:href="@{/aluno/ofertas}" class="button-link secondary" style="display: flex; align-items: center; justify-content: center;" th:text="#{common.cancel}">Cancelar</a>
             </div>
             
         </form>

@@ -1,8 +1,11 @@
 package br.ufscar.dc.dsw.pescd.controller;
 
+import br.ufscar.dc.dsw.pescd.config.MessageHelper;
 import br.ufscar.dc.dsw.pescd.model.PlanoTrabalho;
 import br.ufscar.dc.dsw.pescd.security.UsuarioUserDetails;
 import br.ufscar.dc.dsw.pescd.service.PlanoTrabalhoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -24,16 +27,20 @@ import java.util.UUID;
 @PreAuthorize("hasRole('PROFESSOR')")
 public class ProfessorSupervisorPlanoController {
 
-    private final PlanoTrabalhoService planoTrabalhoService;
+    private static final Logger logger = LoggerFactory.getLogger(ProfessorSupervisorPlanoController.class);
 
-    public ProfessorSupervisorPlanoController(PlanoTrabalhoService planoTrabalhoService) {
+    private final PlanoTrabalhoService planoTrabalhoService;
+    private final MessageHelper messages;
+
+    public ProfessorSupervisorPlanoController(PlanoTrabalhoService planoTrabalhoService,
+                                             MessageHelper messages) {
         this.planoTrabalhoService = planoTrabalhoService;
+        this.messages = messages;
     }
 
     @GetMapping("/pendentes")
-    public String listarPendentes(Model model, @AuthenticationPrincipal UsuarioUserDetails usuarioLogado) {
-        model.addAttribute("planos", planoTrabalhoService.listarPlanosPendentes(usuarioLogado.getUsuario()));
-        return "professor-supervisor/listarPlanosPendentes";
+    public String listarPendentes() {
+        return "redirect:/professor/supervisao";
     }
 
     @GetMapping("/{id}/avaliar")
@@ -42,7 +49,7 @@ public class ProfessorSupervisorPlanoController {
             model.addAttribute("plano", planoTrabalhoService.buscarPlanoParaAvaliacao(id, usuarioLogado.getUsuario()));
             return "professor-supervisor/avaliarPlano";
         } catch (IllegalArgumentException e) {
-            return "redirect:/professor/planos/pendentes?erro=" + e.getMessage();
+            return "redirect:/professor/supervisao";
         }
     }
 
@@ -54,11 +61,11 @@ public class ProfessorSupervisorPlanoController {
                                      RedirectAttributes redirectAttributes) {
         try {
             planoTrabalhoService.avaliarPlano(id, parecer, acao, usuarioLogado.getUsuario());
-            redirectAttributes.addFlashAttribute("sucesso", "Plano avaliado com sucesso!");
+            redirectAttributes.addFlashAttribute("sucesso", messages.get("msg.plan.evaluated"));
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("erro", e.getMessage());
         }
-        return "redirect:/professor/planos/pendentes";
+        return "redirect:/professor/supervisao";
     }
 
     @GetMapping("/download/{id}")
@@ -76,6 +83,7 @@ public class ProfessorSupervisorPlanoController {
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            logger.error("Erro ao baixar plano {}", id, e);
             return ResponseEntity.internalServerError().build();
         }
     }

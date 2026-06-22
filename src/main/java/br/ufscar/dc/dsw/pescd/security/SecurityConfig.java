@@ -16,9 +16,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final RoleBasedSuccessHandler roleBasedSuccessHandler;
+    private final FriendlyAccessDeniedHandler friendlyAccessDeniedHandler;
 
-    public SecurityConfig(RoleBasedSuccessHandler roleBasedSuccessHandler) {
+    public SecurityConfig(RoleBasedSuccessHandler roleBasedSuccessHandler,
+                          FriendlyAccessDeniedHandler friendlyAccessDeniedHandler) {
         this.roleBasedSuccessHandler = roleBasedSuccessHandler;
+        this.friendlyAccessDeniedHandler = friendlyAccessDeniedHandler;
     }
 
     @Bean
@@ -29,7 +32,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/login", "/ofertas-publicas", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                        .requestMatchers("/", "/login", "/ofertas-publicas", "/erro/**", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/administrador", "/administrador/**").hasRole("ADMINISTRADOR")
 
                         // PR.04: Libera as rotas de acompanhamento para ambos (Secretário e Professor)
@@ -52,7 +55,9 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .permitAll());
+                        .permitAll())
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(friendlyAccessDeniedHandler));
 
         return http.build();
     }
