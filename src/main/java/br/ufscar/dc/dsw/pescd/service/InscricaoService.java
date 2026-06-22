@@ -36,8 +36,29 @@ public class InscricaoService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // Método lógico para validação do csv
+    private void validarArquivoCsv(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Por favor, selecione um arquivo válido.");
+        }
+
+        String filename = file.getOriginalFilename();
+        if (filename == null || !filename.toLowerCase().endsWith(".csv")) {
+            throw new IllegalArgumentException("O arquivo deve ser obrigatoriamente do tipo .csv.");
+        }
+
+        if (file.getSize() > 5242880) { // Trava de 5MB
+            throw new IllegalArgumentException("O arquivo não pode ultrapassar o limite de 5MB.");
+        }
+    }
+
+    // Método para o processamento do arquivo
     @Transactional
     public void processarAlunosCsv(UUID ofertaId, MultipartFile file) throws Exception {
+
+        // Aciona a validação antes de sequer tentar abrir o arquivo
+        validarArquivoCsv(file);
+
         Oferta oferta = ofertaRepository.findById(ofertaId)
                 .orElseThrow(() -> new IllegalArgumentException("Oferta não encontrada."));
 
@@ -70,7 +91,7 @@ public class InscricaoService {
                     aluno.setNomeCompleto(nomeCompleto);
                     aluno.setEmail(email);
                     aluno.setNomeUsuario(email);
-                    aluno.setSenha(passwordEncoder.encode(ra)); // Criptografia de senha
+                    aluno.setSenha(passwordEncoder.encode(ra));
                     aluno.setPerfil(Perfil.ALUNO);
                     aluno = usuarioRepository.save(aluno);
                 }
