@@ -1,6 +1,8 @@
 package br.ufscar.dc.dsw.pescd.service;
 
 import br.ufscar.dc.dsw.pescd.dto.AdministradorDTO;
+import br.ufscar.dc.dsw.pescd.exception.RegraNegocioException;
+import br.ufscar.dc.dsw.pescd.exception.UsuarioNaoEncontradoException;
 import br.ufscar.dc.dsw.pescd.model.Perfil;
 import br.ufscar.dc.dsw.pescd.model.Usuario;
 import br.ufscar.dc.dsw.pescd.repository.UsuarioRepository;
@@ -30,7 +32,19 @@ public class AdministradorService {
     }
 
     @Transactional(readOnly = true)
+    public List<AdministradorDTO> listarUsuariosDTO() {
+        return listarUsuarios().stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public AdministradorDTO carregarFormulario(UUID id) {
+        return toDTO(buscarUsuario(id));
+    }
+
+    @Transactional(readOnly = true)
+    public AdministradorDTO buscarUsuarioDTO(UUID id) {
         return toDTO(buscarUsuario(id));
     }
 
@@ -51,7 +65,7 @@ public class AdministradorService {
         if (usuario.getPerfil() == Perfil.ADMINISTRADOR
                 && dto.getPerfil() != Perfil.ADMINISTRADOR
                 && usuarioRepository.countByPerfil(Perfil.ADMINISTRADOR) <= 1) {
-            throw new IllegalArgumentException("Nao e permitido remover o ultimo administrador do sistema.");
+            throw new RegraNegocioException("Nao e permitido remover o ultimo administrador do sistema.");
         }
 
         aplicarDados(usuario, dto, usuario.getSenha(), false);
@@ -63,12 +77,12 @@ public class AdministradorService {
         Usuario usuario = buscarUsuario(id);
 
         if (usuario.getId().equals(usuarioLogadoId)) {
-            throw new IllegalArgumentException("Voce nao pode excluir o proprio usuario.");
+            throw new RegraNegocioException("Voce nao pode excluir o proprio usuario.");
         }
 
         if (usuario.getPerfil() == Perfil.ADMINISTRADOR
                 && usuarioRepository.countByPerfil(Perfil.ADMINISTRADOR) <= 1) {
-            throw new IllegalArgumentException("Nao e permitido excluir o ultimo administrador do sistema.");
+            throw new RegraNegocioException("Nao e permitido excluir o ultimo administrador do sistema.");
         }
 
         usuarioRepository.delete(usuario);
@@ -81,14 +95,14 @@ public class AdministradorService {
 
     private Usuario buscarUsuario(UUID id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario nao encontrado."));
+                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuario nao encontrado."));
     }
 
     private void validarFormulario(AdministradorDTO dto, UUID idAtual, boolean novoCadastro) {
         validarUnicidade(dto, idAtual);
 
         if (novoCadastro && !StringUtils.hasText(dto.getSenha())) {
-            throw new IllegalArgumentException("A senha e obrigatoria para novo usuario.");
+            throw new RegraNegocioException("A senha e obrigatoria para novo usuario.");
         }
     }
 
@@ -99,13 +113,13 @@ public class AdministradorService {
         usuarioRepository.findByEmail(emailNormalizado)
                 .filter(usuario -> idAtual == null || !usuario.getId().equals(idAtual))
                 .ifPresent(usuario -> {
-                    throw new IllegalArgumentException("Ja existe um usuario com este e-mail.");
+                    throw new RegraNegocioException("Ja existe um usuario com este e-mail.");
                 });
 
         usuarioRepository.findByNomeUsuario(nomeUsuarioNormalizado)
                 .filter(usuario -> idAtual == null || !usuario.getId().equals(idAtual))
                 .ifPresent(usuario -> {
-                    throw new IllegalArgumentException("Ja existe um usuario com este nome de usuario.");
+                    throw new RegraNegocioException("Ja existe um usuario com este nome de usuario.");
                 });
     }
 
@@ -118,7 +132,7 @@ public class AdministradorService {
         if (StringUtils.hasText(dto.getSenha())) {
             usuario.setSenha(passwordEncoder.encode(dto.getSenha().trim()));
         } else if (novoCadastro) {
-            throw new IllegalArgumentException("A senha e obrigatoria para novo usuario.");
+            throw new RegraNegocioException("A senha e obrigatoria para novo usuario.");
         } else {
             usuario.setSenha(senhaAtual);
         }
