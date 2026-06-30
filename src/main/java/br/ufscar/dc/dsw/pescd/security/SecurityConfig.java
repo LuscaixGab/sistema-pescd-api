@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/usuarios", "/api/v1/usuarios/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/v1/plano-trabalho", "/api/v1/plano-trabalho/**").hasRole("ALUNO")
+                        .requestMatchers("/api/v1/ofertas", "/api/v1/ofertas/**").hasRole("SECRETARIO")
                         .anyRequest().denyAll())
                 .httpBasic(Customizer.withDefaults())
                 .exceptionHandling(exception -> exception
