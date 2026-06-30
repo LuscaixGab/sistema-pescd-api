@@ -1,6 +1,7 @@
 package br.ufscar.dc.dsw.pescd.api;
 
 import br.ufscar.dc.dsw.pescd.exception.RegraNegocioException;
+import br.ufscar.dc.dsw.pescd.exception.PlanoTrabalhoNaoEncontradoException;
 import br.ufscar.dc.dsw.pescd.exception.UsuarioNaoEncontradoException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -9,9 +10,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -51,6 +55,24 @@ public class ApiExceptionHandler {
                 Map.of());
     }
 
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiErrorResponse> tratarParametroAusente(MissingServletRequestParameterException exception,
+                                                                   HttpServletRequest request) {
+        return construirResposta(HttpStatus.BAD_REQUEST,
+                "Parametro obrigatorio ausente: " + exception.getParameterName(),
+                request.getRequestURI(),
+                Map.of());
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<ApiErrorResponse> tratarParteAusente(MissingServletRequestPartException exception,
+                                                               HttpServletRequest request) {
+        return construirResposta(HttpStatus.BAD_REQUEST,
+                "Parte obrigatoria ausente: " + exception.getRequestPartName(),
+                request.getRequestURI(),
+                Map.of());
+    }
+
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiErrorResponse> tratarTipoInvalido(MethodArgumentTypeMismatchException exception,
                                                                HttpServletRequest request) {
@@ -67,6 +89,12 @@ public class ApiExceptionHandler {
         return construirResposta(HttpStatus.NOT_FOUND, exception.getMessage(), request.getRequestURI(), Map.of());
     }
 
+    @ExceptionHandler(PlanoTrabalhoNaoEncontradoException.class)
+    public ResponseEntity<ApiErrorResponse> tratarPlanoNaoEncontrado(PlanoTrabalhoNaoEncontradoException exception,
+                                                                     HttpServletRequest request) {
+        return construirResposta(HttpStatus.NOT_FOUND, exception.getMessage(), request.getRequestURI(), Map.of());
+    }
+
     @ExceptionHandler(RegraNegocioException.class)
     public ResponseEntity<ApiErrorResponse> tratarRegraNegocio(RegraNegocioException exception,
                                                                HttpServletRequest request) {
@@ -77,6 +105,15 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiErrorResponse> tratarArgumentoInvalido(IllegalArgumentException exception,
                                                                     HttpServletRequest request) {
         return construirResposta(HttpStatus.BAD_REQUEST, exception.getMessage(), request.getRequestURI(), Map.of());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> tratarAcessoNegado(AccessDeniedException exception,
+                                                               HttpServletRequest request) {
+        return construirResposta(HttpStatus.FORBIDDEN,
+                "Voce nao possui permissao para acessar este recurso.",
+                request.getRequestURI(),
+                Map.of());
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
