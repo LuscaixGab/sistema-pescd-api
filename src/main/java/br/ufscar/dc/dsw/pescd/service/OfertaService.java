@@ -1,6 +1,7 @@
 package br.ufscar.dc.dsw.pescd.service;
 
 import br.ufscar.dc.dsw.pescd.dto.OfertaForm;
+import br.ufscar.dc.dsw.pescd.dto.OfertaRequestDTO;
 import br.ufscar.dc.dsw.pescd.model.*;
 import br.ufscar.dc.dsw.pescd.repository.ConfiguracaoRepository;
 import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
@@ -59,19 +60,52 @@ public class OfertaService {
 
     @Transactional
     public Oferta criarOferta(OfertaForm ofertaForm, Usuario usuarioCriador) {
+        return criarOfertaInterna(
+                ofertaForm.getNomeOferta(),
+                ofertaForm.getSemestre(),
+                ofertaForm.getDataInicio(),
+                ofertaForm.getDataFim(),
+                ofertaForm.getProfessorResponsavelId(),
+                usuarioCriador);
+    }
+
+    @Transactional
+    public Oferta criarOferta(OfertaRequestDTO ofertaRequest, Usuario usuarioCriador) {
+        return criarOfertaInterna(
+                ofertaRequest.getNomeOferta(),
+                ofertaRequest.getSemestre(),
+                ofertaRequest.getDataInicio(),
+                ofertaRequest.getDataFim(),
+                ofertaRequest.getProfessorResponsavelId(),
+                usuarioCriador);
+    }
+
+    private Oferta criarOfertaInterna(String nomeOferta,
+                                      String semestre,
+                                      LocalDate dataInicio,
+                                      LocalDate dataFim,
+                                      UUID professorResponsavelId,
+                                      Usuario usuarioCriador) {
         if (usuarioCriador == null || usuarioCriador.getPerfil() != Perfil.SECRETARIO) {
             throw new IllegalArgumentException("Somente um secretário pode criar uma oferta.");
         }
 
-        Usuario professorResponsavel = buscarProfessor(ofertaForm.getProfessorResponsavelId());
+        if (dataInicio == null || dataFim == null) {
+            throw new IllegalArgumentException("As datas de início e fim são obrigatórias.");
+        }
+        if (!dataFim.isAfter(dataInicio)) {
+            throw new IllegalArgumentException("A data de fim deve ser depois da data de início.");
+        }
+
+        Usuario professorResponsavel = buscarProfessor(professorResponsavelId);
 
         Oferta oferta = new Oferta();
-        oferta.setNomeOferta(StringUtils.hasText(ofertaForm.getNomeOferta())
-                ? ofertaForm.getNomeOferta().trim()
-                : "Oferta " + ofertaForm.getSemestre().trim() + " - Prof. " + professorResponsavel.getNomeCompleto());
-        oferta.setSemestre(ofertaForm.getSemestre().trim());
-        oferta.setDataInicio(ofertaForm.getDataInicio());
-        oferta.setDataFim(ofertaForm.getDataFim());
+        oferta.setNomeOferta(StringUtils.hasText(nomeOferta)
+                ? nomeOferta.trim()
+                : "Oferta " + semestre.trim() + " - Prof. " + professorResponsavel.getNomeCompleto());
+        oferta.setSemestre(semestre.trim());
+        oferta.setDataInicio(dataInicio);
+        oferta.setDataFim(dataFim);
         oferta.setProfessorResponsavel(professorResponsavel);
         oferta.setUsuarioCriador(usuarioCriador);
 
