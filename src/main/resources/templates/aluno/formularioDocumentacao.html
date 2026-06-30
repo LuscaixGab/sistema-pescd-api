@@ -78,11 +78,12 @@
 
         <div th:if="${erro}" class="alert-error" th:text="${erro}"></div>
 
-        <form th:action="@{/aluno/documentacao/enviar/{id}(id=${inscricao.id})}" 
-              th:object="${documentacaoDTO}" 
-              method="POST" 
+        <form th:action="@{/aluno/documentacao/enviar/{id}(id=${inscricao.id})}"
+              th:object="${documentacaoDTO}"
+              method="POST"
               enctype="multipart/form-data">
-            
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
             <div class="form-group">
                 <label for="nomeInstituicao" th:text="#{student.documentation.institution}">Instituição onde ministrou a disciplina:</label>
                 <input type="text" id="nomeInstituicao" th:field="*{nomeInstituicao}" required placeholder="Ex: Nome da Universidade/Escola" th:placeholder="#{student.documentation.institution.placeholder}">
