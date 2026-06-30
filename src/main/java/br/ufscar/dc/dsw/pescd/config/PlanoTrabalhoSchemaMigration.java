@@ -2,12 +2,14 @@ package br.ufscar.dc.dsw.pescd.config;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
 @Component
+@Profile("!test")
 public class PlanoTrabalhoSchemaMigration implements CommandLineRunner {
 //essa classe aqui vai mudar para a inscricao nao seja not null
     //fiz isso porque na epoca a Rafa ainda nn tinha terminado a insercao de alunos
