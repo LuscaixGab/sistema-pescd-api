@@ -38,7 +38,7 @@ public class SecurityConfig {
         // Inicia a configuração de rotas em uma nova instrução
         http.authorizeHttpRequests(authorize -> authorize
                 // ADICIONADO O "/error" AQUI NA LINHA ABAIXO:
-                .requestMatchers("/", "/login", "/error", "/ofertas-publicas", "/erro/**", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                .requestMatchers("/", "/login", "/error", "/ofertas-publicas", "/erro/**", "/css/**", "/js/**", "/images/**", "/webjars/**", "/api/ofertas-publicas").permitAll()
                 .requestMatchers("/administrador", "/administrador/**").hasRole("ADMINISTRADOR")
 
                 // PR.04: Libera as rotas de acompanhamento para ambos (Secretário e Professor)
