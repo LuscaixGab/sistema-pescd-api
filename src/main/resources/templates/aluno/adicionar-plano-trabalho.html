@@ -19,9 +19,11 @@
             <a class="button-link secondary" th:href="@{/aluno/ofertas}" th:text="#{common.back}">Voltar</a>
         </header>
 
+        <div id="plano-feedback" class="notice error" style="display:none;"></div>
         <div th:if="${erroGeral}" class="notice error" th:text="${erroGeral}"></div>
 
         <form class="offer-form"
+              id="plano-form"
               th:action="@{/aluno/plano-trabalho/adicionar}"
               th:object="${planoTrabalhoForm}"
               method="post"
@@ -33,27 +35,27 @@
                  th:if="${inscricao != null}"
                  style="margin-top: 0;"
                  th:text="#{student.plan.notice(${inscricao.oferta.nomeOferta}, ${inscricao.oferta.semestre})}">
-                Enviando plano para a matrícula da oferta Nome da Oferta do semestre 2026/1.
+                Enviando plano para a matricula da oferta Nome da Oferta do semestre 2026/1.
             </div>
 
             <div class="field-grid">
                 <div class="field">
-                    <label for="codigoDisciplina" th:text="#{student.plan.code}">Código da disciplina *</label>
+                    <label for="codigoDisciplina" th:text="#{student.plan.code}">Codigo da disciplina *</label>
                     <input id="codigoDisciplina" type="text" th:field="*{codigoDisciplina}" placeholder="Ex.: CC1234" th:placeholder="#{student.plan.code.placeholder}">
-                    <small th:if="${#fields.hasErrors('codigoDisciplina')}" th:errors="*{codigoDisciplina}" class="field-error"></small>
+                    <small id="error-codigoDisciplina" class="field-error" style="display:none;"></small>
                 </div>
 
                 <div class="field">
                     <label for="cursoDisciplina" th:text="#{student.plan.course}">Curso *</label>
-                    <input id="cursoDisciplina" type="text" th:field="*{cursoDisciplina}" placeholder="Ex.: Ciência da Computação" th:placeholder="#{student.plan.course.placeholder}">
-                    <small th:if="${#fields.hasErrors('cursoDisciplina')}" th:errors="*{cursoDisciplina}" class="field-error"></small>
+                    <input id="cursoDisciplina" type="text" th:field="*{cursoDisciplina}" placeholder="Ex.: Ciencia da Computacao" th:placeholder="#{student.plan.course.placeholder}">
+                    <small id="error-cursoDisciplina" class="field-error" style="display:none;"></small>
                 </div>
             </div>
 
             <div class="field">
                 <label for="nomeDisciplina" th:text="#{student.plan.name}">Nome da disciplina *</label>
                 <input id="nomeDisciplina" type="text" th:field="*{nomeDisciplina}" placeholder="Nome completo da disciplina" th:placeholder="#{student.plan.name.placeholder}">
-                <small th:if="${#fields.hasErrors('nomeDisciplina')}" th:errors="*{nomeDisciplina}" class="field-error"></small>
+                <small id="error-nomeDisciplina" class="field-error" style="display:none;"></small>
             </div>
 
             <div class="field">
@@ -64,16 +66,16 @@
                             th:value="${professor.id}"
                             th:text="${professor.nomeCompleto + ' (' + professor.nomeUsuario + ')'}"></option>
                 </select>
-                <small th:if="${#fields.hasErrors('professorSupervisorId')}" th:errors="*{professorSupervisorId}" class="field-error"></small>
+                <small id="error-professorSupervisorId" class="field-error" style="display:none;"></small>
             </div>
 
             <div class="field">
-                <label for="arquivoPlano" th:text="#{student.plan.file}">Arquivo do plano * (Apenas PDF, máx 5MB)</label>
+                <label for="arquivoPlano" th:text="#{student.plan.file}">Arquivo do plano * (Apenas PDF, max 5MB)</label>
                 <input id="arquivoPlano" type="file" th:field="*{arquivoPlano}" accept=".pdf,application/pdf">
-                <small th:if="${#fields.hasErrors('arquivoPlano')}" th:errors="*{arquivoPlano}" class="field-error"></small>
+                <small id="error-arquivoPlano" class="field-error" style="display:none;"></small>
             </div>
 
-            <small th:if="${#fields.hasErrors('inscricaoId')}" th:errors="*{inscricaoId}" class="field-error"></small>
+            <small id="error-inscricaoId" class="field-error" style="display:none;"></small>
 
             <div class="actions">
                 <button type="submit" th:text="#{student.plan.submit}">Enviar plano</button>
@@ -81,5 +83,69 @@
         </form>
     </section>
 </main>
+<script>
+    const planoForm = document.getElementById('plano-form');
+    const planoFeedback = document.getElementById('plano-feedback');
+
+    function clearFeedback() {
+        planoFeedback.textContent = '';
+        planoFeedback.style.display = 'none';
+        planoFeedback.className = 'notice error';
+    }
+
+    function showFeedback(message, type) {
+        planoFeedback.textContent = message;
+        planoFeedback.className = type === 'success' ? 'notice success' : 'notice error';
+        planoFeedback.style.display = 'block';
+    }
+
+    function clearFieldErrors() {
+        document.querySelectorAll('.field-error').forEach((element) => {
+            element.textContent = '';
+            element.style.display = 'none';
+        });
+    }
+
+    function setFieldError(field, message) {
+        const target = document.getElementById(`error-${field}`);
+        if (target) {
+            target.textContent = message;
+            target.style.display = 'block';
+        }
+    }
+
+    planoForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        clearFeedback();
+        clearFieldErrors();
+
+        const formData = new FormData(planoForm);
+
+        try {
+            const response = await fetch('/api/v1/plano-trabalho', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                if (data.fieldErrors) {
+                    Object.entries(data.fieldErrors).forEach(([field, message]) => setFieldError(field, message));
+                }
+                showFeedback(data.message || 'Falha ao enviar o plano.', 'error');
+                return;
+            }
+
+            window.location.href = '/painel';
+        } catch (error) {
+            showFeedback('Falha ao enviar o plano.', 'error');
+        }
+    });
+</script>
 </body>
 </html>
