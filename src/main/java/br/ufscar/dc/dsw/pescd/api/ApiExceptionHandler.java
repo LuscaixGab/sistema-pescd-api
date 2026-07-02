@@ -18,6 +18,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.security.core.AuthenticationException;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -112,6 +113,15 @@ public class ApiExceptionHandler {
                                                                HttpServletRequest request) {
         return construirResposta(HttpStatus.FORBIDDEN,
                 "Voce nao possui permissao para acessar este recurso.",
+                request.getRequestURI(),
+                Map.of());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiErrorResponse> tratarFalhaAutenticacao(AuthenticationException exception,
+                                                                    HttpServletRequest request) {
+        return construirResposta(HttpStatus.UNAUTHORIZED,
+                "Usuario ou senha invalidos.",
                 request.getRequestURI(),
                 Map.of());
     }
