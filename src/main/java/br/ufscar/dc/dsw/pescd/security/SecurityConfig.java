@@ -33,7 +33,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         
         // Ao invés de desligar tudo, ignoramos o CSRF apenas na rota que você vai testar no Postman
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/aluno/documentacao/**", "/api/aluno/relatorio/**")); // TODO: remover essa linha, usada apenas para liberar o postman (AL.03 e AL.04)
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/aluno/documentacao/**", "/api/aluno/relatorio/**", "/api/professor-supervisor/**")); // TODO: remover essa linha, usada apenas para liberar o postman (AL.03 e AL.04)
         
         // Inicia a configuração de rotas em uma nova instrução
         http.authorizeHttpRequests(authorize -> authorize
