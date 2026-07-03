@@ -40,14 +40,13 @@ public class AdministradorController {
 
     @GetMapping("/usuarios")
     public String listarUsuarios(@AuthenticationPrincipal UsuarioUserDetails usuarioLogado, Model model) {
-        model.addAttribute("usuarios", administradorService.listarUsuarios());
         model.addAttribute("usuarioLogadoId", usuarioLogado.getUsuario().getId());
         return "administrador/usuarios-lista";
     }
 
     @GetMapping("/usuarios/novo")
     public String exibirFormularioNovo(Model model) {
-        prepararFormulario(model, new AdministradorDTO(), "/administrador/usuarios",
+        prepararFormulario(model, null, "/administrador/usuarios",
                 messages.get("admin.form.createTitle"),
                 messages.get("admin.form.createButton"));
         return "administrador/usuario-formulario";
@@ -63,7 +62,7 @@ public class AdministradorController {
         }
 
         if (bindingResult.hasErrors()) {
-            prepararFormulario(model, administradorDTO, "/administrador/usuarios",
+            prepararFormulario(model, null, "/administrador/usuarios",
                     messages.get("admin.form.createTitle"),
                     messages.get("admin.form.createButton"));
             return "administrador/usuario-formulario";
@@ -76,7 +75,7 @@ public class AdministradorController {
             return "redirect:/administrador/usuarios";
         } catch (IllegalArgumentException exception) {
             model.addAttribute("erroGeral", exception.getMessage());
-            prepararFormulario(model, administradorDTO, "/administrador/usuarios",
+            prepararFormulario(model, null, "/administrador/usuarios",
                     messages.get("admin.form.createTitle"),
                     messages.get("admin.form.createButton"));
             return "administrador/usuario-formulario";
@@ -86,8 +85,7 @@ public class AdministradorController {
     @GetMapping("/usuarios/{id}/editar")
     public String exibirFormularioEdicao(@PathVariable UUID id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            prepararFormulario(model, administradorService.carregarFormulario(id),
-                    "/administrador/usuarios/" + id + "/editar",
+            prepararFormulario(model, id, "/administrador/usuarios/" + id + "/editar",
                     messages.get("admin.form.editTitle"),
                     messages.get("admin.form.updateButton"));
             return "administrador/usuario-formulario";
@@ -104,7 +102,7 @@ public class AdministradorController {
                                    Model model,
                                    RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            prepararFormulario(model, administradorDTO, "/administrador/usuarios/" + id + "/editar",
+            prepararFormulario(model, id, "/administrador/usuarios/" + id + "/editar",
                     messages.get("admin.form.editTitle"),
                     messages.get("admin.form.updateButton"));
             return "administrador/usuario-formulario";
@@ -117,7 +115,7 @@ public class AdministradorController {
             return "redirect:/administrador/usuarios";
         } catch (IllegalArgumentException exception) {
             model.addAttribute("erroGeral", exception.getMessage());
-            prepararFormulario(model, administradorDTO, "/administrador/usuarios/" + id + "/editar",
+            prepararFormulario(model, id, "/administrador/usuarios/" + id + "/editar",
                     messages.get("admin.form.editTitle"),
                     messages.get("admin.form.updateButton"));
             return "administrador/usuario-formulario";
@@ -137,10 +135,9 @@ public class AdministradorController {
         return "redirect:/administrador/usuarios";
     }
 
-    private void prepararFormulario(Model model, AdministradorDTO administradorDTO, String formAction,
+    private void prepararFormulario(Model model, UUID usuarioId, String formAction,
                                      String tituloPagina, String botaoTexto) {
-        model.addAttribute("administradorDTO", administradorDTO);
-        model.addAttribute("perfis", administradorService.listarPerfis());
+        model.addAttribute("usuarioId", usuarioId);
         model.addAttribute("formAction", formAction);
         model.addAttribute("tituloPagina", tituloPagina);
         model.addAttribute("botaoTexto", botaoTexto);

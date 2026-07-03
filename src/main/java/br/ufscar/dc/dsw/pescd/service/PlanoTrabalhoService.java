@@ -1,6 +1,7 @@
 package br.ufscar.dc.dsw.pescd.service;
 
 import br.ufscar.dc.dsw.pescd.dto.PlanoTrabalhoForm;
+import br.ufscar.dc.dsw.pescd.exception.PlanoTrabalhoNaoEncontradoException;
 import br.ufscar.dc.dsw.pescd.model.Inscricao;
 import br.ufscar.dc.dsw.pescd.model.Perfil;
 import br.ufscar.dc.dsw.pescd.model.PlanoTrabalho;
@@ -10,6 +11,7 @@ import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
 import br.ufscar.dc.dsw.pescd.repository.PlanoTrabalhoRepository;
 import br.ufscar.dc.dsw.pescd.repository.UsuarioRepository;
 import br.ufscar.dc.dsw.pescd.util.UploadUtils;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -45,6 +47,18 @@ public class PlanoTrabalhoService {
     @Transactional(readOnly = true)
     public List<PlanoTrabalho> listarPlanosTrabalho() {
         return planoTrabalhoRepository.findAllByOrderByDataCriacaoDesc();
+    }
+
+    @Transactional(readOnly = true)
+    public PlanoTrabalho buscarPlanoDoAluno(UUID planoId, Usuario alunoLogado) {
+        PlanoTrabalho plano = planoTrabalhoRepository.findById(planoId)
+                .orElseThrow(() -> new PlanoTrabalhoNaoEncontradoException("Plano de trabalho nao encontrado."));
+
+        if (plano.getInscricao() == null || !plano.getInscricao().getAluno().getId().equals(alunoLogado.getId())) {
+            throw new AccessDeniedException("Voce nao tem permissao para acessar este plano.");
+        }
+
+        return plano;
     }
 
     @Transactional(readOnly = true)

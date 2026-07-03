@@ -4,6 +4,7 @@ import br.ufscar.dc.dsw.pescd.model.Perfil;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public class AdministradorDTO {
     @NotBlank(message = "{validation.username.required}")
     private String nomeUsuario;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;
 
     @NotNull(message = "{validation.profile.required}")

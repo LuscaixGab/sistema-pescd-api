@@ -2,13 +2,17 @@ package br.ufscar.dc.dsw.pescd.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.Customizer;
 
 @Configuration
 @EnableWebSecurity
@@ -30,12 +34,40 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        
-        // Ao invés de desligar tudo, ignoramos o CSRF apenas na rota que você vai testar no Postman
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/aluno/documentacao/**", "/api/aluno/relatorio/**")); // TODO: remover essa linha, usada apenas para liberar o postman (AL.03 e AL.04)
-        
-        // Inicia a configuração de rotas em uma nova instrução
+    public org.springframework.security.authentication.AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    @Order(1)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher("/api/**")
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.GET, "/api/ofertas-publicas").permitAll()
+                        .requestMatchers("/api/aluno/documentacao/**").permitAll() // TODO: remover permissão de teste AL.03
+                        .requestMatchers("/api/aluno/relatorio/**").hasRole("ALUNO")
+                        .requestMatchers("/api/professor-supervisor/**").hasRole("PROFESSOR")
+                                       
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                        .requestMatchers("/api/v1/usuarios", "/api/v1/usuarios/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/v1/plano-trabalho", "/api/v1/plano-trabalho/**").hasRole("ALUNO")
+                        .requestMatchers("/api/v1/ofertas", "/api/v1/ofertas/**").hasRole("SECRETARIO")
+                        .requestMatchers("/api/v1/professor-responsavel/documentacoes", "/api/v1/professor-responsavel/documentacoes/**").hasRole("PROFESSOR")
+                        .anyRequest().denyAll())
+                .httpBasic(Customizer.withDefaults())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new ApiAuthenticationEntryPoint(new com.fasterxml.jackson.databind.ObjectMapper()))
+                        .accessDeniedHandler(new ApiAccessDeniedHandler(new com.fasterxml.jackson.databind.ObjectMapper())));
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
                 // ADICIONADO O "/error" AQUI NA LINHA ABAIXO:
                 .requestMatchers("/", "/login", "/error", "/ofertas-publicas", "/erro/**", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
@@ -48,9 +80,6 @@ public class SecurityConfig {
 
                 .requestMatchers("/ofertas/**").hasRole("SECRETARIO")
                 
-                // AL.03: Permissão para testes
-                .requestMatchers("/api/aluno/documentacao/**", "/api/aluno/relatorio/**").permitAll() // TODO: essa permissão é apenas para testes da AL.03 (remover depois)
-
                 .anyRequest().authenticated())
             .formLogin(form -> form
                     .loginPage("/login")
