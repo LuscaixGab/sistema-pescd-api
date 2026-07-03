@@ -24,8 +24,16 @@ public class SupervisaoProfessorService {
     public List<SupervisaoAlunoResumo> listarAlunosSupervisionados(Usuario professorSupervisor) {
         return planoTrabalhoRepository.findByProfessorSupervisor(professorSupervisor)
                 .stream()
+                .filter(this::planoTemDadosMinimosParaSupervisao)
                 .map(this::toResumo)
                 .toList();
+    }
+
+    private boolean planoTemDadosMinimosParaSupervisao(PlanoTrabalho planoTrabalho) {
+        return planoTrabalho != null
+                && planoTrabalho.getInscricao() != null
+                && planoTrabalho.getInscricao().getOferta() != null
+                && planoTrabalho.getInscricao().getAluno() != null;
     }
 
     private SupervisaoAlunoResumo toResumo(PlanoTrabalho planoTrabalho) {
