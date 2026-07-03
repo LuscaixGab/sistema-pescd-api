@@ -123,7 +123,10 @@ public class OfertaService {
     }
 
     public String calcularStatusDinamicamente(Oferta oferta, List<Inscricao> inscricoes) {
-        if (oferta.getDataEncerramento() != null) return "Concluída";
+        if (oferta.getDataEncerramento() != null || oferta.getStatusOferta() == StatusOferta.CONCLUIDA) return "Concluída";
+        if (oferta.getStatusOferta() == StatusOferta.AGUARDANDO_ENCERRAMENTO_SECRETARIO) {
+            return "Aguardando encerramento do secretário";
+        }
 
         LocalDate hoje = LocalDate.now();
         if (hoje.isBefore(oferta.getDataInicio())) return "Aguardando início";
@@ -138,7 +141,7 @@ public class OfertaService {
             }
         }
 
-        if (todosConcluidos) return "Aguardando encerramento do secretário";
+        if (todosConcluidos) return "Aguardando encerramento do responsável";
         if (hoje.isAfter(oferta.getDataFim())) return "Em atraso";
         return "Em andamento";
     }
@@ -151,6 +154,7 @@ public class OfertaService {
 
     @Transactional
     public void encerrarOfertaOficialmente(Oferta oferta, Usuario usuarioLogado, List<Inscricao> inscricoes) {
+        oferta.setStatusOferta(StatusOferta.CONCLUIDA);
         oferta.setDataEncerramento(LocalDateTime.now());
         oferta.setUsuarioEncerramento(usuarioLogado);
         ofertaRepository.save(oferta);
