@@ -10,6 +10,9 @@ public class OfertaResponseDTO {
 
     private UUID id;
     private String nomeOferta;
+    private String codigoDisciplina;
+    private String nomeDisciplina;
+    private String cursoDisciplina;
     private String semestre;
     private LocalDate dataInicio;
     private LocalDate dataFim;
@@ -24,6 +27,9 @@ public class OfertaResponseDTO {
         OfertaResponseDTO dto = new OfertaResponseDTO();
         dto.setId(oferta.getId());
         dto.setNomeOferta(oferta.getNomeOferta());
+        dto.setCodigoDisciplina(oferta.getCodigoDisciplina());
+        dto.setNomeDisciplina(oferta.getNomeDisciplina());
+        dto.setCursoDisciplina(oferta.getCursoDisciplina());
         dto.setSemestre(oferta.getSemestre());
         dto.setDataInicio(oferta.getDataInicio());
         dto.setDataFim(oferta.getDataFim());
@@ -50,6 +56,30 @@ public class OfertaResponseDTO {
 
     public void setNomeOferta(String nomeOferta) {
         this.nomeOferta = nomeOferta;
+    }
+
+    public String getCodigoDisciplina() {
+        return codigoDisciplina;
+    }
+
+    public void setCodigoDisciplina(String codigoDisciplina) {
+        this.codigoDisciplina = codigoDisciplina;
+    }
+
+    public String getNomeDisciplina() {
+        return nomeDisciplina;
+    }
+
+    public void setNomeDisciplina(String nomeDisciplina) {
+        this.nomeDisciplina = nomeDisciplina;
+    }
+
+    public String getCursoDisciplina() {
+        return cursoDisciplina;
+    }
+
+    public void setCursoDisciplina(String cursoDisciplina) {
+        this.cursoDisciplina = cursoDisciplina;
     }
 
     public String getSemestre() {

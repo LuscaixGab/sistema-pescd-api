@@ -38,24 +38,21 @@
                 Enviando plano para a matricula da oferta Nome da Oferta do semestre 2026/1.
             </div>
 
-            <div class="field-grid">
-                <div class="field">
-                    <label for="codigoDisciplina" th:text="#{student.plan.code}">Codigo da disciplina *</label>
-                    <input id="codigoDisciplina" type="text" th:field="*{codigoDisciplina}" placeholder="Ex.: CC1234" th:placeholder="#{student.plan.code.placeholder}">
-                    <small id="error-codigoDisciplina" class="field-error" style="display:none;"></small>
+            <div class="readonly-grid" th:if="${inscricao != null}">
+                <div class="readonly-field">
+                    <span th:text="#{field.disciplineCode}">Código da disciplina</span>
+                    <strong th:text="${inscricao.oferta.codigoDisciplina ?: #messages.msg('common.notInformed')}">DC101</strong>
                 </div>
 
-                <div class="field">
-                    <label for="cursoDisciplina" th:text="#{student.plan.course}">Curso *</label>
-                    <input id="cursoDisciplina" type="text" th:field="*{cursoDisciplina}" placeholder="Ex.: Ciencia da Computacao" th:placeholder="#{student.plan.course.placeholder}">
-                    <small id="error-cursoDisciplina" class="field-error" style="display:none;"></small>
+                <div class="readonly-field">
+                    <span th:text="#{field.disciplineName}">Nome da disciplina</span>
+                    <strong th:text="${inscricao.oferta.nomeDisciplina ?: inscricao.oferta.nomeOferta}">Disciplina</strong>
                 </div>
-            </div>
 
-            <div class="field">
-                <label for="nomeDisciplina" th:text="#{student.plan.name}">Nome da disciplina *</label>
-                <input id="nomeDisciplina" type="text" th:field="*{nomeDisciplina}" placeholder="Nome completo da disciplina" th:placeholder="#{student.plan.name.placeholder}">
-                <small id="error-nomeDisciplina" class="field-error" style="display:none;"></small>
+                <div class="readonly-field">
+                    <span th:text="#{common.course}">Curso</span>
+                    <strong th:text="${inscricao.oferta.cursoDisciplina ?: #messages.msg('common.notInformed')}">Curso</strong>
+                </div>
             </div>
 
             <div class="field">

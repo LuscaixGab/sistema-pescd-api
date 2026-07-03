@@ -34,18 +34,12 @@ public class PlanoTrabalhoApiController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PlanoTrabalhoResponseDTO> enviarPlanoTrabalho(
-            @RequestParam String codigoDisciplina,
-            @RequestParam String nomeDisciplina,
-            @RequestParam String cursoDisciplina,
             @RequestParam UUID professorSupervisorId,
             @RequestParam UUID inscricaoId,
             @RequestPart("arquivoPlano") MultipartFile arquivoPlano,
             @AuthenticationPrincipal UsuarioUserDetails usuarioLogado) {
 
         PlanoTrabalhoForm form = new PlanoTrabalhoForm();
-        form.setCodigoDisciplina(codigoDisciplina);
-        form.setNomeDisciplina(nomeDisciplina);
-        form.setCursoDisciplina(cursoDisciplina);
         form.setProfessorSupervisorId(professorSupervisorId);
         form.setInscricaoId(inscricaoId);
         form.setArquivoPlano(arquivoPlano);

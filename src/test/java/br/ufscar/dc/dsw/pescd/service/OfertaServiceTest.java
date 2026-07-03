@@ -103,6 +103,9 @@ class OfertaServiceTest {
                                          LocalDate dataInicio, LocalDate dataFim) {
         OfertaRequestDTO request = new OfertaRequestDTO();
         request.setNomeOferta(nomeOferta);
+        request.setCodigoDisciplina("DC101");
+        request.setNomeDisciplina("Desenvolvimento de Software para Web 1");
+        request.setCursoDisciplina("Ciencia da Computacao");
         request.setSemestre("2026/1");
         request.setDataInicio(dataInicio);
         request.setDataFim(dataFim);

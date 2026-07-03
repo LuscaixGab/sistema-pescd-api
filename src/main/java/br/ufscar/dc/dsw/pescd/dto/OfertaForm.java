@@ -12,6 +12,15 @@ public class OfertaForm {
 
     private String nomeOferta;
 
+    @NotBlank(message = "{validation.disciplineCode.required}")
+    private String codigoDisciplina;
+
+    @NotBlank(message = "{validation.disciplineName.required}")
+    private String nomeDisciplina;
+
+    @NotBlank(message = "{validation.disciplineCourse.required}")
+    private String cursoDisciplina;
+
     @NotBlank(message = "{validation.semester.required}")
     private String semestre;
 
@@ -32,6 +41,30 @@ public class OfertaForm {
 
     public void setNomeOferta(String nomeOferta) {
         this.nomeOferta = nomeOferta;
+    }
+
+    public String getCodigoDisciplina() {
+        return codigoDisciplina;
+    }
+
+    public void setCodigoDisciplina(String codigoDisciplina) {
+        this.codigoDisciplina = codigoDisciplina;
+    }
+
+    public String getNomeDisciplina() {
+        return nomeDisciplina;
+    }
+
+    public void setNomeDisciplina(String nomeDisciplina) {
+        this.nomeDisciplina = nomeDisciplina;
+    }
+
+    public String getCursoDisciplina() {
+        return cursoDisciplina;
+    }
+
+    public void setCursoDisciplina(String cursoDisciplina) {
+        this.cursoDisciplina = cursoDisciplina;
     }
 
     public String getSemestre() {

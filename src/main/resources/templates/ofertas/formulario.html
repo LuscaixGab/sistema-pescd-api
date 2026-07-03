@@ -31,6 +31,26 @@
                 <small id="error-nomeOferta" class="field-error" style="display:none;"></small>
             </div>
 
+            <div class="field-grid">
+                <div class="field">
+                    <label for="codigoDisciplina" th:text="#{offers.form.disciplineCode}">Código da disciplina *</label>
+                    <input id="codigoDisciplina" type="text" name="codigoDisciplina" placeholder="Ex.: DC101">
+                    <small id="error-codigoDisciplina" class="field-error" style="display:none;"></small>
+                </div>
+
+                <div class="field">
+                    <label for="cursoDisciplina" th:text="#{offers.form.disciplineCourse}">Curso da disciplina *</label>
+                    <input id="cursoDisciplina" type="text" name="cursoDisciplina" placeholder="Ex.: Ciência da Computação">
+                    <small id="error-cursoDisciplina" class="field-error" style="display:none;"></small>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="nomeDisciplina" th:text="#{offers.form.disciplineName}">Nome da disciplina *</label>
+                <input id="nomeDisciplina" type="text" name="nomeDisciplina" placeholder="Ex.: Desenvolvimento de Software para Web 1">
+                <small id="error-nomeDisciplina" class="field-error" style="display:none;"></small>
+            </div>
+
             <div class="field">
                 <label for="semestre" th:text="#{offers.form.semester}">Semestre *</label>
                 <input id="semestre" type="text" name="semestre" placeholder="Ex.: 2026-1">
@@ -106,6 +126,9 @@
 
         const payload = {
             nomeOferta: document.getElementById('nomeOferta').value.trim(),
+            codigoDisciplina: document.getElementById('codigoDisciplina').value.trim(),
+            nomeDisciplina: document.getElementById('nomeDisciplina').value.trim(),
+            cursoDisciplina: document.getElementById('cursoDisciplina').value.trim(),
             semestre: document.getElementById('semestre').value.trim(),
             dataInicio: document.getElementById('dataInicio').value,
             dataFim: document.getElementById('dataFim').value,

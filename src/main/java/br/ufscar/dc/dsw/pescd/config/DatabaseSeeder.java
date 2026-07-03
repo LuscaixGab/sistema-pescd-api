@@ -65,6 +65,9 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (ofertaRepository.count() == 0) {
             Oferta web1 = new Oferta();
             web1.setNomeOferta("Desenvolvimento de Software para Web 1");
+            web1.setCodigoDisciplina("DC101");
+            web1.setNomeDisciplina("Desenvolvimento de Software para Web 1");
+            web1.setCursoDisciplina("Ciência da Computação");
             web1.setSemestre("2026/1");
             web1.setDataInicio(LocalDate.of(2026, 3, 1));
             web1.setDataFim(LocalDate.of(2026, 7, 15));
@@ -74,6 +77,9 @@ public class DatabaseSeeder implements CommandLineRunner {
 
             Oferta embarcados = new Oferta();
             embarcados.setNomeOferta("Sistemas Embarcados");
+            embarcados.setCodigoDisciplina("DC102");
+            embarcados.setNomeDisciplina("Sistemas Embarcados");
+            embarcados.setCursoDisciplina("Engenharia de Computação");
             embarcados.setSemestre("2026/1");
             embarcados.setDataInicio(LocalDate.of(2026, 3, 1));
             embarcados.setDataFim(LocalDate.of(2026, 7, 15));
@@ -83,6 +89,9 @@ public class DatabaseSeeder implements CommandLineRunner {
 
             Oferta controle = new Oferta();
             controle.setNomeOferta("Sistemas de Controle 1");
+            controle.setCodigoDisciplina("ENG104");
+            controle.setNomeDisciplina("Sistemas de Controle 1");
+            controle.setCursoDisciplina("Engenharia de Computação");
             controle.setSemestre("2026/1");
             controle.setDataInicio(LocalDate.of(2026, 3, 1));
             controle.setDataFim(LocalDate.of(2026, 7, 15));
