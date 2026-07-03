@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/plano-trabalho", "/api/v1/plano-trabalho/**").hasRole("ALUNO")
                         .requestMatchers("/api/v1/ofertas", "/api/v1/ofertas/**").hasRole("SECRETARIO")
                         .requestMatchers("/api/v1/professor-responsavel/documentacoes", "/api/v1/professor-responsavel/documentacoes/**").hasRole("PROFESSOR")
+                        .requestMatchers("/api/v1/professor-responsavel/relatorios", "/api/v1/professor-responsavel/relatorios/**").hasRole("PROFESSOR")
                         .anyRequest().denyAll())
                 .httpBasic(Customizer.withDefaults())
                 .exceptionHandling(exception -> exception
