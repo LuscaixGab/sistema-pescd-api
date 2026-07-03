@@ -46,7 +46,7 @@ public class DocumentacaoAulaController {
         Inscricao inscricao = inscricaoRepository.findById(idInscricao).orElse(null);
         if (inscricao == null) {
             redirectAttributes.addFlashAttribute("erro", messages.get("msg.docs.notFound"));
-            return "redirect:/aluno/ofertas"; // TODO: Ajuste para a rota correta da tela inicial do aluno
+            return "redirect:/aluno/ofertas";
         }
 
         // Oferta "em andamento" (checando pelo período das datas)

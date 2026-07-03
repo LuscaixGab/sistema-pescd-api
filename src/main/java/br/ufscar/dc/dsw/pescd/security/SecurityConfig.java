@@ -46,6 +46,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.GET, "/api/ofertas-publicas").permitAll()
+                        .requestMatchers("/api/aluno/documentacao/**").permitAll() // TODO: remover permissão de teste AL.03
+                        .requestMatchers("/api/aluno/relatorio/**").hasRole("ALUNO")
+                        .requestMatchers("/api/professor-supervisor/**").hasRole("PROFESSOR")
+                                       
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/usuarios", "/api/v1/usuarios/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/v1/plano-trabalho", "/api/v1/plano-trabalho/**").hasRole("ALUNO")
@@ -64,32 +69,34 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/login", "/ofertas-publicas", "/erro/**", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-                        .requestMatchers("/administrador", "/administrador/**").hasRole("ADMINISTRADOR")
+                // ADICIONADO O "/error" AQUI NA LINHA ABAIXO:
+                .requestMatchers("/", "/login", "/error", "/ofertas-publicas", "/erro/**", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                .requestMatchers("/administrador", "/administrador/**").hasRole("ADMINISTRADOR")
 
-                        // PR.04: Libera as rotas de acompanhamento para ambos (Secretário e Professor)
-                        .requestMatchers(HttpMethod.GET, "/ofertas").hasAnyRole("SECRETARIO", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, "/ofertas/*/acompanhamento").hasAnyRole("SECRETARIO", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, "/ofertas/*/alunos/*/detalhes").hasAnyRole("SECRETARIO", "PROFESSOR")
+                // PR.04: Libera as rotas de acompanhamento para ambos (Secretário e Professor)
+                .requestMatchers(HttpMethod.GET, "/ofertas").hasAnyRole("SECRETARIO", "PROFESSOR")
+                .requestMatchers(HttpMethod.GET, "/ofertas/*/acompanhamento").hasAnyRole("SECRETARIO", "PROFESSOR")
+                .requestMatchers(HttpMethod.GET, "/ofertas/*/alunos/*/detalhes").hasAnyRole("SECRETARIO", "PROFESSOR")
 
-                        .requestMatchers("/ofertas/**").hasRole("SECRETARIO")
-                        .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .usernameParameter("nomeUsuario")
-                        .passwordParameter("senha")
-                        .successHandler(roleBasedSuccessHandler)
-                        .failureUrl("/login?erro")
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll())
-                .exceptionHandling(exception -> exception
-                        .accessDeniedHandler(friendlyAccessDeniedHandler));
+                .requestMatchers("/ofertas/**").hasRole("SECRETARIO")
+                
+                .anyRequest().authenticated())
+            .formLogin(form -> form
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+                    .usernameParameter("nomeUsuario")
+                    .passwordParameter("senha")
+                    .successHandler(roleBasedSuccessHandler)
+                    .failureUrl("/login?erro")
+                    .permitAll())
+            .logout(logout -> logout
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login?logout")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .permitAll())
+            .exceptionHandling(exception -> exception
+                    .accessDeniedHandler(friendlyAccessDeniedHandler));
 
         return http.build();
     }
