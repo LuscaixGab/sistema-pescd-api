@@ -50,13 +50,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/aluno/documentacao/**").permitAll() // TODO: remover permissão de teste AL.03
                         .requestMatchers("/api/aluno/relatorio/**").hasRole("ALUNO")
                         .requestMatchers("/api/professor-supervisor/**").hasRole("PROFESSOR")
-                                       
+
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/usuarios", "/api/v1/usuarios/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/v1/plano-trabalho", "/api/v1/plano-trabalho/**").hasRole("ALUNO")
                         .requestMatchers("/api/v1/ofertas", "/api/v1/ofertas/**").hasRole("SECRETARIO")
                         .requestMatchers("/api/v1/professor-responsavel/documentacoes", "/api/v1/professor-responsavel/documentacoes/**").hasRole("PROFESSOR")
                         .requestMatchers("/api/v1/professor-responsavel/relatorios", "/api/v1/professor-responsavel/relatorios/**").hasRole("PROFESSOR")
+                        .requestMatchers("/api/v1/professor-responsavel/ofertas", "/api/v1/professor-responsavel/ofertas/**").hasRole("PROFESSOR")
                         .anyRequest().denyAll())
                 .httpBasic(Customizer.withDefaults())
                 .exceptionHandling(exception -> exception
@@ -70,9 +71,11 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                // ADICIONADO O "/error" AQUI NA LINHA ABAIXO:
                 .requestMatchers("/", "/login", "/error", "/ofertas-publicas", "/erro/**", "/css/**", "/js/**", "/images/**", "/webjars/**", "/api/ofertas-publicas").permitAll()
                 .requestMatchers("/administrador", "/administrador/**").hasRole("ADMINISTRADOR")
+                .requestMatchers("/professor-responsavel", "/professor-responsavel/**").hasRole("PROFESSOR")
+                .requestMatchers("/professor-supervisor", "/professor-supervisor/**").hasRole("PROFESSOR")
+                .requestMatchers("/professor", "/professor/**").hasRole("PROFESSOR")
 
                 // PR.04: Libera as rotas de acompanhamento para ambos (Secretário e Professor)
                 .requestMatchers(HttpMethod.GET, "/ofertas").hasAnyRole("SECRETARIO", "PROFESSOR")
@@ -80,7 +83,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/ofertas/*/alunos/*/detalhes").hasAnyRole("SECRETARIO", "PROFESSOR")
 
                 .requestMatchers("/ofertas/**").hasRole("SECRETARIO")
-                
+
                 .anyRequest().authenticated())
             .formLogin(form -> form
                     .loginPage("/login")
