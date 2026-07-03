@@ -115,7 +115,13 @@
             </div>
             <div class="readonly-field">
                 <span th:text="#{field.planFile}">Arquivo do plano</span>
-                <strong th:text="${plano.arquivoPlano}">plano.pdf</strong>
+                <strong>
+                    <a th:href="@{/professor-responsavel/relatorios/{id}/plano/download(id=${relatorio.inscricao.id})}"
+                       th:text="${plano.arquivoPlano}"
+                       target="_blank">
+                        plano.pdf
+                    </a>
+                </strong>
             </div>
             <div class="readonly-field">
                 <span th:text="#{field.planOpinion}">Parecer do plano</span>

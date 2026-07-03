@@ -71,7 +71,13 @@
             </div>
             <div class="readonly-field">
                 <span th:text="#{field.documentationFile}">Arquivo da documentação</span>
-                <strong th:text="${documentacao.arquivoDocumentacao}">uploads/documentacoes/arquivo.pdf</strong>
+                <strong>
+                    <a th:href="@{/professor-responsavel/documentacoes/{id}/download(id=${documentacao.inscricao.id})}"
+                       th:text="${documentacao.arquivoDocumentacao}"
+                       target="_blank">
+                        arquivo.pdf
+                    </a>
+                </strong>
             </div>
             <div class="readonly-field">
                 <span th:text="#{field.statusChange}">Mudança de status</span>

@@ -127,4 +127,34 @@ public class ProfessorResponsavelRelatorioController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @GetMapping("/{inscricaoId}/plano/download")
+    public ResponseEntity<Resource> baixarPlano(@PathVariable UUID inscricaoId,
+                                                @AuthenticationPrincipal UsuarioUserDetails usuarioLogado) {
+        RelatorioFinal relatorioFinal = analiseRelatorioResponsavelService.buscarParaAnalise(
+                inscricaoId,
+                usuarioLogado.getUsuario());
+
+        return analiseRelatorioResponsavelService.buscarPlanoDoRelatorio(relatorioFinal)
+                .map(plano -> {
+                    try {
+                        Path caminhoArquivo = Paths.get(plano.getArquivoPlano()).normalize();
+                        Resource resource = new UrlResource(caminhoArquivo.toUri());
+
+                        if (!resource.exists()) {
+                            return ResponseEntity.notFound().<Resource>build();
+                        }
+
+                        return ResponseEntity.ok()
+                                .contentType(MediaType.APPLICATION_PDF)
+                                .header(HttpHeaders.CONTENT_DISPOSITION,
+                                        "inline; filename=\"" + resource.getFilename() + "\"")
+                                .body(resource);
+                    } catch (Exception exception) {
+                        logger.error("Erro ao baixar plano da inscricao {}", inscricaoId, exception);
+                        return ResponseEntity.internalServerError().<Resource>build();
+                    }
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
