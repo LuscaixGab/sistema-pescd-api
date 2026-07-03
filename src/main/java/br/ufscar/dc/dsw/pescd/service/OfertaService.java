@@ -62,6 +62,9 @@ public class OfertaService {
     public Oferta criarOferta(OfertaForm ofertaForm, Usuario usuarioCriador) {
         return criarOfertaInterna(
                 ofertaForm.getNomeOferta(),
+                ofertaForm.getCodigoDisciplina(),
+                ofertaForm.getNomeDisciplina(),
+                ofertaForm.getCursoDisciplina(),
                 ofertaForm.getSemestre(),
                 ofertaForm.getDataInicio(),
                 ofertaForm.getDataFim(),
@@ -73,6 +76,9 @@ public class OfertaService {
     public Oferta criarOferta(OfertaRequestDTO ofertaRequest, Usuario usuarioCriador) {
         return criarOfertaInterna(
                 ofertaRequest.getNomeOferta(),
+                ofertaRequest.getCodigoDisciplina(),
+                ofertaRequest.getNomeDisciplina(),
+                ofertaRequest.getCursoDisciplina(),
                 ofertaRequest.getSemestre(),
                 ofertaRequest.getDataInicio(),
                 ofertaRequest.getDataFim(),
@@ -81,6 +87,9 @@ public class OfertaService {
     }
 
     private Oferta criarOfertaInterna(String nomeOferta,
+                                      String codigoDisciplina,
+                                      String nomeDisciplina,
+                                      String cursoDisciplina,
                                       String semestre,
                                       LocalDate dataInicio,
                                       LocalDate dataFim,
@@ -102,7 +111,10 @@ public class OfertaService {
         Oferta oferta = new Oferta();
         oferta.setNomeOferta(StringUtils.hasText(nomeOferta)
                 ? nomeOferta.trim()
-                : "Oferta " + semestre.trim() + " - Prof. " + professorResponsavel.getNomeCompleto());
+                : nomeDisciplina.trim());
+        oferta.setCodigoDisciplina(codigoDisciplina.trim());
+        oferta.setNomeDisciplina(nomeDisciplina.trim());
+        oferta.setCursoDisciplina(cursoDisciplina.trim());
         oferta.setSemestre(semestre.trim());
         oferta.setDataInicio(dataInicio);
         oferta.setDataFim(dataFim);

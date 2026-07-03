@@ -3,6 +3,7 @@ package br.ufscar.dc.dsw.pescd.service;
 import br.ufscar.dc.dsw.pescd.dto.PlanoTrabalhoForm;
 import br.ufscar.dc.dsw.pescd.exception.PlanoTrabalhoNaoEncontradoException;
 import br.ufscar.dc.dsw.pescd.model.Inscricao;
+import br.ufscar.dc.dsw.pescd.model.Oferta;
 import br.ufscar.dc.dsw.pescd.model.Perfil;
 import br.ufscar.dc.dsw.pescd.model.PlanoTrabalho;
 import br.ufscar.dc.dsw.pescd.model.StatusInscricao;
@@ -92,13 +93,14 @@ public class PlanoTrabalhoService {
 
         Usuario professorSupervisor = buscarProfessor(planoTrabalhoForm.getProfessorSupervisorId());
         String arquivoPlanoSalvo = salvarArquivoPlano(planoTrabalhoForm.getArquivoPlano());
+        Oferta oferta = inscricao.getOferta();
 
         PlanoTrabalho planoTrabalho = planoTrabalhoRepository.findByInscricao(inscricao)
                 .orElseGet(() -> new PlanoTrabalho(null, "", "", "", "", null, inscricao));
 
-        planoTrabalho.setCodigoDisciplina(planoTrabalhoForm.getCodigoDisciplina().trim());
-        planoTrabalho.setNomeDisciplina(planoTrabalhoForm.getNomeDisciplina().trim());
-        planoTrabalho.setCursoDisciplina(planoTrabalhoForm.getCursoDisciplina().trim());
+        planoTrabalho.setCodigoDisciplina(textoOuPadrao(oferta.getCodigoDisciplina(), "N/A"));
+        planoTrabalho.setNomeDisciplina(textoOuPadrao(oferta.getNomeDisciplina(), oferta.getNomeOferta()));
+        planoTrabalho.setCursoDisciplina(textoOuPadrao(oferta.getCursoDisciplina(), "Não informado"));
         planoTrabalho.setArquivoPlano(arquivoPlanoSalvo);
         planoTrabalho.setProfessorSupervisor(professorSupervisor);
         planoTrabalho.setInscricao(inscricao);
@@ -139,6 +141,10 @@ public class PlanoTrabalhoService {
         } catch (IOException exception) {
             throw new IllegalStateException("Não foi possível salvar o arquivo do plano.", exception);
         }
+    }
+
+    private String textoOuPadrao(String valor, String padrao) {
+        return StringUtils.hasText(valor) ? valor.trim() : padrao;
     }
 
     public List<PlanoTrabalho> listarPlanosPendentes(Usuario professor) {

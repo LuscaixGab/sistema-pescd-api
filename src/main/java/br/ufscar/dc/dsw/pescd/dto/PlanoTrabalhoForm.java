@@ -1,6 +1,5 @@
 package br.ufscar.dc.dsw.pescd.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -8,13 +7,10 @@ import java.util.UUID;
 
 public class PlanoTrabalhoForm {
 
-    @NotBlank(message = "{validation.disciplineCode.required}")
     private String codigoDisciplina;
 
-    @NotBlank(message = "{validation.disciplineName.required}")
     private String nomeDisciplina;
 
-    @NotBlank(message = "{validation.disciplineCourse.required}")
     private String cursoDisciplina;
 
     @NotNull(message = "{validation.planFile.required}")
