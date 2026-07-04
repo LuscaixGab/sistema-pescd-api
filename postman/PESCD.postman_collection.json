@@ -1,10 +1,4 @@
 {
-  "info": {
-    "_postman_id": "cc487b72-3872-47d7-a27e-21e6dbdd690f",
-    "name": "PESCD API - Demonstração",
-    "description": "Coleção para demonstrar os principais endpoints REST do sistema PESCD. Use o environment `PESCD Local` e execute os logins por perfil antes das rotas protegidas. A autenticação é por sessão/cookie do Spring Security.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
   "auth": {
     "type": "noauth"
   },
@@ -12,13 +6,1101 @@
     {
       "listen": "test",
       "script": {
-        "type": "text/javascript",
         "exec": [
           "pm.test('Status HTTP menor que 500', function () {",
           "  pm.expect(pm.response.code).to.be.below(500);",
           "});"
-        ]
+        ],
+        "type": "text/javascript"
       }
+    }
+  ],
+  "info": {
+    "_postman_id": "cc487b72-3872-47d7-a27e-21e6dbdd690f",
+    "description": "Coleção para demonstrar os principais endpoints REST do sistema PESCD. Use o environment `PESCD Local` e execute os logins por perfil antes das rotas protegidas. A autenticação é por sessão/cookie do Spring Security.",
+    "name": "PESCD API - Demonstração",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "item": [
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Resposta 200', function () { pm.response.to.have.status(200); });",
+                  "const ofertas = pm.response.json();",
+                  "if (Array.isArray(ofertas) && ofertas.length > 0) {",
+                  "  pm.environment.set('ofertaId', ofertas[0].id);",
+                  "  pm.collectionVariables.set('ofertaId', ofertas[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "name": "Listar ofertas públicas",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ofertas-publicas"
+              ],
+              "raw": "{{baseUrl}}/api/ofertas-publicas"
+            }
+          }
+        }
+      ],
+      "name": "00 - Público"
+    },
+    {
+      "item": [
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });",
+                  "const usuario = pm.response.json();",
+                  "if (usuario && usuario.id) {",
+                  "  pm.environment.set('professorId', usuario.id);",
+                  "  pm.collectionVariables.set('professorId', usuario.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "name": "Login Professor",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "raw": "{
+  \"nomeUsuario\": \"professor\",
+  \"senha\": \"professor123\"
+}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ],
+              "raw": "{{baseUrl}}/api/v1/auth/login"
+            }
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });",
+                  "const usuario = pm.response.json();",
+                  "if (usuario && usuario.id) {",
+                  "  pm.environment.set('secretarioId', usuario.id);",
+                  "  pm.collectionVariables.set('secretarioId', usuario.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "name": "Login Secretário",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "raw": "{
+  \"nomeUsuario\": \"secretario\",
+  \"senha\": \"secretario123\"
+}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ],
+              "raw": "{{baseUrl}}/api/v1/auth/login"
+            }
+          }
+        }
+      ],
+      "name": "01 - Login"
+    },
+    {
+      "description": "Execute `Login Administrador` antes destes requests.",
+      "item": [
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Resposta 200', function () { pm.response.to.have.status(200); });",
+                  "const usuarios = pm.response.json();",
+                  "const professor = usuarios.find(u => u.perfil === 'PROFESSOR');",
+                  "if (professor) {",
+                  "  pm.environment.set('professorId', professor.id);",
+                  "  pm.collectionVariables.set('professorId', professor.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "name": "Listar usuários",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "usuarios"
+              ],
+              "raw": "{{baseUrl}}/api/v1/usuarios"
+            }
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Criado com 201', function () { pm.response.to.have.status(201); });",
+                  "const usuario = pm.response.json();",
+                  "if (usuario && usuario.id) {",
+                  "  pm.environment.set('usuarioCriadoId', usuario.id);",
+                  "  pm.collectionVariables.set('usuarioCriadoId', usuario.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            "name": "Criar usuário de demonstração",
+            "request": {
+              "body": {
+                "mode": "raw",
+                "raw": "{
+  \"nomeCompleto\": \"Usuário Demonstração {{$timestamp}}\",
+  \"email\": \"demo{{$timestamp}}@pescd.local\",
+  \"nomeUsuario\": \"demo{{$timestamp}}\",
+  \"senha\": \"demo123\",
+  \"perfil\": \"ALUNO\"
+}"
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                }
+              ],
+              "method": "POST",
+              "url": {
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "path": [
+                  "api",
+                  "v1",
+                  "usuarios"
+                ],
+                "raw": "{{baseUrl}}/api/v1/usuarios"
+              }
+            }
+          },
+          "name": "Criar usuário de demonstração"
+        },
+        {
+          "name": "Buscar usuário criado",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "usuarios",
+                "{{usuarioCriadoId}}"
+              ],
+              "raw": "{{baseUrl}}/api/v1/usuarios/{{usuarioCriadoId}}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar usuário criado",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "raw": "{
+  \"nomeCompleto\": \"Usuário Demonstração Atualizado\",
+  \"email\": \"demo-atualizado@pescd.local\",
+  \"nomeUsuario\": \"demo_atualizado\",
+  \"senha\": \"demo123\",
+  \"perfil\": \"ALUNO\"
+}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "usuarios",
+                "{{usuarioCriadoId}}"
+              ],
+              "raw": "{{baseUrl}}/api/v1/usuarios/{{usuarioCriadoId}}"
+            }
+          }
+        },
+        {
+          "name": "Excluir usuário criado",
+          "request": {
+            "header": [],
+            "method": "DELETE",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "usuarios",
+                "{{usuarioCriadoId}}"
+              ],
+              "raw": "{{baseUrl}}/api/v1/usuarios/{{usuarioCriadoId}}"
+            }
+          }
+        }
+      ],
+      "name": "02 - Administrador / Usuários"
+    },
+    {
+      "description": "Execute `Login Secretário`. Se `professorId` estiver vazio, rode antes `Login Professor` ou `Listar usuários` como administrador.",
+      "item": [
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Criado com 201', function () { pm.response.to.have.status(201); });",
+                  "const oferta = pm.response.json();",
+                  "if (oferta && oferta.id) {",
+                  "  pm.environment.set('ofertaId', oferta.id);",
+                  "  pm.collectionVariables.set('ofertaId', oferta.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "name": "Criar oferta",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "raw": "{
+  \"nomeOferta\": \"Oferta API Demo {{$timestamp}}\",
+  \"codigoDisciplina\": \"DC{{$randomInt}}\",
+  \"nomeDisciplina\": \"Disciplina criada pela API\",
+  \"cursoDisciplina\": \"Ciência da Computação\",
+  \"semestre\": \"2026/2\",
+  "dataInicio": "2026-08-01",
+  \"dataFim\": \"2026-12-15\",
+  \"professorResponsavelId\": \"{{professorId}}\"
+}
+"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ofertas"
+              ],
+              "raw": "{{baseUrl}}/api/v1/ofertas"
+            }
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Resposta 200', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "name": "Listar ofertas",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ofertas"
+              ],
+              "raw": "{{baseUrl}}/api/v1/ofertas"
+            }
+          }
+        },
+        {
+          "name": "Encerrar oferta oficial",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ofertas",
+                "{{ofertaId}}",
+                "encerrar-oficialmente"
+              ],
+              "raw": "{{baseUrl}}/api/v1/ofertas/{{ofertaId}}/encerrar-oficialmente"
+            }
+          }
+        },
+        {
+          "name": "Adicionar alunos",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "raw": "[
+  \"{{alunoId1}}\",
+  \"{{alunoId2}}\"
+]"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ofertas",
+                "{{ofertaId}}",
+                "alunos"
+              ],
+              "raw": "{{baseUrl}}/api/v1/ofertas/{{ofertaId}}/alunos"
+            }
+          }
+        }
+      ],
+      "name": "03 - Secretário / Ofertas"
+    },
+    {
+      "description": "Execute `Login Aluno`. Para uploads, selecione um PDF nos campos de tipo File. Alguns requests precisam de `inscricaoId`; se a listagem de ofertas do aluno estiver bloqueada, preencha manualmente a variável com um UUID de inscrição existente no banco.",
+      "item": [
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const inscricoes = pm.response.json();",
+                  "  const naoEnviado = inscricoes.find(i => i.status === 'NAO_ENVIADO');",
+                  "  const planoAprovado = inscricoes.find(i => i.status === 'PLANO_APROVADO');",
+                  "  if (naoEnviado) {",
+                  "    pm.environment.set('inscricaoId', naoEnviado.id);",
+                  "    pm.collectionVariables.set('inscricaoId', naoEnviado.id);",
+                  "  }",
+                  "  if (planoAprovado) {",
+                  "    pm.environment.set('inscricaoPlanoAprovadoId', planoAprovado.id);",
+                  "    pm.collectionVariables.set('inscricaoPlanoAprovadoId', planoAprovado.id);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "name": "Listar ofertas do aluno",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "aluno",
+                "ofertas"
+              ],
+              "raw": "{{baseUrl}}/api/aluno/ofertas"
+            }
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const plano = pm.response.json();",
+                  "  pm.environment.set('planoTrabalhoId', plano.id);",
+                  "  pm.collectionVariables.set('planoTrabalhoId', plano.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "name": "Enviar plano de trabalho",
+          "request": {
+            "body": {
+              "formdata": [
+                {
+                  "key": "professorSupervisorId",
+                  "type": "text",
+                  "value": "{{professorId}}"
+                },
+                {
+                  "key": "inscricaoId",
+                  "type": "text",
+                  "value": "{{inscricaoId}}"
+                },
+                {
+                  "key": "arquivoPlano",
+                  "src": [],
+                  "type": "file"
+                }
+              ],
+              "mode": "formdata"
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "plano-trabalho"
+              ],
+              "raw": "{{baseUrl}}/api/v1/plano-trabalho"
+            }
+          }
+        },
+        {
+          "name": "Buscar plano de trabalho",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "plano-trabalho",
+                "{{planoTrabalhoId}}"
+              ],
+              "raw": "{{baseUrl}}/api/v1/plano-trabalho/{{planoTrabalhoId}}"
+            }
+          }
+        },
+        {
+          "name": "Enviar documentação de aula",
+          "request": {
+            "body": {
+              "formdata": [
+                {
+                  "key": "nomeInstituicao",
+                  "type": "text",
+                  "value": "UFSCar"
+                },
+                {
+                  "key": "nomeDisciplina",
+                  "type": "text",
+                  "value": "Desenvolvimento de Software para Web 1"
+                },
+                {
+                  "key": "cursoDisciplina",
+                  "type": "text",
+                  "value": "Ciência da Computação"
+                },
+                {
+                  "key": "cargaHoraria",
+                  "type": "text",
+                  "value": "30"
+                },
+                {
+                  "key": "arquivo",
+                  "src": [],
+                  "type": "file"
+                }
+              ],
+              "mode": "formdata"
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "aluno",
+                "documentacao",
+                "enviar",
+                "{{inscricaoId}}"
+              ],
+              "raw": "{{baseUrl}}/api/aluno/documentacao/enviar/{{inscricaoId}}"
+            }
+          }
+        },
+        {
+          "name": "Enviar relatório final",
+          "request": {
+            "body": {
+              "formdata": [
+                {
+                  "key": "frequenciaAluno",
+                  "type": "text",
+                  "value": "95"
+                },
+                {
+                  "key": "arquivo",
+                  "src": [],
+                  "type": "file"
+                }
+              ],
+              "mode": "formdata"
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "aluno",
+                "relatorio",
+                "enviar",
+                "{{inscricaoPlanoAprovadoId}}"
+              ],
+              "raw": "{{baseUrl}}/api/aluno/relatorio/enviar/{{inscricaoPlanoAprovadoId}}"
+            }
+          }
+        }
+      ],
+      "name": "04 - Aluno"
+    },
+    {
+      "description": "Execute `Login Professor` antes destes requests.",
+      "item": [
+        {
+          "name": "Listar alunos supervisionados",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "professor-supervisor",
+                "supervisao"
+              ],
+              "raw": "{{baseUrl}}/api/v1/professor-supervisor/supervisao"
+            }
+          }
+        },
+        {
+          "name": "Avaliar plano de trabalho",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "plano-trabalho",
+                "{{planoTrabalhoId}}",
+                "avaliar"
+              ],
+              "raw": "{{baseUrl}}/api/v1/plano-trabalho/{{planoTrabalhoId}}/avaliar?parecer=Plano de trabalho aprovado.&acao=aprovar"
+            }
+          }
+        }
+      ],
+      "name": "05 - Professor Supervisor"
+    },
+    {
+      "description": "Execute `Login Professor` antes destes requests. As análises exigem IDs de inscrições que estejam em fase compatível.",
+      "item": [
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const ofertas = pm.response.json();",
+                  "  if (Array.isArray(ofertas) && ofertas.length > 0) {",
+                  "    const encerravel = ofertas.find(o => o.podeEncerrar) || ofertas[0];",
+                  "    pm.environment.set('ofertaResponsavelId', encerravel.id);",
+                  "    pm.collectionVariables.set('ofertaResponsavelId', encerravel.id);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "name": "Listar ofertas do responsável",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "professor-responsavel",
+                "ofertas"
+              ],
+              "raw": "{{baseUrl}}/api/v1/professor-responsavel/ofertas"
+            }
+          }
+        },
+        {
+          "name": "Buscar detalhe para encerramento",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "professor-responsavel",
+                "ofertas",
+                "{{ofertaResponsavelId}}"
+              ],
+              "raw": "{{baseUrl}}/api/v1/professor-responsavel/ofertas/{{ofertaResponsavelId}}"
+            }
+          }
+        },
+        {
+          "name": "Encerrar oferta como responsável",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "raw": "{
+  \"licoesAprendidas\": \"Encerramento demonstrado pela API no Postman.\"
+}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "professor-responsavel",
+                "ofertas",
+                "{{ofertaResponsavelId}}",
+                "encerramento"
+              ],
+              "raw": "{{baseUrl}}/api/v1/professor-responsavel/ofertas/{{ofertaResponsavelId}}/encerramento"
+            }
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const itens = pm.response.json();",
+                  "  if (Array.isArray(itens) && itens.length > 0) {",
+                  "    const primeiro = itens[0];",
+                  "    pm.environment.set('inscricaoDocumentacaoId', primeiro.inscricaoId || primeiro.id);",
+                  "    pm.collectionVariables.set('inscricaoDocumentacaoId', primeiro.inscricaoId || primeiro.id);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "name": "Listar documentações pendentes",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "professor-responsavel",
+                "documentacoes"
+              ],
+              "raw": "{{baseUrl}}/api/v1/professor-responsavel/documentacoes"
+            }
+          }
+        },
+        {
+          "name": "Buscar documentação para análise",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "professor-responsavel",
+                "documentacoes",
+                "{{inscricaoDocumentacaoId}}"
+              ],
+              "raw": "{{baseUrl}}/api/v1/professor-responsavel/documentacoes/{{inscricaoDocumentacaoId}}"
+            }
+          }
+        },
+        {
+          "name": "Finalizar análise da documentação",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "raw": "{
+  \"parecer\": \"Documentação compatível com os critérios do PESCD.\",
+  \"indicadorFrequencia\": 95,
+  \"nota\": \"A\"
+}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "professor-responsavel",
+                "documentacoes",
+                "{{inscricaoDocumentacaoId}}",
+                "analise"
+              ],
+              "raw": "{{baseUrl}}/api/v1/professor-responsavel/documentacoes/{{inscricaoDocumentacaoId}}/analise"
+            }
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const itens = pm.response.json();",
+                  "  if (Array.isArray(itens) && itens.length > 0) {",
+                  "    const primeiro = itens[0];",
+                  "    pm.environment.set('inscricaoRelatorioId', primeiro.inscricaoId || primeiro.id);",
+                  "    pm.collectionVariables.set('inscricaoRelatorioId', primeiro.inscricaoId || primeiro.id);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "name": "Listar relatórios pendentes",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "professor-responsavel",
+                "relatorios"
+              ],
+              "raw": "{{baseUrl}}/api/v1/professor-responsavel/relatorios"
+            }
+          }
+        },
+        {
+          "name": "Buscar relatório para análise",
+          "request": {
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "professor-responsavel",
+                "relatorios",
+                "{{inscricaoRelatorioId}}"
+              ],
+              "raw": "{{baseUrl}}/api/v1/professor-responsavel/relatorios/{{inscricaoRelatorioId}}"
+            }
+          }
+        },
+        {
+          "name": "Finalizar análise do relatório",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "raw": "{
+  \"parecer\": \"Relatório final aprovado.\",
+  \"indicadorFrequencia\": 95,
+  \"nota\": \"A\"
+}"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "professor-responsavel",
+                "relatorios",
+                "{{inscricaoRelatorioId}}",
+                "analise"
+              ],
+              "raw": "{{baseUrl}}/api/v1/professor-responsavel/relatorios/{{inscricaoRelatorioId}}/analise"
+            }
+          }
+        }
+      ],
+      "name": "06 - Professor Responsável"
     }
   ],
   "variable": [
@@ -61,1010 +1143,14 @@
     {
       "key": "inscricaoRelatorioId",
       "value": ""
-    }
-  ],
-  "item": [
-    {
-      "name": "00 - Público",
-      "item": [
-        {
-          "name": "Listar ofertas públicas",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/ofertas-publicas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "ofertas-publicas"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Resposta 200', function () { pm.response.to.have.status(200); });",
-                  "const ofertas = pm.response.json();",
-                  "if (Array.isArray(ofertas) && ofertas.length > 0) {",
-                  "  pm.environment.set('ofertaId', ofertas[0].id);",
-                  "  pm.collectionVariables.set('ofertaId', ofertas[0].id);",
-                  "}"
-                ]
-              }
-            }
-          ]
-        }
-      ]
     },
     {
-      "name": "01 - Login",
-      "item": [
-        {
-          "name": "Login Administrador",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nomeUsuario\": \"admin\",\n  \"senha\": \"admin123\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "Login Secretário",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nomeUsuario\": \"secretario\",\n  \"senha\": \"secretario123\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "Login Professor",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nomeUsuario\": \"professor\",\n  \"senha\": \"professor123\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });",
-                  "const usuario = pm.response.json();",
-                  "if (usuario && usuario.id) {",
-                  "  pm.environment.set('professorId', usuario.id);",
-                  "  pm.collectionVariables.set('professorId', usuario.id);",
-                  "}"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "Login Aluno",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nomeUsuario\": \"aluno\",\n  \"senha\": \"aluno123\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });"
-                ]
-              }
-            }
-          ]
-        }
-      ]
+      "key": "alunoId1",
+      "value": ""
     },
     {
-      "name": "02 - Administrador / Usuários",
-      "description": "Execute `Login Administrador` antes destes requests.",
-      "item": [
-        {
-          "name": "Listar usuários",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/usuarios",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "usuarios"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Resposta 200', function () { pm.response.to.have.status(200); });",
-                  "const usuarios = pm.response.json();",
-                  "const professor = usuarios.find(u => u.perfil === 'PROFESSOR');",
-                  "if (professor) {",
-                  "  pm.environment.set('professorId', professor.id);",
-                  "  pm.collectionVariables.set('professorId', professor.id);",
-                  "}"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "Criar usuário de demonstração",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nomeCompleto\": \"Usuário Demonstração {{$timestamp}}\",\n  \"email\": \"demo{{$timestamp}}@pescd.local\",\n  \"nomeUsuario\": \"demo{{$timestamp}}\",\n  \"senha\": \"demo123\",\n  \"perfil\": \"ALUNO\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/usuarios",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "usuarios"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Criado com 201', function () { pm.response.to.have.status(201); });",
-                  "const usuario = pm.response.json();",
-                  "if (usuario && usuario.id) {",
-                  "  pm.environment.set('usuarioCriadoId', usuario.id);",
-                  "  pm.collectionVariables.set('usuarioCriadoId', usuario.id);",
-                  "}"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "Buscar usuário criado",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/usuarios/{{usuarioCriadoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "usuarios",
-                "{{usuarioCriadoId}}"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Atualizar usuário criado",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nomeCompleto\": \"Usuário Demonstração Atualizado\",\n  \"email\": \"demo-atualizado@pescd.local\",\n  \"nomeUsuario\": \"demo_atualizado\",\n  \"senha\": \"demo123\",\n  \"perfil\": \"ALUNO\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/usuarios/{{usuarioCriadoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "usuarios",
-                "{{usuarioCriadoId}}"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Excluir usuário criado",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/usuarios/{{usuarioCriadoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "usuarios",
-                "{{usuarioCriadoId}}"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "03 - Secretário / Ofertas",
-      "description": "Execute `Login Secretário`. Se `professorId` estiver vazio, rode antes `Login Professor` ou `Listar usuários` como administrador.",
-      "item": [
-        {
-          "name": "Criar oferta",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nomeOferta\": \"Oferta API Demo {{$timestamp}}\",\n  \"codigoDisciplina\": \"DC{{$randomInt}}\",\n  \"nomeDisciplina\": \"Disciplina criada pela API\",\n  \"cursoDisciplina\": \"Ciência da Computação\",\n  \"semestre\": \"2026/2\",\n  \"dataInicio\": \"2026-08-01\",\n  \"dataFim\": \"2026-12-15\",\n  \"professorResponsavelId\": \"{{professorId}}\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/ofertas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "ofertas"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Criado com 201', function () { pm.response.to.have.status(201); });",
-                  "const oferta = pm.response.json();",
-                  "if (oferta && oferta.id) {",
-                  "  pm.environment.set('ofertaId', oferta.id);",
-                  "  pm.collectionVariables.set('ofertaId', oferta.id);",
-                  "}"
-                ]
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "04 - Aluno",
-      "description": "Execute `Login Aluno`. Para uploads, selecione um PDF nos campos de tipo File. Alguns requests precisam de `inscricaoId`; se a listagem de ofertas do aluno estiver bloqueada, preencha manualmente a variável com um UUID de inscrição existente no banco.",
-      "item": [
-        {
-          "name": "Listar ofertas do aluno",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/aluno/ofertas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "aluno",
-                "ofertas"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const inscricoes = pm.response.json();",
-                  "  const naoEnviado = inscricoes.find(i => i.status === 'NAO_ENVIADO');",
-                  "  const planoAprovado = inscricoes.find(i => i.status === 'PLANO_APROVADO');",
-                  "  if (naoEnviado) {",
-                  "    pm.environment.set('inscricaoId', naoEnviado.id);",
-                  "    pm.collectionVariables.set('inscricaoId', naoEnviado.id);",
-                  "  }",
-                  "  if (planoAprovado) {",
-                  "    pm.environment.set('inscricaoPlanoAprovadoId', planoAprovado.id);",
-                  "    pm.collectionVariables.set('inscricaoPlanoAprovadoId', planoAprovado.id);",
-                  "  }",
-                  "}"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "Enviar plano de trabalho",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "professorSupervisorId",
-                  "value": "{{professorId}}",
-                  "type": "text"
-                },
-                {
-                  "key": "inscricaoId",
-                  "value": "{{inscricaoId}}",
-                  "type": "text"
-                },
-                {
-                  "key": "arquivoPlano",
-                  "type": "file",
-                  "src": []
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/plano-trabalho",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "plano-trabalho"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (pm.response.code === 201) {",
-                  "  const plano = pm.response.json();",
-                  "  pm.environment.set('planoTrabalhoId', plano.id);",
-                  "  pm.collectionVariables.set('planoTrabalhoId', plano.id);",
-                  "}"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "Buscar plano de trabalho",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/plano-trabalho/{{planoTrabalhoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "plano-trabalho",
-                "{{planoTrabalhoId}}"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Enviar documentação de aula",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "nomeInstituicao",
-                  "value": "UFSCar",
-                  "type": "text"
-                },
-                {
-                  "key": "nomeDisciplina",
-                  "value": "Desenvolvimento de Software para Web 1",
-                  "type": "text"
-                },
-                {
-                  "key": "cursoDisciplina",
-                  "value": "Ciência da Computação",
-                  "type": "text"
-                },
-                {
-                  "key": "cargaHoraria",
-                  "value": "30",
-                  "type": "text"
-                },
-                {
-                  "key": "arquivo",
-                  "type": "file",
-                  "src": []
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/aluno/documentacao/enviar/{{inscricaoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "aluno",
-                "documentacao",
-                "enviar",
-                "{{inscricaoId}}"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Enviar relatório final",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "frequenciaAluno",
-                  "value": "95",
-                  "type": "text"
-                },
-                {
-                  "key": "arquivo",
-                  "type": "file",
-                  "src": []
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/aluno/relatorio/enviar/{{inscricaoPlanoAprovadoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "aluno",
-                "relatorio",
-                "enviar",
-                "{{inscricaoPlanoAprovadoId}}"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "05 - Professor Supervisor",
-      "description": "Execute `Login Professor` antes destes requests.",
-      "item": [
-        {
-          "name": "Listar alunos supervisionados",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/professor-supervisor/supervisao",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-supervisor",
-                "supervisao"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "06 - Professor Responsável",
-      "description": "Execute `Login Professor` antes destes requests. As análises exigem IDs de inscrições que estejam em fase compatível.",
-      "item": [
-        {
-          "name": "Listar ofertas do responsável",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/professor-responsavel/ofertas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "ofertas"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const ofertas = pm.response.json();",
-                  "  if (Array.isArray(ofertas) && ofertas.length > 0) {",
-                  "    const encerravel = ofertas.find(o => o.podeEncerrar) || ofertas[0];",
-                  "    pm.environment.set('ofertaResponsavelId', encerravel.id);",
-                  "    pm.collectionVariables.set('ofertaResponsavelId', encerravel.id);",
-                  "  }",
-                  "}"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "Buscar detalhe para encerramento",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/professor-responsavel/ofertas/{{ofertaResponsavelId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "ofertas",
-                "{{ofertaResponsavelId}}"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Encerrar oferta como responsável",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"licoesAprendidas\": \"Encerramento demonstrado pela API no Postman.\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/professor-responsavel/ofertas/{{ofertaResponsavelId}}/encerramento",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "ofertas",
-                "{{ofertaResponsavelId}}",
-                "encerramento"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Listar documentações pendentes",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/professor-responsavel/documentacoes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "documentacoes"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const itens = pm.response.json();",
-                  "  if (Array.isArray(itens) && itens.length > 0) {",
-                  "    const primeiro = itens[0];",
-                  "    pm.environment.set('inscricaoDocumentacaoId', primeiro.inscricaoId || primeiro.id);",
-                  "    pm.collectionVariables.set('inscricaoDocumentacaoId', primeiro.inscricaoId || primeiro.id);",
-                  "  }",
-                  "}"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "Buscar documentação para análise",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/professor-responsavel/documentacoes/{{inscricaoDocumentacaoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "documentacoes",
-                "{{inscricaoDocumentacaoId}}"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Finalizar análise da documentação",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"parecer\": \"Documentação compatível com os critérios do PESCD.\",\n  \"indicadorFrequencia\": 95,\n  \"nota\": \"A\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/professor-responsavel/documentacoes/{{inscricaoDocumentacaoId}}/analise",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "documentacoes",
-                "{{inscricaoDocumentacaoId}}",
-                "analise"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Listar relatórios pendentes",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/professor-responsavel/relatorios",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "relatorios"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const itens = pm.response.json();",
-                  "  if (Array.isArray(itens) && itens.length > 0) {",
-                  "    const primeiro = itens[0];",
-                  "    pm.environment.set('inscricaoRelatorioId', primeiro.inscricaoId || primeiro.id);",
-                  "    pm.collectionVariables.set('inscricaoRelatorioId', primeiro.inscricaoId || primeiro.id);",
-                  "  }",
-                  "}"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "Buscar relatório para análise",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/professor-responsavel/relatorios/{{inscricaoRelatorioId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "relatorios",
-                "{{inscricaoRelatorioId}}"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Finalizar análise do relatório",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"parecer\": \"Relatório final aprovado.\",\n  \"indicadorFrequencia\": 95,\n  \"nota\": \"A\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/professor-responsavel/relatorios/{{inscricaoRelatorioId}}/analise",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "relatorios",
-                "{{inscricaoRelatorioId}}",
-                "analise"
-              ]
-            }
-          }
-        }
-      ]
+      "key": "alunoId2",
+      "value": ""
     }
   ]
 }
