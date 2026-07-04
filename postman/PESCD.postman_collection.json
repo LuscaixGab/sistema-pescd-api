@@ -88,10 +88,7 @@
           "request": {
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"nomeUsuario\": \"professor\",
-  \"senha\": \"professor123\"
-}"
+              "raw": "{\"nomeUsuario\": \"professor\", \"senha\": \"professor123\"}"
             },
             "header": [
               {
@@ -139,10 +136,7 @@
           "request": {
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"nomeUsuario\": \"secretario\",
-  \"senha\": \"secretario123\"
-}"
+              "raw": "{\"nomeUsuario\": \"secretario\", \"senha\": \"secretario123\"}"
             },
             "header": [
               {
@@ -183,7 +177,7 @@
                 "exec": [
                   "pm.test('Resposta 200', function () { pm.response.to.have.status(200); });",
                   "const usuarios = pm.response.json();",
-                  "const professor = usuarios.find(u => u.perfil === 'PROFESSOR');",
+                  "const professor = usuários.find(u => u.perfil === 'PROFESSOR');",
                   "if (professor) {",
                   "  pm.environment.set('professorId', professor.id);",
                   "  pm.collectionVariables.set('professorId', professor.id);",
@@ -235,13 +229,7 @@
             "request": {
               "body": {
                 "mode": "raw",
-                "raw": "{
-  \"nomeCompleto\": \"Usuário Demonstração {{$timestamp}}\",
-  \"email\": \"demo{{$timestamp}}@pescd.local\",
-  \"nomeUsuario\": \"demo{{$timestamp}}\",
-  \"senha\": \"demo123\",
-  \"perfil\": \"ALUNO\"
-}"
+                "raw": "{\"nomeCompleto\": \"Usuário Demonstração {{$timestamp}}\", \"email\": \"demo{{$timestamp}}@pescd.local\", \"nomeUsuario\": \"demo{{$timestamp}}\", \"senha\": \"demo123\", \"perfil\": \"ALUNO\"}"
               },
               "header": [
                 {
@@ -298,13 +286,7 @@
           "request": {
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"nomeCompleto\": \"Usuário Demonstração Atualizado\",
-  \"email\": \"demo-atualizado@pescd.local\",
-  \"nomeUsuario\": \"demo_atualizado\",
-  \"senha\": \"demo123\",
-  \"perfil\": \"ALUNO\"
-}"
+              "raw": "{\"nomeCompleto\": \"Usuário Demonstração Atualizado\", \"email\": \"demo-atualizado@pescd.local\", \"nomeUsuario\": \"demo_atualizado\", \"senha\": \"demo123\", \"perfil\": \"ALUNO\"}"
             },
             "header": [
               {
@@ -377,17 +359,7 @@
           "request": {
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"nomeOferta\": \"Oferta API Demo {{$timestamp}}\",
-  \"codigoDisciplina\": \"DC{{$randomInt}}\",
-  \"nomeDisciplina\": \"Disciplina criada pela API\",
-  \"cursoDisciplina\": \"Ciência da Computação\",
-  \"semestre\": \"2026/2\",
-  "dataInicio": "2026-08-01",
-  \"dataFim\": \"2026-12-15\",
-  \"professorResponsavelId\": \"{{professorId}}\"
-}
-"
+              "raw": "{\"nomeOferta\": \"Oferta API Demo {{$timestamp}}\", \"codigoDisciplina\": \"DC{{$randomInt}}\", \"nomeDisciplina\": \"Disciplina criada pela API\", \"cursoDisciplina\": \"Ciência da Computação\", \"semestre\": \"2026/2\", \"dataInicio\": \"2026-08-01\", \"dataFim\": \"2026-12-15\", \"professorResponsavelId\": \"{{professorId}}\"}"
             },
             "header": [
               {
@@ -477,10 +449,7 @@
           "request": {
             "body": {
               "mode": "raw",
-              "raw": "[
-  \"{{alunoId1}}\",
-  \"{{alunoId2}}\"
-]"
+              "raw": "[ \"{{alunoId1}}\", \"{{alunoId2}}\" ]"
             },
             "header": [
               {
@@ -870,9 +839,7 @@
           "request": {
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"licoesAprendidas\": \"Encerramento demonstrado pela API no Postman.\"
-}"
+              "raw": "{\"licoesAprendidas\": \"Encerramento demonstrado pela API no Postman.\"}"
             },
             "header": [
               {
@@ -969,11 +936,7 @@
           "request": {
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"parecer\": \"Documentação compatível com os critérios do PESCD.\",
-  \"indicadorFrequencia\": 95,
-  \"nota\": \"A\"
-}"
+              "raw": "{\"parecer\": \"Documentação compatível com os critérios do PESCD.\", \"indicadorFrequencia\": 95, \"nota\": \"A\"}"
             },
             "header": [
               {
@@ -1070,11 +1033,7 @@
           "request": {
             "body": {
               "mode": "raw",
-              "raw": "{
-  \"parecer\": \"Relatório final aprovado.\",
-  \"indicadorFrequencia\": 95,
-  \"nota\": \"A\"
-}"
+              "raw": "{\"parecer\": \"Relatório final aprovado.\", \"indicadorFrequencia\": 95, \"nota\": \"A\"}"
             },
             "header": [
               {
