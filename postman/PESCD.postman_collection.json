@@ -61,6 +61,14 @@
     {
       "key": "inscricaoRelatorioId",
       "value": ""
+    },
+    {
+      "key": "alunoId1",
+      "value": ""
+    },
+    {
+      "key": "alunoId2",
+      "value": ""
     }
   ],
   "item": [
@@ -507,6 +515,98 @@
               }
             }
           ]
+        },
+        {
+          "name": "Listar ofertas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ofertas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ofertas"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Resposta 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Encerrar oferta oficial",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ofertas/{{ofertaId}}/encerrar-oficialmente",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ofertas",
+                "{{ofertaId}}",
+                "encerrar-oficialmente"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Adicionar alunos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  \"{{alunoId1}}\",\n  \"{{alunoId2}}\"\n]"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ofertas/{{ofertaId}}/alunos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ofertas",
+                "{{ofertaId}}",
+                "alunos"
+              ]
+            }
+          }
         }
       ]
     },
@@ -763,6 +863,41 @@
                 "v1",
                 "professor-supervisor",
                 "supervisao"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Avaliar plano de trabalho",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/plano-trabalho/{{planoTrabalhoId}}/avaliar?parecer=Plano de trabalho aprovado.&acao=aprovar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "plano-trabalho",
+                "{{planoTrabalhoId}}",
+                "avaliar"
+              ],
+              "query": [
+                {
+                  "key": "parecer",
+                  "value": "Plano de trabalho aprovado."
+                },
+                {
+                  "key": "acao",
+                  "value": "aprovar"
+                }
               ]
             }
           }
