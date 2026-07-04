@@ -21,16 +21,11 @@ import java.util.UUID;
 @Service
 public class OfertaService {
 
-    // Antes a maioria da lógica estava no Controller,
-    // agora refatorei para que os métodos como calcularStatusDinamicamente()
-    // estejam nesse Service.
-
-    // Injeção apenas por construtor (tirei os autowired)
     private final OfertaRepository ofertaRepository;
     private final UsuarioRepository usuarioRepository;
-    private final InscricaoRepository inscricaoRepository; // Para a S.03/S.04
-    private final ConfiguracaoRepository configuracaoRepository; // Para a S.04
-    private final LogStatusService logStatusService; // Para a S.04
+    private final InscricaoRepository inscricaoRepository;
+    private final ConfiguracaoRepository configuracaoRepository;
+    private final LogStatusService logStatusService;
 
     public OfertaService(OfertaRepository ofertaRepository,
                          UsuarioRepository usuarioRepository,
@@ -56,6 +51,14 @@ public class OfertaService {
         return usuarioRepository.findById(professorResponsavelId)
                 .filter(usuario -> usuario.getPerfil() == Perfil.PROFESSOR)
                 .orElseThrow(() -> new IllegalArgumentException("Selecione um professor responsável válido."));
+    }
+
+    public List<Oferta> listarOfertasParaSecretario() {
+        return ofertaRepository.findAllByOrderByDataCriacaoDesc();
+    }
+
+    public List<Oferta> listarOfertasParaProfessorResponsavel(Usuario professor) {
+        return ofertaRepository.findByProfessorResponsavel(professor);
     }
 
     @Transactional
@@ -124,7 +127,6 @@ public class OfertaService {
         return ofertaRepository.save(oferta);
     }
 
-    // Métodos de acompanhamento e encerramento (S.03 e S.04)
     public Map<UUID, String> mapearStatusDasOfertas(List<Oferta> ofertas) {
         Map<UUID, String> statusOfertas = new HashMap<>();
         for (Oferta oferta : ofertas) {
@@ -165,6 +167,15 @@ public class OfertaService {
     }
 
     @Transactional
+    public void encerrarOfertaOficialmente(UUID ofertaId, Usuario usuarioLogado) {
+        Oferta oferta = ofertaRepository.findById(ofertaId)
+                .orElseThrow(() -> new IllegalArgumentException("Oferta não encontrada."));
+        
+        List<Inscricao> inscricoes = inscricaoRepository.findByOferta(oferta);
+        encerrarOfertaOficialmente(oferta, usuarioLogado, inscricoes);
+    }
+
+    @Transactional
     public void encerrarOfertaOficialmente(Oferta oferta, Usuario usuarioLogado, List<Inscricao> inscricoes) {
         oferta.setStatusOferta(StatusOferta.CONCLUIDA);
         oferta.setDataEncerramento(LocalDateTime.now());
@@ -175,6 +186,29 @@ public class OfertaService {
             inscricao.setStatus(StatusInscricao.CONCLUIDO);
             inscricaoRepository.save(inscricao);
             logStatusService.registrarLog(inscricao, StatusInscricao.CONCLUIDO, usuarioLogado);
+        }
+    }
+
+    @Transactional
+    public void adicionarAlunos(UUID ofertaId, List<UUID> alunoIds, Usuario alunoLogado) {
+        Oferta oferta = ofertaRepository.findById(ofertaId)
+                .orElseThrow(() -> new IllegalArgumentException("Oferta não encontrada."));
+
+        // Verifica se o aluno logado está inscrito na oferta
+        List<Inscricao> inscricoes = inscricaoRepository.findByOferta(oferta);
+        boolean estaInscrito = inscricoes.stream()
+                .anyMatch(i -> i.getAluno().getId().equals(alunoLogado.getId()));
+
+        if (!estaInscrito) {
+            throw new IllegalArgumentException("Você não está inscrito nesta oferta.");
+        }
+
+        for (UUID alunoId : alunoIds) {
+            Usuario aluno = usuarioRepository.findById(alunoId)
+                    .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado."));
+            
+            Inscricao novaInscricao = new Inscricao(UUID.randomUUID(), aluno, oferta, StatusInscricao.NAO_ENVIADO);
+            inscricaoRepository.save(novaInscricao);
         }
     }
 }

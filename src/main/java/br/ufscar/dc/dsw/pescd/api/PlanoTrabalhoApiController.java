@@ -8,13 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -23,7 +17,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/plano-trabalho")
-@PreAuthorize("hasRole('ALUNO')")
 public class PlanoTrabalhoApiController {
 
     private final PlanoTrabalhoService planoTrabalhoService;
@@ -33,6 +26,7 @@ public class PlanoTrabalhoApiController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ALUNO')")
     public ResponseEntity<PlanoTrabalhoResponseDTO> enviarPlanoTrabalho(
             @RequestParam UUID professorSupervisorId,
             @RequestParam UUID inscricaoId,
@@ -56,9 +50,22 @@ public class PlanoTrabalhoApiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlanoTrabalhoResponseDTO> buscarPlanoTrabalho(@PathVariable UUID id,
+    @PreAuthorize("hasRole('ALUNO')")
+    public ResponseEntity<PlanoTrabalhoResponseDTO> buscarPlanoDoAluno(@PathVariable UUID id,
                                                                         @AuthenticationPrincipal UsuarioUserDetails usuarioLogado) {
         PlanoTrabalho planoTrabalho = planoTrabalhoService.buscarPlanoDoAluno(id, usuarioLogado.getUsuario());
         return ResponseEntity.ok(PlanoTrabalhoResponseDTO.from(planoTrabalho));
+    }
+
+    @PostMapping("/{id}/avaliar")
+    @PreAuthorize("hasRole('PROFESSOR')")
+    public ResponseEntity<Void> avaliarPlano(
+            @PathVariable UUID id,
+            @RequestParam String parecer,
+            @RequestParam String acao,
+            @AuthenticationPrincipal UsuarioUserDetails usuarioLogado) {
+
+        planoTrabalhoService.avaliarPlano(id, parecer, acao, usuarioLogado.getUsuario());
+        return ResponseEntity.ok().build();
     }
 }
