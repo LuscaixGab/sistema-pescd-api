@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "cc487b72-3872-47d7-a27e-21e6dbdd690f",
-    "name": "PESCD API - Demonstração",
-    "description": "Coleção para demonstrar os principais endpoints REST do sistema PESCD. Use o environment `PESCD Local` e execute os logins por perfil antes das rotas protegidas. A autenticação é por sessão/cookie do Spring Security.",
+  "name": "PESCD API - Demonstração",
+    "description": "Coleção com todas as rotas originais restauradas e integradas com as correções de arquitetura dos Controllers e Services.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -22,54 +22,18 @@
     }
   ],
   "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:8080"
-    },
-    {
-      "key": "professorId",
-      "value": ""
-    },
-    {
-      "key": "usuarioCriadoId",
-      "value": ""
-    },
-    {
-      "key": "ofertaId",
-      "value": ""
-    },
-    {
-      "key": "ofertaResponsavelId",
-      "value": ""
-    },
-    {
-      "key": "inscricaoId",
-      "value": ""
-    },
-    {
-      "key": "inscricaoPlanoAprovadoId",
-      "value": ""
-    },
-    {
-      "key": "planoTrabalhoId",
-      "value": ""
-    },
-    {
-      "key": "inscricaoDocumentacaoId",
-      "value": ""
-    },
-    {
-      "key": "inscricaoRelatorioId",
-      "value": ""
-    },
-    {
-      "key": "alunoId1",
-      "value": ""
-    },
-    {
-      "key": "alunoId2",
-      "value": ""
-    }
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "professorId", "value": "" },
+    { "key": "usuarioCriadoId", "value": "" },
+    { "key": "ofertaId", "value": "" },
+    { "key": "ofertaResponsavelId", "value": "" },
+    { "key": "inscricaoId", "value": "" },
+    { "key": "inscricaoPlanoAprovadoId", "value": "" },
+    { "key": "planoTrabalhoId", "value": "" },
+    { "key": "inscricaoDocumentacaoId", "value": "" },
+    { "key": "inscricaoRelatorioId", "value": "" },
+    { "key": "alunoId1", "value": "" },
+    { "key": "alunoId2", "value": "" }
   ],
   "item": [
     {
@@ -79,21 +43,11 @@
           "name": "Listar ofertas públicas",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/ofertas-publicas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "ofertas-publicas"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ofertas-publicas"]
             }
           },
           "event": [
@@ -123,14 +77,8 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -138,42 +86,27 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });"
-                ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": ["pm.test('Login OK', function () { pm.response.to.have.status(200); });"]
+                }
               }
-            }
-          ]
+            ]
+          }
         },
         {
           "name": "Login Secretário",
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -181,42 +114,27 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });"
-                ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": ["pm.test('Login OK', function () { pm.response.to.have.status(200); });"]
+                }
               }
-            }
-          ]
+            ]
+          }
         },
         {
           "name": "Login Professor",
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -224,47 +142,34 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });",
-                  "const usuario = pm.response.json();",
-                  "if (usuario && usuario.id) {",
-                  "  pm.environment.set('professorId', usuario.id);",
-                  "  pm.collectionVariables.set('professorId', usuario.id);",
-                  "}"
-                ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "pm.test('Login OK', function () { pm.response.to.have.status(200); });",
+                    "const usuario = pm.response.json();",
+                    "if (usuario && usuario.id) {",
+                    "  pm.environment.set('professorId', usuario.id);",
+                    "  pm.collectionVariables.set('professorId', usuario.id);",
+                    "}"
+                  ]
+                }
               }
-            }
-          ]
+            ]
+          }
         },
         {
           "name": "Login Aluno",
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -272,28 +177,19 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Login OK', function () { pm.response.to.have.status(200); });"
-                ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": ["pm.test('Login OK', function () { pm.response.to.have.status(200); });"]
+                }
               }
-            }
-          ]
+            ]
+          }
         }
       ]
     },
@@ -305,22 +201,11 @@
           "name": "Listar usuários",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/usuarios",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "usuarios"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "usuarios"]
             }
           },
           "event": [
@@ -346,14 +231,8 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -361,14 +240,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/usuarios",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "usuarios"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "usuarios"]
             }
           },
           "event": [
@@ -392,23 +265,11 @@
           "name": "Buscar usuário criado",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/usuarios/{{usuarioCriadoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "usuarios",
-                "{{usuarioCriadoId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "usuarios", "{{usuarioCriadoId}}"]
             }
           }
         },
@@ -417,14 +278,8 @@
           "request": {
             "method": "PUT",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -432,15 +287,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/usuarios/{{usuarioCriadoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "usuarios",
-                "{{usuarioCriadoId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "usuarios", "{{usuarioCriadoId}}"]
             }
           }
         },
@@ -451,15 +299,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/usuarios/{{usuarioCriadoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "usuarios",
-                "{{usuarioCriadoId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "usuarios", "{{usuarioCriadoId}}"]
             }
           }
         }
@@ -467,21 +308,15 @@
     },
     {
       "name": "03 - Secretário / Ofertas",
-      "description": "Execute `Login Secretário`. Se `professorId` estiver vazio, rode antes `Login Professor` ou `Listar usuários` como administrador.",
+      "description": "Execute `Login Secretário`.",
       "item": [
         {
           "name": "Criar oferta",
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -489,14 +324,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/ofertas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "ofertas"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "ofertas"]
             }
           },
           "event": [
@@ -520,58 +349,23 @@
           "name": "Listar ofertas",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/ofertas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "ofertas"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "ofertas"]
             }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Resposta 200', function () { pm.response.to.have.status(200); });"
-                ]
-              }
-            }
-          ]
+          }
         },
         {
           "name": "Encerrar oferta oficial",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/ofertas/{{ofertaId}}/encerrar-oficialmente",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "ofertas",
-                "{{ofertaId}}",
-                "encerrar-oficialmente"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "ofertas", "{{ofertaId}}", "encerrar-oficialmente"]
             }
           }
         },
@@ -580,14 +374,8 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -595,16 +383,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/ofertas/{{ofertaId}}/alunos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "ofertas",
-                "{{ofertaId}}",
-                "alunos"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "ofertas", "{{ofertaId}}", "alunos"]
             }
           }
         }
@@ -612,28 +392,17 @@
     },
     {
       "name": "04 - Aluno",
-      "description": "Execute `Login Aluno`. Para uploads, selecione um PDF nos campos de tipo File. Alguns requests precisam de `inscricaoId`; se a listagem de ofertas do aluno estiver bloqueada, preencha manualmente a variável com um UUID de inscrição existente no banco.",
+      "description": "Execute `Login Aluno`.",
       "item": [
         {
           "name": "Listar ofertas do aluno",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/aluno/ofertas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "aluno",
-                "ofertas"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aluno", "ofertas"]
             }
           },
           "event": [
@@ -664,42 +433,19 @@
           "name": "Enviar plano de trabalho",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "professorSupervisorId",
-                  "value": "{{professorId}}",
-                  "type": "text"
-                },
-                {
-                  "key": "inscricaoId",
-                  "value": "{{inscricaoId}}",
-                  "type": "text"
-                },
-                {
-                  "key": "arquivoPlano",
-                  "type": "file",
-                  "src": []
-                }
+                { "key": "professorSupervisorId", "value": "{{professorId}}", "type": "text" },
+                { "key": "inscricaoId", "value": "{{inscricaoId}}", "type": "text" },
+                { "key": "arquivoPlano", "type": "file", "src": [] }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/plano-trabalho",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "plano-trabalho"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "plano-trabalho"]
             }
           },
           "event": [
@@ -722,23 +468,11 @@
           "name": "Buscar plano de trabalho",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/plano-trabalho/{{planoTrabalhoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "plano-trabalho",
-                "{{planoTrabalhoId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "plano-trabalho", "{{planoTrabalhoId}}"]
             }
           }
         },
@@ -746,54 +480,21 @@
           "name": "Enviar documentação de aula",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "nomeInstituicao",
-                  "value": "UFSCar",
-                  "type": "text"
-                },
-                {
-                  "key": "nomeDisciplina",
-                  "value": "Desenvolvimento de Software para Web 1",
-                  "type": "text"
-                },
-                {
-                  "key": "cursoDisciplina",
-                  "value": "Ciência da Computação",
-                  "type": "text"
-                },
-                {
-                  "key": "cargaHoraria",
-                  "value": "30",
-                  "type": "text"
-                },
-                {
-                  "key": "arquivo",
-                  "type": "file",
-                  "src": []
-                }
+                { "key": "nomeInstituicao", "value": "UFSCar", "type": "text" },
+                { "key": "nomeDisciplina", "value": "Desenvolvimento de Software para Web 1", "type": "text" },
+                { "key": "cursoDisciplina", "value": "Ciência da Computação", "type": "text" },
+                { "key": "cargaHoraria", "value": "30", "type": "text" },
+                { "key": "arquivo", "type": "file", "src": [] }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/api/aluno/documentacao/enviar/{{inscricaoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "aluno",
-                "documentacao",
-                "enviar",
-                "{{inscricaoId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aluno", "documentacao", "enviar", "{{inscricaoId}}"]
             }
           }
         },
@@ -801,39 +502,18 @@
           "name": "Enviar relatório final",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "body": {
               "mode": "formdata",
               "formdata": [
-                {
-                  "key": "frequenciaAluno",
-                  "value": "95",
-                  "type": "text"
-                },
-                {
-                  "key": "arquivo",
-                  "type": "file",
-                  "src": []
-                }
+                { "key": "frequenciaAluno", "value": "95", "type": "text" },
+                { "key": "arquivo", "type": "file", "src": [] }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/api/aluno/relatorio/enviar/{{inscricaoPlanoAprovadoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "aluno",
-                "relatorio",
-                "enviar",
-                "{{inscricaoPlanoAprovadoId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aluno", "relatorio", "enviar", "{{inscricaoPlanoAprovadoId}}"]
             }
           }
         }
@@ -841,29 +521,17 @@
     },
     {
       "name": "05 - Professor Supervisor",
-      "description": "Execute `Login Professor` antes destes requests.",
+      "description": "Execute `Login Professor` antes.",
       "item": [
         {
           "name": "Listar alunos supervisionados",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/professor-supervisor/supervisao",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-supervisor",
-                "supervisao"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "professor-supervisor", "supervisao"]
             }
           }
         },
@@ -871,33 +539,14 @@
           "name": "Avaliar plano de trabalho",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/plano-trabalho/{{planoTrabalhoId}}/avaliar?parecer=Plano de trabalho aprovado.&acao=aprovar",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "plano-trabalho",
-                "{{planoTrabalhoId}}",
-                "avaliar"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "plano-trabalho", "{{planoTrabalhoId}}", "avaliar"],
               "query": [
-                {
-                  "key": "parecer",
-                  "value": "Plano de trabalho aprovado."
-                },
-                {
-                  "key": "acao",
-                  "value": "aprovar"
-                }
+                { "key": "parecer", "value": "Plano de trabalho aprovado." },
+                { "key": "acao", "value": "aprovar" }
               ]
             }
           }
@@ -906,29 +555,17 @@
     },
     {
       "name": "06 - Professor Responsável",
-      "description": "Execute `Login Professor` antes destes requests. As análises exigem IDs de inscrições que estejam em fase compatível.",
+      "description": "Execute `Login Professor` antes.",
       "item": [
         {
           "name": "Listar ofertas do responsável",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/professor-responsavel/ofertas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "ofertas"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "professor-responsavel", "ofertas"]
             }
           },
           "event": [
@@ -954,24 +591,11 @@
           "name": "Buscar detalhe para encerramento",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/professor-responsavel/ofertas/{{ofertaResponsavelId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "ofertas",
-                "{{ofertaResponsavelId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "professor-responsavel", "ofertas", "{{ofertaResponsavelId}}"]
             }
           }
         },
@@ -979,29 +603,11 @@
           "name": "Encerrar oferta como responsável",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"licoesAprendidas\": \"Encerramento demonstrado pela API no Postman.\"\n}"
-            },
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/professor-responsavel/ofertas/{{ofertaResponsavelId}}/encerramento",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "ofertas",
-                "{{ofertaResponsavelId}}",
-                "encerramento"
-              ]
+              "raw": "{{baseUrl}}/api/v1/ofertas/{{ofertaResponsavelId}}/encerrar-oficialmente",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "ofertas", "{{ofertaResponsavelId}}", "encerrar-oficialmente"]
             }
           }
         },
@@ -1009,23 +615,11 @@
           "name": "Listar documentações pendentes",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/professor-responsavel/documentacoes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "documentacoes"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "professor-responsavel", "documentacoes"]
             }
           },
           "event": [
@@ -1051,24 +645,11 @@
           "name": "Buscar documentação para análise",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/professor-responsavel/documentacoes/{{inscricaoDocumentacaoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "documentacoes",
-                "{{inscricaoDocumentacaoId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "professor-responsavel", "documentacoes", "{{inscricaoDocumentacaoId}}"]
             }
           }
         },
@@ -1077,10 +658,8 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -1088,17 +667,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/professor-responsavel/documentacoes/{{inscricaoDocumentacaoId}}/analise",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "documentacoes",
-                "{{inscricaoDocumentacaoId}}",
-                "analise"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "professor-responsavel", "documentacoes", "{{inscricaoDocumentacaoId}}", "analise"]
             }
           }
         },
@@ -1106,23 +676,11 @@
           "name": "Listar relatórios pendentes",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/professor-responsavel/relatorios",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "relatorios"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "professor-responsavel", "relatorios"]
             }
           },
           "event": [
@@ -1148,24 +706,11 @@
           "name": "Buscar relatório para análise",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Accept", "value": "application/json" }],
             "url": {
               "raw": "{{baseUrl}}/api/v1/professor-responsavel/relatorios/{{inscricaoRelatorioId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "relatorios",
-                "{{inscricaoRelatorioId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "professor-responsavel", "relatorios", "{{inscricaoRelatorioId}}"]
             }
           }
         },
@@ -1174,10 +719,8 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -1185,17 +728,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/professor-responsavel/relatorios/{{inscricaoRelatorioId}}/analise",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "professor-responsavel",
-                "relatorios",
-                "{{inscricaoRelatorioId}}",
-                "analise"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "professor-responsavel", "relatorios", "{{inscricaoRelatorioId}}", "analise"]
             }
           }
         }

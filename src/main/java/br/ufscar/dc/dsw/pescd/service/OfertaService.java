@@ -199,7 +199,10 @@ public class OfertaService {
         boolean estaInscrito = inscricoes.stream()
                 .anyMatch(i -> i.getAluno().getId().equals(alunoLogado.getId()));
 
-        if (!estaInscrito) {
+        // Verifica se o usuário é SECRETARIO. Usamos .name().equals para garantir a comparação de String
+        boolean ehSecretario = alunoLogado.getPerfil() != null && alunoLogado.getPerfil().name().equals("SECRETARIO");
+
+        if (!estaInscrito && !ehSecretario) {
             throw new IllegalArgumentException("Você não está inscrito nesta oferta.");
         }
 
@@ -207,8 +210,14 @@ public class OfertaService {
             Usuario aluno = usuarioRepository.findById(alunoId)
                     .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado."));
             
-            Inscricao novaInscricao = new Inscricao(UUID.randomUUID(), aluno, oferta, StatusInscricao.NAO_ENVIADO);
-            inscricaoRepository.save(novaInscricao);
+            // Verifica se o aluno já está inscrito nesta oferta para evitar erro de integridade
+            boolean jaInscrito = inscricoes.stream()
+                    .anyMatch(i -> i.getAluno().getId().equals(aluno.getId()));
+
+            if (!jaInscrito) {
+                Inscricao novaInscricao = new Inscricao(null, aluno, oferta, StatusInscricao.NAO_ENVIADO);
+                inscricaoRepository.save(novaInscricao);
+            }
         }
     }
 }

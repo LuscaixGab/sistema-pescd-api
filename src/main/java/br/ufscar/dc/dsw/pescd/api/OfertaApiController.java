@@ -50,24 +50,10 @@ public class OfertaApiController {
                 .toList());
     }
 
-    @GetMapping("/professor")
-    @PreAuthorize("hasRole('PROFESSOR')")
-    public ResponseEntity<List<OfertaResponseDTO>> listarOfertasProfessorResponsavel(@AuthenticationPrincipal UsuarioUserDetails usuarioLogado) {
-        return ResponseEntity.ok(ofertaService.listarOfertasParaProfessorResponsavel(usuarioLogado.getUsuario()).stream()
-                .map(OfertaResponseDTO::from)
-                .toList());
-    }
-
     @PostMapping("/{id}/encerrar-oficialmente")
-    @PreAuthorize("hasRole('SECRETARIO')")
-    public ResponseEntity<Void> encerrarOfertaOficialmente(@PathVariable UUID id, @AuthenticationPrincipal UsuarioUserDetails usuarioLogado) {
-        ofertaService.encerrarOfertaOficialmente(id, usuarioLogado.getUsuario());
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{id}/encerrar")
-    @PreAuthorize("hasRole('PROFESSOR')")
-    public ResponseEntity<Void> encerrarOferta(@PathVariable UUID id, @AuthenticationPrincipal UsuarioUserDetails usuarioLogado) {
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'PROFESSOR')")
+    public ResponseEntity<Void> encerrarOfertaOficialmente(@PathVariable UUID id,
+                                                           @AuthenticationPrincipal UsuarioUserDetails usuarioLogado) {
         ofertaService.encerrarOfertaOficialmente(id, usuarioLogado.getUsuario());
         return ResponseEntity.noContent().build();
     }
