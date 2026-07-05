@@ -2,7 +2,6 @@ package br.ufscar.dc.dsw.pescd.api.DTO;
 
 public class AddStudentDTO {
     private Long studentId;
-    // optional: other fields like enrollment date
     public AddStudentDTO() {}
     public AddStudentDTO(Long studentId) { this.studentId = studentId; }
     public Long getStudentId() { return studentId; }
