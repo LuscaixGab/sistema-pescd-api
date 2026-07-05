@@ -1,4 +1,4 @@
-package br.ufscar.dc.dsw.pescd.api.dto;
+package br.ufscar.dc.dsw.pescd.api.DTO;
 
 public class AddStudentDTO {
     private Long studentId;

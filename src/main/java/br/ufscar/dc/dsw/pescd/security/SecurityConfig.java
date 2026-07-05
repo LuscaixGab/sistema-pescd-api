@@ -49,11 +49,19 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/ofertas-publicas").permitAll()
                         .requestMatchers("/api/aluno/documentacao/**").permitAll() // TODO: remover permissão de teste AL.03
                         .requestMatchers("/api/aluno/relatorio/**").hasRole("ALUNO")
-                        .requestMatchers("/api/professor-supervisor/**").hasRole("PROFESSOR")
+                        
+                        // Rota do aluno adicionada e ajustada:
+                        .requestMatchers("/api/aluno/ofertas", "/api/aluno/ofertas/**").hasRole("ALUNO")
+                        .requestMatchers("/api/v1/aluno/ofertas", "/api/v1/aluno/ofertas/**").hasRole("ALUNO")
 
+                        .requestMatchers("/api/professor-supervisor/**").hasRole("PROFESSOR")
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/usuarios", "/api/v1/usuarios/**").hasRole("ADMINISTRADOR")
+                        
+                        // CORREÇÃO: Regra específica do Professor ANTES da regra geral do Aluno
+                        .requestMatchers(HttpMethod.POST, "/api/v1/plano-trabalho/*/avaliar").hasRole("PROFESSOR")
                         .requestMatchers("/api/v1/plano-trabalho", "/api/v1/plano-trabalho/**").hasRole("ALUNO")
+                        
                         .requestMatchers("/api/v1/ofertas", "/api/v1/ofertas/**").hasRole("SECRETARIO")
                         .requestMatchers("/api/v1/professor-supervisor", "/api/v1/professor-supervisor/**").hasRole("PROFESSOR")
                         .requestMatchers("/api/v1/professor-responsavel/documentacoes", "/api/v1/professor-responsavel/documentacoes/**").hasRole("PROFESSOR")
