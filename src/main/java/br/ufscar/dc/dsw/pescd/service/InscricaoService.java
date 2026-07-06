@@ -8,6 +8,9 @@ import br.ufscar.dc.dsw.pescd.model.Usuario;
 import br.ufscar.dc.dsw.pescd.repository.InscricaoRepository;
 import br.ufscar.dc.dsw.pescd.repository.OfertaRepository;
 import br.ufscar.dc.dsw.pescd.repository.UsuarioRepository;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +39,6 @@ public class InscricaoService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Método lógico para validação do csv
     private void validarArquivoCsv(MultipartFile file) {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("Por favor, selecione um arquivo válido.");
@@ -52,57 +54,62 @@ public class InscricaoService {
         }
     }
 
-    // Método para o processamento do arquivo
     @Transactional
     public void processarAlunosCsv(UUID ofertaId, MultipartFile file) throws Exception {
 
-        // Aciona a validação antes de sequer tentar abrir o arquivo
         validarArquivoCsv(file);
 
         Oferta oferta = ofertaRepository.findById(ofertaId)
                 .orElseThrow(() -> new IllegalArgumentException("Oferta não encontrada."));
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
-            String linha;
-            boolean primeiraLinha = true;
+        // Configuração do formato esperado pelo Apache Commons CSV
+        CSVFormat csvFormat = CSVFormat.Builder.create()
+                .setHeader("RA", "NOME_COMPLETO", "EMAIL")
+                .setSkipHeaderRecord(true) // Ignora a primeira linha (cabeçalho)
+                .setIgnoreSurroundingSpaces(true) // Remove espaços em branco sobrando ao redor dos dados
+                .setTrim(true)
+                .build();
 
-            while ((linha = br.readLine()) != null) {
-                // Ignora o cabeçalho
-                if (primeiraLinha) {
-                    primeiraLinha = false;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+             CSVParser csvParser = new CSVParser(br, csvFormat)) {
+
+            for (CSVRecord csvRecord : csvParser) {
+                // Previne erros caso a linha do CSV esteja em branco ou tenha colunas faltando
+                if (!csvRecord.isConsistent()) {
                     continue;
                 }
 
-                if (linha.trim().isEmpty()) continue;
+                // Acesso seguro e nomeado aos dados da coluna, garantido pelo setHeader
+                String ra = csvRecord.get("RA");
+                String nomeCompleto = csvRecord.get("NOME_COMPLETO");
+                String email = csvRecord.get("EMAIL");
 
-                String[] dados = linha.split(",");
-                if (dados.length < 3) continue;
+                if (ra.isEmpty() || nomeCompleto.isEmpty() || email.isEmpty()) {
+                    continue; // Pula linhas com dados essenciais em branco
+                }
 
-                String ra = dados[0].trim();
-                String nomeCompleto = dados[1].trim();
-                String email = dados[2].trim();
-
-                // FIX RN-3: Verifica se o aluno já existe usando o método do Repository que busca por RA ou E-mail
+                // RN-3: Usando o e-mail, verificar se o aluno existe no BD
                 Usuario aluno = usuarioRepository.findByNomeUsuarioOrEmail(ra, email).orElse(null);
 
                 if (aluno == null) {
-                    // Cadastra novo aluno usando e-mail como nome de usuário e RA como senha
+                    // RN-1 e RN-3: Caso não exista, efetua o cadastro usando o e-mail como nome do usuário e RA como senha
                     aluno = new Usuario();
                     aluno.setNomeCompleto(nomeCompleto);
                     aluno.setEmail(email);
                     aluno.setNomeUsuario(email);
                     aluno.setSenha(passwordEncoder.encode(ra));
                     aluno.setPerfil(Perfil.ALUNO);
+
                     aluno = usuarioRepository.save(aluno);
                 }
 
-                // Verifica se este aluno já está matriculado nessa oferta específica
+                // RN-2: Verifica se este aluno já está matriculado nessa oferta específica (pode estar em múltiplas ofertas)
                 final UUID alunoId = aluno.getId();
                 boolean jaInscrito = inscricaoRepository.findByOferta(oferta).stream()
                         .anyMatch(inscricao -> inscricao.getAluno().getId().equals(alunoId));
 
                 if (!jaInscrito) {
-                    // Cria a inscrição apenas se não existir
+                    // Apenas adiciona-o à oferta se já não estiver inscrito
                     Inscricao inscricao = new Inscricao(null, aluno, oferta, StatusInscricao.NAO_ENVIADO);
                     inscricaoRepository.save(inscricao);
                 }

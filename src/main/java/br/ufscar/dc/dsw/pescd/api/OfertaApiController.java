@@ -4,6 +4,7 @@ import br.ufscar.dc.dsw.pescd.dto.OfertaRequestDTO;
 import br.ufscar.dc.dsw.pescd.dto.OfertaResponseDTO;
 import br.ufscar.dc.dsw.pescd.model.Oferta;
 import br.ufscar.dc.dsw.pescd.security.UsuarioUserDetails;
+import br.ufscar.dc.dsw.pescd.service.InscricaoService;
 import br.ufscar.dc.dsw.pescd.service.OfertaService;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -22,9 +24,11 @@ import java.util.UUID;
 public class OfertaApiController {
 
     private final OfertaService ofertaService;
+    private final InscricaoService inscricaoService;
 
-    public OfertaApiController(OfertaService ofertaService) {
+    public OfertaApiController(OfertaService ofertaService, InscricaoService inscricaoService) {
         this.ofertaService = ofertaService;
+        this.inscricaoService = inscricaoService;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -58,12 +62,25 @@ public class OfertaApiController {
         return ResponseEntity.noContent().build();
     }
 
+    // Adiciona alunos passando o ID deles no Postman
     @PostMapping("/{id}/alunos")
     @PreAuthorize("hasRole('SECRETARIO')")
     public ResponseEntity<Void> adicionarAlunos(@PathVariable UUID id,
                                                 @RequestBody List<UUID> alunoIds,
                                                 @AuthenticationPrincipal UsuarioUserDetails usuarioLogado) {
         ofertaService.adicionarAlunos(id, alunoIds, usuarioLogado.getUsuario());
+        return ResponseEntity.ok().build();
+    }
+
+    // Adiciona alunos por upload de csv
+    @PostMapping(value = "/{id}/alunos/csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('SECRETARIO')")
+    public ResponseEntity<Void> adicionarAlunosPorCsv(
+            @PathVariable UUID id,
+            @RequestParam("arquivo") MultipartFile arquivo) throws Exception {
+
+        inscricaoService.processarAlunosCsv(id, arquivo);
+
         return ResponseEntity.ok().build();
     }
 }
